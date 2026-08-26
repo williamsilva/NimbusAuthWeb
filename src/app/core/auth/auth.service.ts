@@ -41,6 +41,10 @@ export class AuthService {
     return !!token && token.expiresAt > Date.now();
   });
 
+  /** Timestamp (ms) de expiração do access token atual, ou null se não autenticado - usado pelo
+   *  SessionService pro contador de tempo de sessão no header. */
+  readonly expiresAt = computed(() => this.tokenState()?.expiresAt ?? null);
+
   constructor(private readonly http: HttpClient) {}
 
   get accessToken(): string | null {

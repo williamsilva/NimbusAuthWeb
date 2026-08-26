@@ -59,4 +59,32 @@
   &__content {
     padding: 1.5rem;
   }
+
+  &__session-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    color: var(--p-text-muted-color, #64748b);
+    background: var(--p-content-hover-background, #f1f5f9);
+
+    &.warning {
+      color: #b45309;
+      background: rgba(245, 158, 11, 0.15);
+    }
+
+    &.danger {
+      color: #b91c1c;
+      background: rgba(239, 68, 68, 0.15);
+      animation: app-shell-pulse 1.5s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes app-shell-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }

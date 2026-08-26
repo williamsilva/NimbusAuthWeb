@@ -10,6 +10,18 @@
     <a routerLink="/apps" routerLinkActive="active">Apps</a>
     <a routerLink="/security-settings" routerLinkActive="active">Configurações de Segurança</a>
   </nav>
+  @if (session.mmss(); as time) {
+    <span
+      class="app-shell__session-timer"
+      [ngClass]="session.sessionState()"
+      [attr.aria-label]="'Sessão expira em ' + time"
+      pTooltip="Tempo restante da sessão"
+      tooltipPosition="bottom"
+    >
+      <i class="pi pi-clock"></i>
+      {{ time }}
+    </span>
+  }
   <button
     pButton
     type="button"

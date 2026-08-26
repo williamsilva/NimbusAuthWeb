@@ -1,0 +1,88 @@
+<p-dialog
+  [modal]="true"
+  appendTo="body"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [visible]="visible()"
+  [style]="{ width: '640px', maxWidth: '95vw' }"
+  [header]="isEditMode() ? 'Editar App' : 'Novo App'"
+>
+  <form [formGroup]="form" class="flex flex-column gap-3">
+    <div class="grid formgrid">
+      @if (!isEditMode()) {
+        <div class="col-12 md:col-6 field">
+          <label for="appKey">Chave do app (appKey) *</label>
+          <input id="appKey" pInputText type="text" formControlName="appKey" class="w-full" placeholder="ex: nimbusflow" />
+          @if (submitted() && form.controls.appKey.invalid) {
+            <small class="p-error">Obrigatório - só letras/números minúsculos, começando com letra.</small>
+          }
+        </div>
+
+        <div class="col-12 md:col-6 field">
+          <label for="clientId">Client ID *</label>
+          <input id="clientId" pInputText type="text" formControlName="clientId" class="w-full" placeholder="ex: nimbusflow-bff" />
+          @if (submitted() && form.controls.clientId.invalid) {
+            <small class="p-error">Obrigatório - letras/números/hífen minúsculos.</small>
+          }
+        </div>
+      }
+
+      <div class="col-12 field">
+        <label for="name">Nome *</label>
+        <input id="name" pInputText type="text" formControlName="name" class="w-full" />
+        @if (submitted() && form.controls.name.invalid) {
+          <small class="p-error">Obrigatório.</small>
+        }
+      </div>
+
+      <div class="col-12 field">
+        <label for="description">Descrição</label>
+        <textarea id="description" pTextarea rows="2" formControlName="description" class="w-full"></textarea>
+      </div>
+
+      <div class="col-12 field">
+        <label for="redirectUri">Redirect URI (login) *</label>
+        <input id="redirectUri" pInputText type="text" formControlName="redirectUri" class="w-full"
+               placeholder="https://api.exemplo.com.br/login/oauth2/code/{client-id}" />
+        @if (submitted() && form.controls.redirectUri.invalid) {
+          <small class="p-error">Obrigatório.</small>
+        }
+      </div>
+
+      <div class="col-12 field">
+        <label for="postLogoutRedirectUris">URL(s) pós-logout</label>
+        <input id="postLogoutRedirectUris" pInputText type="text" formControlName="postLogoutRedirectUris" class="w-full"
+               placeholder="https://exemplo.com.br (separar por vírgula se mais de uma)" />
+      </div>
+
+      <div class="col-12 md:col-6 field">
+        <label for="allowedOrigin">Origem CORS</label>
+        <input id="allowedOrigin" pInputText type="text" formControlName="allowedOrigin" class="w-full"
+               placeholder="https://exemplo.com.br" />
+      </div>
+
+      <div class="col-12 md:col-6 field">
+        <label for="scopes">Scopes *</label>
+        <input id="scopes" pInputText type="text" formControlName="scopes" class="w-full" placeholder="openid,profile" />
+        @if (submitted() && form.controls.scopes.invalid) {
+          <small class="p-error">Obrigatório.</small>
+        }
+      </div>
+
+      @if (isEditMode()) {
+        <div class="col-12 field-checkbox">
+          <p-checkbox formControlName="active" inputId="active" [binary]="true" />
+          <label for="active" class="ml-2">Ativo</label>
+        </div>
+      }
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button pButton type="button" (click)="close()" icon="pi pi-times" class="p-button-text p-button-sm"
+            label="Cancelar" [disabled]="saving()"></button>
+    <button pButton type="button" (click)="save()" icon="pi pi-save" class="p-button-sm"
+            [loading]="saving()" label="Salvar" [disabled]="saving()"></button>
+  </ng-template>
+</p-dialog>

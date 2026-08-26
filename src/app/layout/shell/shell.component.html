@@ -1,0 +1,26 @@
+<header class="app-shell__header">
+  <a routerLink="/apps" class="app-shell__brand" aria-label="NimbusAuth">
+    <img src="brand/nimbusauth-mark.svg" alt="" class="app-shell__logo" />
+    <span class="app-shell__brand-text">
+      <span class="app-shell__brand-name">Auth</span>
+      <span class="app-shell__brand-sub">Identidade &amp; Acesso</span>
+    </span>
+  </a>
+  <nav class="app-shell__nav">
+    <a routerLink="/apps" routerLinkActive="active">Apps</a>
+    <a routerLink="/security-settings" routerLinkActive="active">Configurações de Segurança</a>
+  </nav>
+  <button
+    pButton
+    type="button"
+    class="p-button-rounded p-button-text"
+    [icon]="theme.mode() === 'dark' ? 'pi pi-sun' : 'pi pi-moon'"
+    [attr.aria-label]="theme.mode() === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'"
+    (click)="toggleTheme()"
+  ></button>
+  <button pButton type="button" icon="pi pi-sign-out" label="Sair" class="p-button-text p-button-sm" (click)="logout()"></button>
+</header>
+
+<main class="app-shell__content">
+  <router-outlet />
+</main>

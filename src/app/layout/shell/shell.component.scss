@@ -1,0 +1,62 @@
+.app-shell {
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--p-content-border-color, #dee2e6);
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  &__logo {
+    height: 2.25rem;
+    width: auto;
+  }
+
+  // Nome/subtítulo como texto HTML (não dentro do SVG) - assim o tamanho da fonte fica livre pra
+  // ser legível, em vez de escalar junto com o ícone (é o que deixava "Identidade & Acesso"
+  // ilegível quando o logo inteiro era comprimido pra caber na altura do header).
+  &__brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  &__brand-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  &__brand-sub {
+    font-size: 0.75rem;
+    color: var(--p-text-muted-color, #64748b);
+  }
+
+  &__nav {
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      padding: 0.25rem 0;
+
+      &.active {
+        font-weight: 600;
+        border-bottom: 2px solid var(--p-primary-color, #6366f1);
+      }
+    }
+  }
+
+  &__content {
+    padding: 1.5rem;
+  }
+}

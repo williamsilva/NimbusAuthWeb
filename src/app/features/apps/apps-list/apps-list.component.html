@@ -1,0 +1,73 @@
+<p-confirmDialog />
+
+<div class="flex justify-content-between align-items-center mb-3">
+  <h2 class="m-0">Apps</h2>
+  <div class="flex gap-2">
+    <input
+      pInputText
+      type="text"
+      placeholder="Buscar por nome/appKey/clientId"
+      [(ngModel)]="globalFilter"
+      (keyup.enter)="search()"
+      class="w-20rem"
+    />
+    <button pButton type="button" icon="pi pi-search" (click)="search()" class="p-button-outlined"></button>
+    <button pButton type="button" icon="pi pi-plus" label="Novo App" (click)="goNew()"></button>
+  </div>
+</div>
+
+<p-table
+  [value]="apps()"
+  [lazy]="true"
+  [paginator]="true"
+  [rows]="20"
+  [totalRecords]="totalRecords()"
+  [loading]="loading()"
+  (onLazyLoad)="onLazyLoad($event)"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  dataKey="id"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Nome</th>
+      <th>appKey</th>
+      <th>Client ID</th>
+      <th>Origem CORS</th>
+      <th>Status</th>
+      <th style="width: 12rem">Ações</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      <td>{{ row.name }}</td>
+      <td>{{ row.appKey }}</td>
+      <td><code>{{ row.clientId }}</code></td>
+      <td>{{ row.allowedOrigin || '—' }}</td>
+      <td>
+        <p-tag [severity]="row.active ? 'success' : 'danger'" [value]="row.active ? 'Ativo' : 'Inativo'" />
+      </td>
+      <td>
+        <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" pTooltip="Editar" (click)="edit(row)"></button>
+        <button pButton type="button" icon="pi pi-key" class="p-button-text p-button-sm p-button-warning" pTooltip="Regenerar secret" (click)="regenerateSecret(row)"></button>
+        <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" pTooltip="Excluir" (click)="confirmDelete(row)"></button>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6" class="text-center">Nenhum App cadastrado ainda.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-apps-form-dialog
+  [visible]="dialogVisible()"
+  [app]="editingApp()"
+  (visibleChange)="onDialogVisibleChange($event)"
+  (saved)="onSaved()"
+  (createdWithSecret)="onCreatedWithSecret($event)"
+/>
+
+<app-apps-secret-dialog [secret]="revealedSecret()" (closed)="onSecretDialogClosed()" />

@@ -1,0 +1,367 @@
+<h2 class="mb-3">Configurações de Segurança</h2>
+
+@if (loading()) {
+  <p>Carregando…</p>
+} @else {
+  <form [formGroup]="form" class="settings-form">
+    <p-fieldset legend="Senha">
+      <div formGroupName="password">
+        <div class="settings-grid">
+          <div class="field">
+            <label for="minLength">Tamanho mínimo</label>
+            <p-inputNumber
+              inputId="minLength"
+              formControlName="minLength"
+              [showButtons]="true"
+              [min]="4"
+              class="w-full"
+            />
+          </div>
+          <div class="field">
+            <label for="historySize">Histórico (não repetir)</label>
+            <p-inputNumber
+              inputId="historySize"
+              formControlName="historySize"
+              [showButtons]="true"
+              [min]="0"
+              class="w-full"
+            />
+          </div>
+          <div class="field">
+            <label for="sequenceLen">Tamanho da sequência bloqueada</label>
+            <p-inputNumber
+              inputId="sequenceLen"
+              formControlName="sequenceLen"
+              [showButtons]="true"
+              [min]="0"
+              class="w-full"
+            />
+          </div>
+          <div class="field">
+            <label for="maxSameInRow">Máx. caracteres repetidos</label>
+            <p-inputNumber
+              inputId="maxSameInRow"
+              formControlName="maxSameInRow"
+              [showButtons]="true"
+              [min]="0"
+              class="w-full"
+            />
+          </div>
+        </div>
+
+        <div class="settings-grid settings-grid--checkboxes mt-3">
+          <div class="field-checkbox">
+            <p-checkbox formControlName="ruleDigit" inputId="ruleDigit" [binary]="true" /><label
+              for="ruleDigit"
+              class="ml-2"
+              >Exigir número</label
+            >
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox formControlName="ruleUpper" inputId="ruleUpper" [binary]="true" /><label
+              for="ruleUpper"
+              class="ml-2"
+              >Exigir maiúscula</label
+            >
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox formControlName="ruleLower" inputId="ruleLower" [binary]="true" /><label
+              for="ruleLower"
+              class="ml-2"
+              >Exigir minúscula</label
+            >
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox formControlName="ruleSymbol" inputId="ruleSymbol" [binary]="true" /><label
+              for="ruleSymbol"
+              class="ml-2"
+              >Exigir símbolo</label
+            >
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox
+              formControlName="ruleNoWhitespace"
+              inputId="ruleNoWhitespace"
+              [binary]="true"
+            /><label for="ruleNoWhitespace" class="ml-2">Bloquear espaço</label>
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox formControlName="ruleCommon" inputId="ruleCommon" [binary]="true" /><label
+              for="ruleCommon"
+              class="ml-2"
+              >Bloquear senha comum</label
+            >
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox
+              formControlName="ruleNoUsername"
+              inputId="ruleNoUsername"
+              [binary]="true"
+            /><label for="ruleNoUsername" class="ml-2">Bloquear conter usuário</label>
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox
+              formControlName="ruleNoSequence"
+              inputId="ruleNoSequence"
+              [binary]="true"
+            /><label for="ruleNoSequence" class="ml-2">Bloquear sequência</label>
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox
+              formControlName="ruleNoRepetition"
+              inputId="ruleNoRepetition"
+              [binary]="true"
+            /><label for="ruleNoRepetition" class="ml-2">Bloquear repetição</label>
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox
+              formControlName="failIfNoExpirationData"
+              inputId="failIfNoExpirationData"
+              [binary]="true"
+            /><label for="failIfNoExpirationData" class="ml-2"
+              >Bloquear se sem dado de expiração</label
+            >
+          </div>
+        </div>
+
+        <div class="settings-grid settings-grid--wide mt-3">
+          <div class="field field--full">
+            <label for="commonPasswords">Senhas comuns bloqueadas (separar por vírgula)</label>
+            <textarea
+              id="commonPasswords"
+              pTextarea
+              formControlName="commonPasswords"
+              class="w-full"
+              rows="3"
+              placeholder="123456,qwerty,password"
+            ></textarea>
+          </div>
+        </div>
+
+        <hr class="my-3" />
+
+        <div class="settings-grid">
+          <div class="field-checkbox">
+            <p-checkbox
+              formControlName="expirationEnabled"
+              inputId="expirationEnabled"
+              [binary]="true"
+            /><label for="expirationEnabled" class="ml-2">Expiração ativa</label>
+          </div>
+          <div class="field">
+            <label for="expirationWarnDays">Avisar (dias antes)</label>
+            <p-inputNumber
+              inputId="expirationWarnDays"
+              formControlName="expirationWarnDays"
+              [showButtons]="true"
+              [min]="0"
+              class="w-full"
+            />
+          </div>
+          <div class="field">
+            <label for="expirationExpireDays">Expira em (dias)</label>
+            <p-inputNumber
+              inputId="expirationExpireDays"
+              formControlName="expirationExpireDays"
+              [showButtons]="true"
+              [min]="0"
+              class="w-full"
+            />
+          </div>
+        </div>
+
+        <div class="settings-grid mt-3">
+          <div class="field">
+            <label for="inviteTtl">Validade do convite</label>
+            <input
+              id="inviteTtl"
+              pInputText
+              type="text"
+              formControlName="inviteTtl"
+              class="w-full"
+              placeholder="PT24H"
+            />
+          </div>
+          <div class="field">
+            <label for="resetTtl">Validade do reset</label>
+            <input
+              id="resetTtl"
+              pInputText
+              type="text"
+              formControlName="resetTtl"
+              class="w-full"
+              placeholder="PT15M"
+            />
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox
+              formControlName="resetRateLimitEnabled"
+              inputId="resetRateLimitEnabled"
+              [binary]="true"
+            /><label for="resetRateLimitEnabled" class="ml-2">Rate-limit de reset ativo</label>
+          </div>
+          <div class="field">
+            <label for="resetRateLimitMaxRequests">Máx. pedidos de reset</label>
+            <p-inputNumber
+              inputId="resetRateLimitMaxRequests"
+              formControlName="resetRateLimitMaxRequests"
+              [showButtons]="true"
+              [min]="1"
+              class="w-full"
+            />
+          </div>
+          <div class="field">
+            <label for="resetRateLimitWindow">Janela do rate-limit</label>
+            <input
+              id="resetRateLimitWindow"
+              pInputText
+              type="text"
+              formControlName="resetRateLimitWindow"
+              class="w-full"
+              placeholder="PT15M"
+            />
+          </div>
+        </div>
+      </div>
+    </p-fieldset>
+
+    <p-fieldset legend="Bloqueio por tentativas (lockout)">
+      <div formGroupName="lockout">
+        <div class="flex gap-4 mb-3">
+          <div class="field-checkbox">
+            <p-checkbox formControlName="enabled" inputId="lockoutEnabled" [binary]="true" /><label
+              for="lockoutEnabled"
+              class="ml-2"
+              >Ativo</label
+            >
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox
+              formControlName="extendWhenLocked"
+              inputId="extendWhenLocked"
+              [binary]="true"
+            /><label for="extendWhenLocked" class="ml-2"
+              >Estender bloqueio se tentar de novo enquanto bloqueado</label
+            >
+          </div>
+        </div>
+
+        <table class="w-full mb-2" formArrayName="rules">
+          <thead>
+            <tr>
+              <th class="text-left">Tentativas</th>
+              <th class="text-left">Duração do bloqueio</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (rule of lockoutRules.controls; track $index; let i = $index) {
+              <tr [formGroupName]="i">
+                <td class="pr-2 py-1">
+                  <p-inputNumber formControlName="attempts" [min]="1" class="w-full" />
+                </td>
+                <td class="pr-2 py-1">
+                  <input
+                    pInputText
+                    type="text"
+                    formControlName="duration"
+                    placeholder="PT15M"
+                    class="w-full"
+                  />
+                </td>
+                <td>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-trash"
+                    class="p-button-text p-button-danger p-button-sm"
+                    (click)="removeRule(i)"
+                  ></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-plus"
+          label="Nova regra"
+          class="p-button-outlined p-button-sm"
+          (click)="addRule()"
+        ></button>
+      </div>
+    </p-fieldset>
+
+    <p-fieldset legend="Rate-limit de login por IP">
+      <div class="settings-grid" formGroupName="ipRateLimit">
+        <div class="field-checkbox">
+          <p-checkbox
+            formControlName="enabled"
+            inputId="ipRateLimitEnabled"
+            [binary]="true"
+          /><label for="ipRateLimitEnabled" class="ml-2">Ativo</label>
+        </div>
+        <div class="field">
+          <label for="maxAttempts">Máx. tentativas por IP</label>
+          <p-inputNumber
+            inputId="maxAttempts"
+            formControlName="maxAttempts"
+            [showButtons]="true"
+            [min]="1"
+            class="w-full"
+          />
+        </div>
+        <div class="field">
+          <label for="window">Janela</label>
+          <input
+            id="window"
+            pInputText
+            type="text"
+            formControlName="window"
+            class="w-full"
+            placeholder="PT15M"
+          />
+        </div>
+      </div>
+    </p-fieldset>
+
+    <p-fieldset legend="Outros">
+      <div class="settings-grid settings-grid--wide">
+        <div class="field field--full">
+          <label for="loginDefaultTarget">URL padrão pós-login (fallback)</label>
+          <input
+            id="loginDefaultTarget"
+            pInputText
+            type="text"
+            formControlName="loginDefaultTarget"
+            class="w-full"
+            placeholder="https://cardsync.com.br/"
+          />
+        </div>
+        <div class="field field--full">
+          <label for="protectedUsernames">Usernames protegidos (separar por vírgula)</label>
+          <input
+            id="protectedUsernames"
+            pInputText
+            type="text"
+            formControlName="protectedUsernames"
+            class="w-full"
+            placeholder="owner,system"
+          />
+        </div>
+      </div>
+    </p-fieldset>
+
+    <div>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-save"
+        label="Salvar"
+        [loading]="saving()"
+        (click)="save()"
+      ></button>
+    </div>
+  </form>
+}

@@ -1,0 +1,48 @@
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+// CSS Grid nativo (não o sistema col-*/field do PrimeFlex, baseado em frações fixas de 12
+// colunas): com ele um label de 2 linhas (ex: "Tamanho da sequência bloqueada") desalinhava a
+// altura dos itens da mesma linha e sobrepunha o campo vizinho. auto-fit com minmax faz cada
+// campo ocupar sua própria célula de grid, sem depender de alturas iguais entre irmãos.
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem 1.5rem;
+  align-items: start;
+
+  &--checkboxes {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  &--wide {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--p-text-muted-color, #64748b);
+  }
+}
+
+.field-checkbox {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}

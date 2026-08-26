@@ -128,11 +128,11 @@
           <div class="field field--full">
             <label for="commonPasswords">Senhas comuns bloqueadas (separar por vírgula)</label>
             <textarea
-              id="commonPasswords"
-              pTextarea
-              formControlName="commonPasswords"
-              class="w-full"
               rows="3"
+              pTextarea
+              class="w-full"
+              id="commonPasswords"
+              formControlName="commonPasswords"
               placeholder="123456,qwerty,password"
             ></textarea>
           </div>
@@ -143,19 +143,19 @@
         <div class="settings-grid">
           <div class="field-checkbox">
             <p-checkbox
-              formControlName="expirationEnabled"
-              inputId="expirationEnabled"
               [binary]="true"
+              inputId="expirationEnabled"
+              formControlName="expirationEnabled"
             /><label for="expirationEnabled" class="ml-2">Expiração ativa</label>
           </div>
           <div class="field">
             <label for="expirationWarnDays">Avisar (dias antes)</label>
             <p-inputNumber
-              inputId="expirationWarnDays"
-              formControlName="expirationWarnDays"
-              [showButtons]="true"
               [min]="0"
               class="w-full"
+              [showButtons]="true"
+              inputId="expirationWarnDays"
+              formControlName="expirationWarnDays"
             />
           </div>
           <div class="field">

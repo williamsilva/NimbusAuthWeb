@@ -1,0 +1,105 @@
+<h2 class="mb-3">Configurações de E-mail</h2>
+
+@if (loading()) {
+  <p>Carregando…</p>
+} @else {
+  <form [formGroup]="form" class="settings-form">
+    <p-fieldset legend="Remetente">
+      <div class="settings-grid">
+        <div class="field">
+          <label for="impl">Modo de envio</label>
+          <p-select
+            inputId="impl"
+            formControlName="impl"
+            [options]="implOptions()"
+            optionLabel="label"
+            optionValue="value"
+            class="w-full"
+          />
+        </div>
+        <div class="field">
+          <label for="fromName">Nome do remetente</label>
+          <input id="fromName" pInputText type="text" formControlName="fromName" class="w-full" placeholder="Nimbus Auth" />
+        </div>
+        <div class="field">
+          <label for="fromEmail">E-mail do remetente</label>
+          <input id="fromEmail" pInputText type="email" formControlName="fromEmail" class="w-full" placeholder="contato@exemplo.com.br" />
+        </div>
+      </div>
+    </p-fieldset>
+
+    <p-fieldset legend="Brevo (API)">
+      <div class="settings-grid">
+        <div class="field">
+          <label for="brevoApiKey">Chave de API</label>
+          <p-password
+            inputId="brevoApiKey"
+            formControlName="brevoApiKey"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            placeholder="Deixe em branco pra manter a atual"
+          />
+        </div>
+        <div class="field">
+          <label for="brevoBaseUrl">URL base</label>
+          <input id="brevoBaseUrl" pInputText type="text" formControlName="brevoBaseUrl" class="w-full" placeholder="https://api.brevo.com/v3" />
+        </div>
+        <div class="field">
+          <label for="brevoPort">Porta</label>
+          <p-inputNumber inputId="brevoPort" formControlName="brevoPort" [useGrouping]="false" class="w-full" />
+        </div>
+        <div class="field">
+          <label for="brevoUsername">Usuário</label>
+          <input id="brevoUsername" pInputText type="text" formControlName="brevoUsername" class="w-full" />
+        </div>
+      </div>
+    </p-fieldset>
+
+    <p-fieldset legend="SMTP">
+      <div class="settings-grid">
+        <div class="field">
+          <label for="smtpHost">Host</label>
+          <input id="smtpHost" pInputText type="text" formControlName="smtpHost" class="w-full" placeholder="smtp.exemplo.com.br" />
+        </div>
+        <div class="field">
+          <label for="smtpPort">Porta</label>
+          <p-inputNumber inputId="smtpPort" formControlName="smtpPort" [useGrouping]="false" class="w-full" />
+        </div>
+        <div class="field">
+          <label for="smtpUsername">Usuário</label>
+          <input id="smtpUsername" pInputText type="text" formControlName="smtpUsername" class="w-full" />
+        </div>
+        <div class="field">
+          <label for="smtpPassword">Senha</label>
+          <p-password
+            inputId="smtpPassword"
+            formControlName="smtpPassword"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            placeholder="Deixe em branco pra manter a atual"
+          />
+        </div>
+      </div>
+
+      <div class="settings-grid mt-3">
+        <div class="field-checkbox">
+          <p-checkbox formControlName="smtpAuth" inputId="smtpAuth" [binary]="true" /><label for="smtpAuth" class="ml-2">Autenticação</label>
+        </div>
+        <div class="field-checkbox">
+          <p-checkbox formControlName="smtpStarttls" inputId="smtpStarttls" [binary]="true" /><label for="smtpStarttls" class="ml-2">STARTTLS</label>
+        </div>
+        <div class="field-checkbox">
+          <p-checkbox formControlName="smtpSsl" inputId="smtpSsl" [binary]="true" /><label for="smtpSsl" class="ml-2">SSL</label>
+        </div>
+      </div>
+    </p-fieldset>
+
+    <div>
+      <button pButton type="button" icon="pi pi-save" label="Salvar" [loading]="saving()" (click)="save()"></button>
+    </div>
+  </form>
+}

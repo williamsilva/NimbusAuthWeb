@@ -24,6 +24,13 @@ export const routes: Routes = [
             (m) => m.SecuritySettingsPageComponent,
           ),
       },
+      {
+        path: 'email-settings',
+        loadComponent: () =>
+          import('./features/email-settings/email-settings-page.component').then(
+            (m) => m.EmailSettingsPageComponent,
+          ),
+      },
       { path: '**', redirectTo: 'apps' },
     ],
   },

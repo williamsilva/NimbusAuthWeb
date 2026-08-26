@@ -9,6 +9,9 @@ export interface AppModel {
   allowedOrigin: string | null;
   scopes: string[];
   active: boolean;
+  /** Duration ISO-8601 (ex: "PT10M") ou null - null usa o default global do NimbusAuth. */
+  accessTokenTtl: string | null;
+  refreshTokenTtl: string | null;
   createdAt: string | null;
   createdBy: { id: string; name: string; userName: string } | null;
 }
@@ -27,6 +30,8 @@ export interface AppCreateInput {
   postLogoutRedirectUris: string[];
   allowedOrigin: string | null;
   scopes: string[];
+  accessTokenTtl: string | null;
+  refreshTokenTtl: string | null;
 }
 
 export interface AppUpdateInput {
@@ -37,6 +42,8 @@ export interface AppUpdateInput {
   allowedOrigin: string | null;
   scopes: string[];
   active: boolean;
+  accessTokenTtl: string | null;
+  refreshTokenTtl: string | null;
 }
 
 /** Espelha o PagedModel (HATEOAS) devolvido por POST /api/v1/apps/search. */

@@ -57,6 +57,8 @@ export class AppsFormDialogComponent {
     allowedOrigin: [''],
     scopes: ['openid,profile', [Validators.required]],
     active: [true],
+    accessTokenTtl: [''],
+    refreshTokenTtl: [''],
   });
 
   constructor() {
@@ -88,6 +90,8 @@ export class AppsFormDialogComponent {
         allowedOrigin: app.allowedOrigin ?? '',
         scopes: (app.scopes ?? []).join(','),
         active: app.active,
+        accessTokenTtl: app.accessTokenTtl ?? '',
+        refreshTokenTtl: app.refreshTokenTtl ?? '',
       });
       this.submitted.set(false);
     });
@@ -122,6 +126,8 @@ export class AppsFormDialogComponent {
         allowedOrigin: v.allowedOrigin.trim() || null,
         scopes: splitList(v.scopes),
         active: v.active,
+        accessTokenTtl: v.accessTokenTtl.trim() || null,
+        refreshTokenTtl: v.refreshTokenTtl.trim() || null,
       }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
           this.saving.set(false);
@@ -143,6 +149,8 @@ export class AppsFormDialogComponent {
       postLogoutRedirectUris: splitList(v.postLogoutRedirectUris),
       allowedOrigin: v.allowedOrigin.trim() || null,
       scopes: splitList(v.scopes),
+      accessTokenTtl: v.accessTokenTtl.trim() || null,
+      refreshTokenTtl: v.refreshTokenTtl.trim() || null,
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {
         this.saving.set(false);
@@ -166,6 +174,8 @@ export class AppsFormDialogComponent {
       allowedOrigin: '',
       scopes: 'openid,profile',
       active: true,
+      accessTokenTtl: '',
+      refreshTokenTtl: '',
     });
   }
 }

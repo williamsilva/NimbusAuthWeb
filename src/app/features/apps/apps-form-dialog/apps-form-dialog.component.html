@@ -70,6 +70,18 @@
         }
       </div>
 
+      <div class="col-12 md:col-6 field">
+        <label for="accessTokenTtl">TTL do access token</label>
+        <input id="accessTokenTtl" pInputText type="text" formControlName="accessTokenTtl" class="w-full"
+               placeholder="PT10M (padrão global)" />
+      </div>
+
+      <div class="col-12 md:col-6 field">
+        <label for="refreshTokenTtl">TTL do refresh token</label>
+        <input id="refreshTokenTtl" pInputText type="text" formControlName="refreshTokenTtl" class="w-full"
+               placeholder="P30D (padrão global)" />
+      </div>
+
       @if (isEditMode()) {
         <div class="col-12 field-checkbox">
           <p-checkbox formControlName="active" inputId="active" [binary]="true" />

@@ -59,8 +59,6 @@ export class EmailSettingsPageComponent implements OnInit {
     fromEmail: ['', [Validators.required, Validators.maxLength(255)]],
     brevoApiKey: [''],
     brevoBaseUrl: ['', Validators.maxLength(255)],
-    brevoPort: [587],
-    brevoUsername: ['', Validators.maxLength(255)],
     smtpHost: ['', Validators.maxLength(255)],
     smtpPort: [587],
     smtpUsername: ['', Validators.maxLength(255)],
@@ -95,8 +93,6 @@ export class EmailSettingsPageComponent implements OnInit {
       // deixando claro que digitar aqui troca o segredo, e deixar vazio preserva o atual.
       brevoApiKey: '',
       brevoBaseUrl: settings.brevoBaseUrl ?? '',
-      brevoPort: settings.brevoPort ?? 587,
-      brevoUsername: settings.brevoUsername ?? '',
       smtpHost: settings.smtpHost ?? '',
       smtpPort: settings.smtpPort ?? 587,
       smtpUsername: settings.smtpUsername ?? '',
@@ -122,8 +118,11 @@ export class EmailSettingsPageComponent implements OnInit {
       fromEmail: v.fromEmail.trim(),
       brevoApiKey: v.brevoApiKey.trim() || null,
       brevoBaseUrl: v.brevoBaseUrl.trim() || null,
-      brevoPort: v.brevoPort,
-      brevoUsername: v.brevoUsername.trim() || null,
+      // brevoPort/brevoUsername: sem uso real - BrevoEmailSenderService autentica só via header
+      // api-key (ver EmailSettingsService no backend), não há usuário/senha nem porta separada
+      // pra uma API REST HTTPS. Sempre null.
+      brevoPort: null,
+      brevoUsername: null,
       smtpHost: v.smtpHost.trim() || null,
       smtpPort: v.smtpPort,
       smtpUsername: v.smtpUsername.trim() || null,

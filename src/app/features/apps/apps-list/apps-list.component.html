@@ -33,6 +33,8 @@
       <th>appKey</th>
       <th>Client ID</th>
       <th>Origem CORS</th>
+      <th>TTL access token</th>
+      <th>TTL refresh token</th>
       <th>Status</th>
       <th style="width: 12rem">Ações</th>
     </tr>
@@ -44,6 +46,20 @@
       <td>{{ row.appKey }}</td>
       <td><code>{{ row.clientId }}</code></td>
       <td>{{ row.allowedOrigin || '—' }}</td>
+      <td>
+        @if (row.accessTokenTtl) {
+          {{ row.accessTokenTtl }}
+        } @else {
+          <span class="text-color-secondary" pTooltip="Usa o padrão global (Configurações de Segurança)">Padrão</span>
+        }
+      </td>
+      <td>
+        @if (row.refreshTokenTtl) {
+          {{ row.refreshTokenTtl }}
+        } @else {
+          <span class="text-color-secondary" pTooltip="Usa o padrão global (Configurações de Segurança)">Padrão</span>
+        }
+      </td>
       <td>
         <p-tag [severity]="row.active ? 'success' : 'danger'" [value]="row.active ? 'Ativo' : 'Inativo'" />
       </td>
@@ -57,7 +73,7 @@
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="6" class="text-center">Nenhum App cadastrado ainda.</td>
+      <td colspan="8" class="text-center">Nenhum App cadastrado ainda.</td>
     </tr>
   </ng-template>
 </p-table>

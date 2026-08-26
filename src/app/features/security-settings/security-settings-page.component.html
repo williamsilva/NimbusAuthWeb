@@ -326,6 +326,46 @@
       </div>
     </p-fieldset>
 
+    <p-fieldset legend="Tokens">
+      <div class="settings-grid" formGroupName="token">
+        <div class="field">
+          <label for="sessionTimeout">Timeout de sessão (login)</label>
+          <input
+            id="sessionTimeout"
+            pInputText
+            type="text"
+            formControlName="sessionTimeout"
+            class="w-full"
+            placeholder="PT2H"
+          />
+          <small>Aplicado na hora, sem restart - sessões já ativas mantêm o timeout antigo até expirar.</small>
+        </div>
+        <div class="field">
+          <label for="accessTokenTtl">TTL padrão do access token</label>
+          <input
+            id="accessTokenTtl"
+            pInputText
+            type="text"
+            formControlName="accessTokenTtl"
+            class="w-full"
+            placeholder="PT10M"
+          />
+          <small>Default pra Apps sem TTL próprio (ver tela Apps) - só afeta Apps criados/editados depois.</small>
+        </div>
+        <div class="field">
+          <label for="refreshTokenTtl">TTL padrão do refresh token</label>
+          <input
+            id="refreshTokenTtl"
+            pInputText
+            type="text"
+            formControlName="refreshTokenTtl"
+            class="w-full"
+            placeholder="P30D"
+          />
+        </div>
+      </div>
+    </p-fieldset>
+
     <p-fieldset legend="Outros">
       <div class="settings-grid settings-grid--wide">
         <div class="field field--full">

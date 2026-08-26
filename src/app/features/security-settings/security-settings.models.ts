@@ -41,10 +41,21 @@ export interface IpRateLimitSettings {
   window: string;
 }
 
+export interface TokenSettings {
+  /** Duration ISO-8601 (ex: "PT2H") - único campo com efeito dinâmico de verdade (sessões novas
+   *  usam o valor atualizado sem restart, ver EmailSettingsService no backend). */
+  sessionTimeout: string;
+  /** Default global usado quando um App não tem TTL próprio (ver tela Apps) - só afeta Apps
+   *  criados/atualizados DEPOIS da mudança (limitação do Spring Authorization Server). */
+  accessTokenTtl: string;
+  refreshTokenTtl: string;
+}
+
 export interface SecuritySettings {
   password: PasswordSettings;
   lockout: LockoutSettings;
   ipRateLimit: IpRateLimitSettings;
+  token: TokenSettings;
   loginDefaultTarget: string | null;
   protectedUsernames: string[];
 }

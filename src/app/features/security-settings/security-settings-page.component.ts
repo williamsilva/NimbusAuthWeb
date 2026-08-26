@@ -72,6 +72,11 @@ export class SecuritySettingsPageComponent implements OnInit {
       maxAttempts: [30, Validators.required],
       window: ['PT15M', Validators.required],
     }),
+    token: this.fb.nonNullable.group({
+      sessionTimeout: ['PT2H', Validators.required],
+      accessTokenTtl: ['PT10M', Validators.required],
+      refreshTokenTtl: ['P30D', Validators.required],
+    }),
     loginDefaultTarget: [''],
     protectedUsernames: ['owner,system'],
   });
@@ -100,6 +105,7 @@ export class SecuritySettingsPageComponent implements OnInit {
       password: { ...settings.password, commonPasswords: (settings.password.commonPasswords ?? []).join(',') },
       lockout: { enabled: settings.lockout.enabled, extendWhenLocked: settings.lockout.extendWhenLocked },
       ipRateLimit: settings.ipRateLimit,
+      token: settings.token,
       loginDefaultTarget: settings.loginDefaultTarget ?? '',
       protectedUsernames: (settings.protectedUsernames ?? []).join(','),
     });
@@ -144,6 +150,7 @@ export class SecuritySettingsPageComponent implements OnInit {
         rules: v.lockout.rules,
       },
       ipRateLimit: v.ipRateLimit,
+      token: v.token,
       loginDefaultTarget: v.loginDefaultTarget?.trim() || null,
       protectedUsernames: splitList(v.protectedUsernames),
     };

@@ -1,10 +1,13 @@
+# unsafe-inline em script-src: o Cloudflare Web Analytics (auto-injetado no proxy do domínio,
+# não algo que a SPA carrega) registra um inline event handler no beacon - sem isso, o CSP
+# bloqueava a execução dele com "Executing inline event handler violates..." no console.
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), camera=(), microphone=()
   Strict-Transport-Security: max-age=31536000
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://auth.nimbussystems.com.br https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://auth.nimbussystems.com.br https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
 
 /index.html
   Cache-Control: no-cache, no-store, must-revalidate

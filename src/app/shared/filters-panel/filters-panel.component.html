@@ -16,7 +16,7 @@
         <div class="text-color font-semibold">{{ title }}</div>
 
         <div class="flex align-items-center justify-content-center gap-2 text-color-secondary text-xs">
-          <span>{{ activeCount }} filtro(s) ativo(s)</span>
+          <span>{{ activeCount }} {{ activeCount === 1 ? 'filtro ativo' : 'filtros ativos' }}</span>
 
           <!-- não pode fechar o painel ao interagir com o ícone/popover -->
           <i

@@ -384,7 +384,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     if (!rows.length) return;
     this.bulk.executeAction(
       this.api.activateBulk(rows.map((row) => row.id)).pipe(tap(() => this.reloadAfterAction())),
-      `${rows.length} usuário(s) ativado(s).`,
+      `${rows.length} ${this.plural(rows.length, 'usuário')} ${this.plural(rows.length, 'ativado')}.`,
     );
   }
 
@@ -393,7 +393,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     if (!rows.length) return;
     this.bulk.executeAction(
       this.api.deactivateBulk(rows.map((row) => row.id)).pipe(tap(() => this.reloadAfterAction())),
-      `${rows.length} usuário(s) inativado(s).`,
+      `${rows.length} ${this.plural(rows.length, 'usuário')} ${this.plural(rows.length, 'inativado')}.`,
     );
   }
 
@@ -402,7 +402,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     if (!rows.length) return;
     this.bulk.confirmAction({
       header: 'Ativar selecionados',
-      message: `Ativar ${rows.length} usuário(s) selecionado(s)?`,
+      message: `Ativar ${rows.length} ${this.plural(rows.length, 'usuário')} ${this.plural(rows.length, 'selecionado')}?`,
       icon: 'pi pi-check-circle',
       accept: () => this.activateSelected(),
     });
@@ -413,10 +413,16 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     if (!rows.length) return;
     this.bulk.confirmAction({
       header: 'Inativar selecionados',
-      message: `Inativar ${rows.length} usuário(s) selecionado(s)?`,
+      message: `Inativar ${rows.length} ${this.plural(rows.length, 'usuário')} ${this.plural(rows.length, 'selecionado')}?`,
       icon: 'pi pi-exclamation-triangle',
       accept: () => this.deactivateSelected(),
     });
+  }
+
+  /** Pluraliza uma palavra masculina regular (usuário/ativado/inativado/selecionado - todas só
+   *  ganham "s") em função da contagem, evitando o "(s)" genérico. */
+  private plural(count: number, word: string): string {
+    return count === 1 ? word : `${word}s`;
   }
 
   statusLabel(status: number | null): string {

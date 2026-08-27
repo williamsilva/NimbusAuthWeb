@@ -228,7 +228,7 @@
 <div class="flex align-items-center justify-content-between mb-2 px-1">
   <small class="opacity-80">{{ selectionModeLabel() }}</small>
   @if (selectedRows().length) {
-    <small class="opacity-80">{{ selectedRows().length }} selecionado(s)</small>
+    <small class="opacity-80">{{ selectedRows().length }} {{ selectedRows().length === 1 ? 'selecionado' : 'selecionados' }}</small>
   }
 </div>
 

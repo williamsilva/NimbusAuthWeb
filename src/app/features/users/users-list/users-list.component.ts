@@ -211,6 +211,12 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     return this.appNames()[appKey] ?? appKey;
   }
 
+  /** Sistemas em que o usuário está liberado - appKeys distintos dos grupos que ele tem (nb_users
+   *  é global, um mesmo usuário pode ter grupo em vários apps ao mesmo tempo). */
+  userAppKeys(row: UserModel): string[] {
+    return Array.from(new Set((row.groups ?? []).map((g) => g.appKey))).sort();
+  }
+
   clear(): void {
     this.clearTableAndReload(this.dt);
   }

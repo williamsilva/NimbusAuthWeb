@@ -249,6 +249,7 @@
       <col style="width: 44px" />
       <col style="width: auto" />
       <col style="width: auto" />
+      <col style="width: 160px" />
       <col style="width: 130px" />
       <col style="width: 140px" />
       <col style="width: 170px" />
@@ -292,6 +293,12 @@
             <p-sortIcon field="name"></p-sortIcon>
             <p-columnFilter type="text" field="name" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
           </span>
+        </div>
+      </th>
+
+      <th>
+        <div class="th-flex text-center justify-content-center">
+          <span class="th-label">Sistemas</span>
         </div>
       </th>
 
@@ -386,6 +393,16 @@
       <td>{{ row.name }}</td>
 
       <td class="text-center">
+        <div class="flex flex-wrap justify-content-center gap-1">
+          @for (appKey of userAppKeys(row); track appKey) {
+            <p-tag severity="secondary" [value]="appName(appKey)" />
+          } @empty {
+            <span class="text-color-secondary">—</span>
+          }
+        </div>
+      </td>
+
+      <td class="text-center">
         <span [pTooltip]="row.document" tooltipPosition="top">{{ formatDocument(row.document) }}</span>
       </td>
 
@@ -435,7 +452,7 @@
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td [attr.colspan]="10" class="text-center py-5 opacity-70">
+      <td [attr.colspan]="11" class="text-center py-5 opacity-70">
         {{ loadedOnce() ? 'Nenhum usuário encontrado.' : 'Carregando…' }}
       </td>
     </tr>

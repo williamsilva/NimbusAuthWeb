@@ -3,80 +3,12 @@
 <div class="flex justify-content-between align-items-center mb-3">
   <h2 class="m-0">Grupos</h2>
   <div class="flex gap-2">
-    <p-select
-      [options]="appOptions()"
-      [(ngModel)]="appFilter"
-      optionLabel="label"
-      optionValue="value"
-      (onChange)="search()"
-      placeholder="App"
-      class="w-12rem"
-    />
-    <input
-      pInputText
-      type="text"
-      placeholder="Buscar por nome/descrição"
-      [(ngModel)]="globalFilter"
-      (keyup.enter)="search()"
-      class="w-20rem"
-    />
-    <button pButton type="button" icon="pi pi-search" (click)="search()" class="p-button-outlined"></button>
-    <button pButton type="button" icon="pi pi-plus" label="Novo grupo" (click)="goNew()"></button>
+    <button pButton type="button" icon="pi pi-refresh" (click)="refresh()" class="p-button-text p-button-sm" label="Atualizar"></button>
+    <button pButton type="button" icon="pi pi-plus" (click)="goNew()" label="Novo grupo"></button>
   </div>
 </div>
 
-<p-table
-  [value]="groups()"
-  [lazy]="true"
-  [paginator]="true"
-  [rows]="20"
-  [totalRecords]="totalRecords()"
-  [loading]="loading()"
-  (onLazyLoad)="onLazyLoad($event)"
-  [rowsPerPageOptions]="[10, 20, 50]"
-  dataKey="id"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Nome</th>
-      <th>App</th>
-      <th>Descrição</th>
-      <th>Usuários</th>
-      <th>Permissões</th>
-      <th>Criado em</th>
-      <th style="width: 12rem">Ações</th>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="body" let-row>
-    <tr>
-      <td>{{ row.name }}</td>
-      <td><p-tag severity="secondary" [value]="appName(row.appKey)" /></td>
-      <td>{{ row.description || '—' }}</td>
-      <td>{{ row.usersCount }}</td>
-      <td>{{ row.permissionsCount }}</td>
-      <td>{{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '—' }}</td>
-      <td>
-        <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" pTooltip="Editar" (click)="edit(row)"></button>
-        <button pButton type="button" icon="pi pi-shield" class="p-button-text p-button-sm" pTooltip="Gerenciar permissões/usuários" (click)="manage(row)"></button>
-        <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" pTooltip="Excluir" (click)="confirmDelete(row)"></button>
-      </td>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="7" class="text-center">Nenhum grupo cadastrado ainda.</td>
-    </tr>
-  </ng-template>
-</p-table>
-
-<app-groups-form-dialog
-  [visible]="dialogVisible()"
-  [group]="editingGroup()"
-  (visibleChange)="onDialogVisibleChange($event)"
-  (saved)="onSaved()"
-/>
+<app-groups-form-dialog [visible]="dialogVisible()" [group]="editingGroup()" (visibleChange)="onDialogVisibleChange($event)" (saved)="onSaved()" />
 
 <app-group-manage-dialog
   [visible]="manageDialogVisible()"
@@ -84,3 +16,227 @@
   (visibleChange)="onManageDialogVisibleChange($event)"
   (saved)="onManageSaved()"
 />
+
+<app-filters-panel
+  [collapsed]="true"
+  (clear)="clear()"
+  (search)="search()"
+  [actionsAlign]="'start'"
+  [activeFilterGroups]="activeFilterGroups()"
+  [activeCount]="activeFiltersCount()"
+  title="Filtrar"
+>
+  <div class="grid formgrid gap-0 align-items-end">
+    <div class="col-12 md:col-3 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <input id="name" pInputText [value]="name()" class="w-full p-inputtext-sm" (input)="name.set(($any($event.target).value ?? '').toString())" />
+        <label for="name">Nome</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-3 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <input
+          id="description"
+          pInputText
+          [value]="description()"
+          class="w-full p-inputtext-sm"
+          (input)="description.set(($any($event.target).value ?? '').toString())"
+        />
+        <label for="description">Descrição</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-select
+          size="small"
+          class="w-full"
+          appendTo="body"
+          inputId="appKey"
+          [showClear]="true"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="appKey()"
+          [options]="appOptions()"
+          (ngModelChange)="appKey.set($event ?? null)"
+        ></p-select>
+        <label for="appKey">App</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-datepicker
+          inputId="createdAt"
+          class="w-full"
+          size="small"
+          appendTo="body"
+          [showIcon]="true"
+          [readonlyInput]="true"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          [ngModel]="createdAtRange()"
+          (ngModelChange)="createdAtRange.set($event ?? null)"
+        ></p-datepicker>
+        <label for="createdAt">Criado em</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-multiSelect
+          size="small"
+          class="w-full"
+          [filter]="true"
+          appendTo="body"
+          [showClear]="true"
+          inputId="createdBy"
+          optionLabel="name"
+          optionValue="id"
+          [ngModel]="createdBy()"
+          [showToggleAll]="false"
+          [options]="usersOptions()"
+          (ngModelChange)="createdBy.set($event?.length ? $event : null)"
+        ></p-multiSelect>
+        <label for="createdBy">Criado por</label>
+      </p-floatLabel>
+    </div>
+  </div>
+</app-filters-panel>
+
+<div class="surface-card border-round px-3 pt-2 pb-3 mt-2">
+  <p-table
+    #dt
+    stripedRows
+    dataKey="id"
+    size="small"
+    [rows]="rows"
+    [lazy]="true"
+    showGridlines
+    [value]="groups()"
+    [rowHover]="true"
+    [paginator]="true"
+    sortMode="multiple"
+    filterDisplay="menu"
+    stateStorage="local"
+    class="app-admin-table"
+    [loading]="loading()"
+    [stateKey]="tableStateKey()"
+    [showCurrentPageReport]="true"
+    [totalRecords]="totalRecords()"
+    (onLazyLoad)="onLazyLoad($event)"
+    [paginatorDropdownAppendTo]="'body'"
+    (onPage)="onPageChange($event)"
+    [rowsPerPageOptions]="rowsPerPageOptions"
+    [tableStyle]="{ width: '100%', 'min-width': '54rem' }"
+    currentPageReportTemplate="{first} a {last} de {totalRecords}"
+  >
+    <ng-template pTemplate="colgroup">
+      <colgroup>
+        <col style="width: auto" />
+        <col style="width: 110px" />
+        <col style="width: auto" />
+        <col style="width: 170px" />
+        <col style="width: 170px" />
+        <col style="width: 90px" />
+        <col style="width: 90px" />
+        <col style="width: 100px" />
+      </colgroup>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="name">
+          <div class="th-flex text-center">
+            <span class="th-label">Nome</span>
+            <span class="th-icons">
+              <p-sortIcon field="name"></p-sortIcon>
+              <p-columnFilter field="name" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th class="text-center">
+          <div class="th-flex text-center justify-content-center"><span class="th-label">App</span></div>
+        </th>
+
+        <th pSortableColumn="description">
+          <div class="th-flex text-center">
+            <span class="th-label">Descrição</span>
+            <span class="th-icons">
+              <p-sortIcon field="description"></p-sortIcon>
+              <p-columnFilter type="text" display="menu" class="ml-auto" field="description" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th pSortableColumn="createdAt">
+          <div class="th-flex text-center">
+            <span class="th-label">Criado em</span>
+            <span class="th-icons">
+              <p-sortIcon field="createdAt"></p-sortIcon>
+              <p-columnFilter display="menu" field="createdAt" matchMode="between" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-datepicker class="w-full" appendTo="body" [showIcon]="true" [ngModel]="value" selectionMode="range" dateFormat="dd/mm/yy" [readonlyInput]="true" (ngModelChange)="filter($event)" placeholder="Período"></p-datepicker>
+                </ng-template>
+              </p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th pSortableColumn="createdBy">
+          <div class="th-flex text-center">
+            <span class="th-label">Criado por</span>
+            <span class="th-icons">
+              <p-sortIcon field="createdBy"></p-sortIcon>
+              <p-columnFilter display="menu" matchMode="in" field="createdBy" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-multiSelect class="w-full" appendTo="body" [filter]="true" [ngModel]="value" [showClear]="true" optionLabel="name" optionValue="id" [options]="usersOptions()" (onChange)="filter($event.value)" placeholder="Todos"></p-multiSelect>
+                </ng-template>
+              </p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th>
+          <div class="th-flex text-center justify-content-center"><span class="th-label">Usuários</span></div>
+        </th>
+        <th>
+          <div class="th-flex text-center justify-content-center"><span class="th-label">Permissões</span></div>
+        </th>
+
+        <th class="text-center">
+          <div class="th-flex text-center justify-content-center"><span class="th-label">Ações</span></div>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-row>
+      <tr>
+        <td>{{ row.name }}</td>
+        <td class="text-center"><p-tag severity="secondary" [value]="appName(row.appKey)" /></td>
+        <td>{{ row.description || '—' }}</td>
+        <td class="text-center">{{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '-' }}</td>
+        <td class="text-center">{{ row.createdBy?.name ?? '-' }}</td>
+        <td class="text-center">{{ row.usersCount ?? '-' }}</td>
+        <td class="text-center">{{ row.permissionsCount ?? '-' }}</td>
+        <td class="text-center">
+          <div class="table-actions">
+            <button pButton type="button" icon="pi pi-pencil" (click)="edit(row)" class="p-button-text p-button-sm" pTooltip="Editar" tooltipPosition="top"></button>
+            <button pButton type="button" icon="pi pi-shield" (click)="manage(row)" class="p-button-text p-button-sm" pTooltip="Gerenciar permissões/usuários" tooltipPosition="top"></button>
+            <button pButton type="button" icon="pi pi-trash" (click)="confirmDelete(row)" class="p-button-text p-button-sm p-button-danger" pTooltip="Excluir" tooltipPosition="top"></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="text-center py-5 opacity-70">
+          {{ loadedOnce() ? 'Nenhum grupo encontrado.' : 'Carregando…' }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

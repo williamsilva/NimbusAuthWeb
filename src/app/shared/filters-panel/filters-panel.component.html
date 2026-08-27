@@ -1,0 +1,108 @@
+<p-panel [toggleable]="true" [collapsed]="collapsed">
+  <ng-template pTemplate="header">
+    <!-- header inteiro clicável -->
+    <div
+      class="w-full flex align-items-center justify-content-between app-filters-header-click"
+      role="button"
+      tabindex="0"
+      [attr.aria-expanded]="!collapsed"
+      (click)="toggle()"
+      (keydown.enter)="toggle()"
+      (keydown.space)="toggle()"
+    >
+      <div class="flex-1"></div>
+
+      <div class="flex flex-column align-items-center justify-content-center" style="gap: 0.1rem">
+        <div class="text-color font-semibold">{{ title }}</div>
+
+        <div class="flex align-items-center justify-content-center gap-2 text-color-secondary text-xs">
+          <span>{{ activeCount }} filtro(s) ativo(s)</span>
+
+          <!-- não pode fechar o painel ao interagir com o ícone/popover -->
+          <i
+            class="pi pi-info-circle text-primary cursor-pointer"
+            (click)="$event.stopPropagation()"
+            (mouseenter)="onInfoEnter(op, $event)"
+            (mouseleave)="onInfoLeave(op)"
+          ></i>
+
+          <p-popover #op styleClass="app-filter-popover">
+            <div
+              class="flex flex-column p-0"
+              style="min-width: 280px"
+              (click)="$event.stopPropagation()"
+              (mouseenter)="onPopoverEnter()"
+              (mouseleave)="onPopoverLeave(op)"
+            >
+              @if (activeFilterGroups.length) {
+                @for (group of activeFilterGroups; track group.title) {
+                  <div class="px-2 py-2">
+                    <div class="text-xs font-semibold text-color mb-2">{{ group.title }}</div>
+
+                    <div class="flex flex-column gap-1">
+                      @for (f of group.filters; track f.label + f.value) {
+                        <div class="text-xs flex align-items-center">
+                          <span class="text-color-secondary"> {{ f.label }}: </span>
+
+                          <span
+                            class="text-color font-medium ml-1 truncate-value"
+                            [pTooltip]="f.value"
+                            tooltipPosition="top"
+                            (click)="$event.stopPropagation()"
+                          >
+                            {{ f.value }}
+                          </span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              } @else if (activeFilters.length) {
+                @for (f of activeFilters; track f.label + f.value) {
+                  <div class="px-2 py-1 text-xs flex align-items-center">
+                    <span class="text-color-secondary"> {{ f.label }}: </span>
+
+                    <span
+                      class="text-color font-medium ml-1 truncate-value"
+                      [pTooltip]="f.value"
+                      tooltipPosition="top"
+                      (click)="$event.stopPropagation()"
+                    >
+                      {{ f.value }}
+                    </span>
+                  </div>
+                }
+              } @else {
+                <div class="px-2 py-2 text-sm text-color-secondary">Nenhum filtro ativo</div>
+              }
+            </div>
+          </p-popover>
+        </div>
+      </div>
+
+      <div class="flex-1"></div>
+    </div>
+  </ng-template>
+
+  <div class="p-fluid">
+    <ng-content></ng-content>
+  </div>
+
+  <div
+    class="flex align-items-center gap-3 mt-3"
+    [class.justify-content-end]="actionsAlign === 'end'"
+    [class.justify-content-start]="actionsAlign === 'start'"
+    [class.justify-content-center]="actionsAlign === 'center'"
+  >
+    <!-- botões não devem togglar o painel -->
+    <button pButton type="button" class="p-button-sm" label="Buscar" (click)="$event.stopPropagation(); search.emit()"></button>
+
+    <button
+      pButton
+      type="button"
+      class="p-button-text p-button-sm"
+      label="Limpar"
+      (click)="$event.stopPropagation(); clear.emit()"
+    ></button>
+  </div>
+</p-panel>

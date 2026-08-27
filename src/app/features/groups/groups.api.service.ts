@@ -4,24 +4,16 @@ import { Observable } from 'rxjs';
 
 import { API, APP_KEY } from '../../core/api/api.config';
 import { HalPagedResponse, ListQueryBody } from '../../core/api/list-query.models';
-import { GroupInput, GroupModel, GroupOption, GroupsFilter, PermissionOption, UserOption } from './groups.models';
+import { GroupInput, GroupModel, GroupOption, GroupsAdvancedFilters, PermissionOption, UserOption } from './groups.models';
 
 @Injectable({ providedIn: 'root' })
 export class GroupsApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${API.base}/v1/groups`;
 
-  /** appKey null = todos os apps (painel central) - ver GroupsFilter no backend. */
-  search(globalFilter: string, page: number, size: number, appKey: string | null): Observable<HalPagedResponse<GroupModel>> {
-    const body: ListQueryBody<GroupsFilter> = {
-      page,
-      size,
-      sort: [{ field: 'name', order: 1 }],
-      tableFilters: {},
-      globalFilter: globalFilter || null,
-      advanced: { appKey: appKey || null },
-    };
-    return this.http.post<HalPagedResponse<GroupModel>>(`${this.baseUrl}/search`, body);
+  /** appKey null/ausente = todos os apps (painel central) - ver GroupsFilter no backend. */
+  search(query: ListQueryBody<GroupsAdvancedFilters>): Observable<HalPagedResponse<GroupModel>> {
+    return this.http.post<HalPagedResponse<GroupModel>>(`${this.baseUrl}/search`, query);
   }
 
   getById(id: string): Observable<GroupModel> {

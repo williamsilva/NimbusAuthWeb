@@ -1,0 +1,38 @@
+/* Panel compacto - header fechado menor */
+:host ::ng-deep .p-panel-header {
+  padding-top: 0.2rem !important;
+  padding-bottom: 0.2rem !important;
+}
+
+:host ::ng-deep .p-panel-toggle-button {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  min-width: 1.5rem !important;
+  min-height: 1.5rem !important;
+}
+
+/* Popover de filtros ativos */
+.app-filter-popover {
+  box-shadow: none !important;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-ground);
+  border-radius: 0;
+}
+
+.truncate-value {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-filters-header-click {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.app-filters-header-click:hover {
+  background: var(--surface-100);
+  border-radius: 8px;
+}

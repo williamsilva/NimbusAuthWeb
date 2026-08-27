@@ -3,86 +3,28 @@
 <div class="flex justify-content-between align-items-center mb-3">
   <h2 class="m-0">Usuários</h2>
   <div class="flex gap-2">
-    <p-select
-      [options]="statusOptions"
-      [(ngModel)]="statusFilter"
-      optionLabel="label"
-      optionValue="value"
-      (onChange)="search()"
-      placeholder="Status"
-      class="w-12rem"
-    />
-    <input
-      pInputText
-      type="text"
-      placeholder="Buscar por nome/e-mail/documento"
-      [(ngModel)]="globalFilter"
-      (keyup.enter)="search()"
-      class="w-20rem"
-    />
-    <button pButton type="button" icon="pi pi-search" (click)="search()" class="p-button-outlined"></button>
-    <button pButton type="button" icon="pi pi-plus" label="Novo usuário" (click)="goNew()"></button>
+    <button pButton type="button" icon="pi pi-refresh" (click)="refresh()" class="p-button-text p-button-sm" label="Atualizar"></button>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-check-circle"
+      class="p-button-success p-button-sm"
+      [disabled]="!canActivateSelected()"
+      (click)="confirmActivateSelected()"
+      label="Ativar selecionados"
+    ></button>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-ban"
+      class="p-button-danger p-button-sm"
+      [disabled]="!canDeactivateSelected()"
+      (click)="confirmDeactivateSelected()"
+      label="Inativar selecionados"
+    ></button>
+    <button pButton type="button" icon="pi pi-plus" (click)="goNew()" label="Novo usuário"></button>
   </div>
 </div>
-
-<p-table
-  [value]="users()"
-  [lazy]="true"
-  [paginator]="true"
-  [rows]="20"
-  [totalRecords]="totalRecords()"
-  [loading]="loading()"
-  (onLazyLoad)="onLazyLoad($event)"
-  [rowsPerPageOptions]="[10, 20, 50]"
-  dataKey="id"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Nome</th>
-      <th>E-mail</th>
-      <th>CPF/CNPJ</th>
-      <th>Status</th>
-      <th>Último login</th>
-      <th>Criado em</th>
-      <th style="width: 12rem">Ações</th>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="body" let-row>
-    <tr>
-      <td>{{ row.name }}</td>
-      <td>{{ row.userName }}</td>
-      <td>{{ formatDocument(row.document) }}</td>
-      <td>
-        <p-tag [severity]="statusSeverity(row.status)" [value]="statusLabel(row.status)" />
-      </td>
-      <td>{{ row.lastLoginAt ? (row.lastLoginAt | date: 'dd/MM/yyyy HH:mm') : '—' }}</td>
-      <td>{{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '—' }}</td>
-      <td>
-        <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" pTooltip="Editar" (click)="edit(row)"></button>
-        @if (canResendInvite(row)) {
-          <button pButton type="button" icon="pi pi-send" class="p-button-text p-button-sm" pTooltip="Reenviar convite" (click)="resendInvite(row)"></button>
-        }
-        <button
-          pButton
-          type="button"
-          [icon]="row.status === 1 ? 'pi pi-ban' : 'pi pi-check'"
-          class="p-button-text p-button-sm"
-          [class.p-button-danger]="row.status === 1"
-          [class.p-button-success]="row.status !== 1"
-          [pTooltip]="row.status === 1 ? 'Inativar' : 'Ativar'"
-          (click)="toggleActive(row)"
-        ></button>
-      </td>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="7" class="text-center">Nenhum usuário encontrado.</td>
-    </tr>
-  </ng-template>
-</p-table>
 
 <app-users-form-dialog
   [visible]="dialogVisible()"
@@ -90,3 +32,394 @@
   (visibleChange)="onDialogVisibleChange($event)"
   (saved)="onSaved()"
 />
+
+<app-filters-panel
+  [collapsed]="true"
+  (clear)="clear()"
+  (search)="search()"
+  [actionsAlign]="'start'"
+  [activeCount]="activeFiltersCount()"
+  title="Filtrar"
+  [activeFilterGroups]="activeFilterGroups()"
+>
+  <div class="grid formgrid gap-0 align-items-end">
+    <div class="col-12 md:col-3 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <input id="name" pInputText [value]="name()" class="w-full p-inputtext-sm" (input)="name.set(($any($event.target).value ?? '').toString())" />
+        <label for="name">Nome</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-3 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <input
+          id="userName"
+          pInputText
+          [value]="userName()"
+          class="w-full p-inputtext-sm"
+          (input)="userName.set(($any($event.target).value ?? '').toString())"
+        />
+        <label for="userName">E-mail</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <input
+          id="document"
+          pInputText
+          appCpfCnpjMask
+          [value]="document()"
+          class="w-full p-inputtext-sm"
+          (input)="document.set(($any($event.target).value ?? '').toString().replace(/\D+/g, ''))"
+        />
+        <label for="document">CPF/CNPJ</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-4 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-multiSelect
+          size="small"
+          class="w-full"
+          [filter]="true"
+          appendTo="body"
+          inputId="status"
+          [showClear]="true"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="status()"
+          [showToggleAll]="false"
+          [options]="statusOptions"
+          (ngModelChange)="status.set($event?.length ? $event : null)"
+        ></p-multiSelect>
+        <label for="status">Status</label>
+      </p-floatLabel>
+    </div>
+  </div>
+
+  <div class="grid formgrid gap-0 align-items-end mt-2">
+    <div class="col-12 md:col-3 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-datepicker
+          size="small"
+          class="w-full"
+          appendTo="body"
+          [showIcon]="true"
+          inputId="lastLoginAt"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+          [ngModel]="lastLoginAtRange()"
+          (ngModelChange)="lastLoginAtRange.set($event ?? null)"
+        ></p-datepicker>
+        <label for="lastLoginAt">Último login</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-datepicker
+          size="small"
+          class="w-full"
+          appendTo="body"
+          [showIcon]="true"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          inputId="blockedUntil"
+          [readonlyInput]="true"
+          [ngModel]="blockedUntilRange()"
+          (ngModelChange)="blockedUntilRange.set($event ?? null)"
+        ></p-datepicker>
+        <label for="blockedUntil">Bloqueado até</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-datepicker
+          size="small"
+          class="w-full"
+          appendTo="body"
+          [showIcon]="true"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+          inputId="passwordExpiresAt"
+          [ngModel]="passwordExpiresAtRange()"
+          (ngModelChange)="passwordExpiresAtRange.set($event ?? null)"
+        ></p-datepicker>
+        <label for="passwordExpiresAt">Senha expira em</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-datepicker
+          size="small"
+          class="w-full"
+          appendTo="body"
+          [showIcon]="true"
+          inputId="createdAt"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+          [ngModel]="createdAtRange()"
+          (ngModelChange)="createdAtRange.set($event ?? null)"
+        ></p-datepicker>
+        <label for="createdAt">Criado em</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-3 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-multiSelect
+          size="small"
+          class="w-full"
+          appendTo="body"
+          [filter]="true"
+          [showClear]="true"
+          inputId="createdBy"
+          optionLabel="name"
+          optionValue="id"
+          [ngModel]="createdBy()"
+          [showToggleAll]="false"
+          [options]="usersOptions()"
+          (ngModelChange)="createdBy.set($event?.length ? $event : null)"
+        ></p-multiSelect>
+        <label for="createdBy">Criado por</label>
+      </p-floatLabel>
+    </div>
+  </div>
+</app-filters-panel>
+
+<div class="flex align-items-center justify-content-between mb-2 px-1">
+  <small class="opacity-80">{{ selectionModeLabel() }}</small>
+  @if (selectedRows().length) {
+    <small class="opacity-80">{{ selectedRows().length }} selecionado(s)</small>
+  }
+</div>
+
+<p-table
+  #dt
+  stripedRows
+  dataKey="id"
+  size="small"
+  [rows]="rows"
+  [lazy]="true"
+  showGridlines
+  [value]="users()"
+  [rowHover]="true"
+  [paginator]="true"
+  sortMode="multiple"
+  filterDisplay="menu"
+  stateStorage="local"
+  class="app-admin-table"
+  [loading]="loading()"
+  [stateKey]="tableStateKey()"
+  [showCurrentPageReport]="true"
+  [totalRecords]="totalRecords()"
+  (onPage)="onPageChange($event)"
+  (onLazyLoad)="onLazyLoad($event)"
+  [paginatorDropdownAppendTo]="'body'"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [tableStyle]="{ width: '100%', 'min-width': '62rem' }"
+  currentPageReportTemplate="{first} a {last} de {totalRecords}"
+>
+  <ng-template pTemplate="colgroup">
+    <colgroup>
+      <col style="width: 44px" />
+      <col style="width: auto" />
+      <col style="width: auto" />
+      <col style="width: 130px" />
+      <col style="width: 140px" />
+      <col style="width: 170px" />
+      <col style="width: 170px" />
+      <col style="width: 170px" />
+      <col style="width: 170px" />
+      <col style="width: 170px" />
+      <col style="width: 90px" />
+    </colgroup>
+  </ng-template>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th class="text-center">
+        @if (selectionMode()) {
+          <p-checkbox
+            [binary]="true"
+            [ngModel]="headerChecked()"
+            [indeterminate]="headerIndeterminate()"
+            (onChange)="toggleHeaderSelection(!!$event.checked)"
+          ></p-checkbox>
+        } @else {
+          <i class="pi pi-info-circle opacity-70" pTooltip="Selecione uma linha primeiro" tooltipPosition="top"></i>
+        }
+      </th>
+
+      <th pSortableColumn="userName">
+        <div class="th-flex text-center">
+          <span class="th-label">E-mail</span>
+          <span class="th-icons">
+            <p-sortIcon field="userName"></p-sortIcon>
+            <p-columnFilter type="text" display="menu" class="ml-auto" field="userName" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+          </span>
+        </div>
+      </th>
+
+      <th pSortableColumn="name">
+        <div class="th-flex text-center">
+          <span class="th-label">Nome</span>
+          <span class="th-icons">
+            <p-sortIcon field="name"></p-sortIcon>
+            <p-columnFilter type="text" field="name" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+          </span>
+        </div>
+      </th>
+
+      <th pSortableColumn="document">
+        <div class="th-flex text-center">
+          <span class="th-label">CPF/CNPJ</span>
+          <span class="th-icons">
+            <p-sortIcon field="document"></p-sortIcon>
+            <p-columnFilter display="menu" field="document" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+          </span>
+        </div>
+      </th>
+
+      <th pSortableColumn="status">
+        <div class="th-flex text-center">
+          <span class="th-label">Status</span>
+          <span class="th-icons">
+            <p-sortIcon field="status"></p-sortIcon>
+            <p-columnFilter field="status" display="menu" matchMode="in" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
+              <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-multiSelect class="w-full" appendTo="body" [ngModel]="value" [showClear]="true" optionLabel="label" optionValue="value" [options]="statusOptions" (onChange)="filter($event.value)" placeholder="Todos"></p-multiSelect>
+              </ng-template>
+            </p-columnFilter>
+          </span>
+        </div>
+      </th>
+
+      <th pSortableColumn="lastLoginAt">
+        <div class="th-flex text-center">
+          <span class="th-label">Último login</span>
+          <span class="th-icons"><p-sortIcon field="lastLoginAt"></p-sortIcon></span>
+        </div>
+      </th>
+
+      <th pSortableColumn="blockedUntil">
+        <div class="th-flex text-center">
+          <span class="th-label">Bloqueado até</span>
+          <span class="th-icons"><p-sortIcon field="blockedUntil"></p-sortIcon></span>
+        </div>
+      </th>
+
+      <th pSortableColumn="passwordExpiresAt">
+        <div class="th-flex text-center">
+          <span class="th-label">Senha expira</span>
+          <span class="th-icons"><p-sortIcon field="passwordExpiresAt"></p-sortIcon></span>
+        </div>
+      </th>
+
+      <th pSortableColumn="createdAt">
+        <div class="th-flex text-center">
+          <span class="th-label">Criado em</span>
+          <span class="th-icons">
+            <p-sortIcon field="createdAt"></p-sortIcon>
+            <p-columnFilter display="menu" field="createdAt" matchMode="between" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
+              <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-datepicker class="w-full" appendTo="body" [showIcon]="true" [ngModel]="value" selectionMode="range" dateFormat="dd/mm/yy" [readonlyInput]="true" (ngModelChange)="filter($event)" placeholder="Período"></p-datepicker>
+              </ng-template>
+            </p-columnFilter>
+          </span>
+        </div>
+      </th>
+
+      <th pSortableColumn="createdBy">
+        <div class="th-flex text-center">
+          <span class="th-label">Criado por</span>
+          <span class="th-icons">
+            <p-sortIcon field="createdBy"></p-sortIcon>
+            <p-columnFilter display="menu" matchMode="in" field="createdBy" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
+              <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-multiSelect class="w-full" appendTo="body" [filter]="true" [ngModel]="value" [showClear]="true" optionLabel="name" optionValue="id" [options]="usersOptions()" (onChange)="filter($event.value)" placeholder="Todos"></p-multiSelect>
+              </ng-template>
+            </p-columnFilter>
+          </span>
+        </div>
+      </th>
+
+      <th class="text-center">
+        <div class="th-flex text-center justify-content-center">
+          <span class="th-label">Ações</span>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      <td class="text-center">
+        <p-checkbox [binary]="true" [ngModel]="isRowSelected(row)" [disabled]="isRowCheckboxDisabled(row)" (onChange)="toggleRowSelection(row, !!$event.checked)"></p-checkbox>
+      </td>
+
+      <td>{{ row.userName }}</td>
+      <td>{{ row.name }}</td>
+
+      <td class="text-center">
+        <span [pTooltip]="row.document" tooltipPosition="top">{{ formatDocument(row.document) }}</span>
+      </td>
+
+      <td class="text-center">
+        <p-tag [severity]="statusSeverity(row.status)" [value]="statusLabel(row.status)" />
+      </td>
+
+      <td class="text-center">{{ row.lastLoginAt ? (row.lastLoginAt | date: 'dd/MM/yyyy HH:mm') : '-' }}</td>
+      <td class="text-center">{{ row.blockedUntil ? (row.blockedUntil | date: 'dd/MM/yyyy HH:mm') : '-' }}</td>
+      <td class="text-center">{{ row.passwordExpiresAt ? (row.passwordExpiresAt | date: 'dd/MM/yyyy') : '-' }}</td>
+      <td class="text-center">{{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '-' }}</td>
+      <td class="text-center">{{ row.createdBy?.name ?? '-' }}</td>
+
+      <td class="text-center">
+        <div class="table-actions">
+          <button pButton type="button" icon="pi pi-pencil" (click)="edit(row)" tooltipPosition="top" class="p-button-text p-button-sm" pTooltip="Editar"></button>
+
+          @if (canResendInvite(row)) {
+            <button pButton type="button" icon="pi pi-send" (click)="resendInvite(row)" tooltipPosition="top" class="p-button-text p-button-sm" pTooltip="Reenviar convite"></button>
+          }
+
+          <button
+            pButton
+            type="button"
+            icon="pi pi-check-circle"
+            tooltipPosition="top"
+            class="p-button-text p-button-sm"
+            [disabled]="!selectionPolicy.canActivate(row)"
+            pTooltip="Ativar"
+            (click)="confirmActivate(row)"
+          ></button>
+
+          <button
+            pButton
+            type="button"
+            icon="pi pi-ban"
+            tooltipPosition="top"
+            class="p-button-text p-button-sm"
+            [disabled]="!selectionPolicy.canDeactivate(row)"
+            pTooltip="Inativar"
+            (click)="confirmDeactivate(row)"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [attr.colspan]="10" class="text-center py-5 opacity-70">
+        {{ loadedOnce() ? 'Nenhum usuário encontrado.' : 'Carregando…' }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

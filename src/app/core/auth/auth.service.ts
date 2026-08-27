@@ -45,6 +45,12 @@ export class AuthService {
    *  SessionService pro contador de tempo de sessão no header. */
   readonly expiresAt = computed(() => this.tokenState()?.expiresAt ?? null);
 
+  /** Username (claim "username", ver JwtClaimsCustomizer) do usuário logado, lido direto do
+   *  payload do access token - decode client-side só pra UI (ex.: bloquear auto-desativação na
+   *  tela de Usuários), NUNCA usado como fonte de verdade de segurança (o backend valida tudo de
+   *  novo via CheckSecurity). */
+  readonly currentUsername = computed(() => this.decodeUsername(this.tokenState()?.accessToken ?? null));
+
   constructor(private readonly http: HttpClient) {}
 
   get accessToken(): string | null {
@@ -135,6 +141,18 @@ export class AuthService {
   private clearToken(): void {
     sessionStorage.removeItem(STORAGE_KEY);
     this.tokenState.set(null);
+  }
+
+  private decodeUsername(accessToken: string | null): string | null {
+    if (!accessToken) return null;
+    try {
+      const payload = accessToken.split('.')[1];
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const json = JSON.parse(atob(base64)) as { username?: unknown };
+      return typeof json.username === 'string' ? json.username : null;
+    } catch {
+      return null;
+    }
   }
 
   private readStoredToken(): StoredToken | null {

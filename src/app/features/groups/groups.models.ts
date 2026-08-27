@@ -49,8 +49,23 @@ export interface GroupInput {
   appKey?: string;
 }
 
-/** Espelha GroupsFilter (domain/filter/GroupsFilter.java) - só o campo usado pela tela. null/vazio
- *  = todos os apps (o backend não aplica o filtro). */
-export interface GroupsFilter {
+/** Estado persistido do painel de filtros avançados (localStorage). */
+export interface GroupsFiltersState {
+  name: string;
+  description: string;
   appKey: string | null;
+  createdBy: string[] | null;
+  createdAtRange: [string, string] | null;
+}
+
+/** Espelha GroupsFilter (domain/filter/GroupsFilter.java) - enviado em `advanced`. Diferente do
+ *  CardSyncWeb (onde appKey é sempre fixo internamente), aqui é um filtro real escolhido pelo
+ *  usuário no painel avançado - a tela é um painel central multi-app. */
+export interface GroupsAdvancedFilters {
+  name?: string;
+  description?: string;
+  appKey?: string;
+  createdBy?: string[];
+  createdAtFrom?: string;
+  createdAtTo?: string;
 }

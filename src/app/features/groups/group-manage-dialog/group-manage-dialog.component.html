@@ -1,0 +1,73 @@
+<p-dialog
+  [modal]="true"
+  appendTo="body"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [visible]="visible()"
+  [style]="{ width: '640px', maxWidth: '95vw' }"
+  [header]="group() ? 'Gerenciar grupo: ' + group()!.name : 'Gerenciar grupo'"
+>
+  <p-tabs value="0">
+    <p-tablist>
+      <p-tab value="0">Permissões</p-tab>
+      <p-tab value="1">Usuários</p-tab>
+    </p-tablist>
+    <p-tabpanels>
+      <p-tabpanel value="0">
+        <p-multiSelect
+          [options]="permissionOptions()"
+          [(ngModel)]="selectedPermissionIds"
+          optionLabel="description"
+          optionValue="id"
+          display="chip"
+          [filter]="true"
+          placeholder="Selecione as permissões"
+          class="w-full"
+        />
+        <div class="flex justify-content-end mt-3">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-save"
+            label="Salvar permissões"
+            class="p-button-sm"
+            [loading]="savingPermissions()"
+            (click)="savePermissions()"
+          ></button>
+        </div>
+      </p-tabpanel>
+
+      <p-tabpanel value="1">
+        <p-multiSelect
+          [options]="userOptions()"
+          [(ngModel)]="selectedUserIds"
+          optionLabel="name"
+          optionValue="id"
+          display="chip"
+          [filter]="true"
+          placeholder="Selecione os usuários"
+          class="w-full"
+        />
+        <small class="block mt-2 text-color-secondary">
+          Remover um usuário daqui só é permitido se ele continuar em outro grupo do nimbusauth.
+        </small>
+        <div class="flex justify-content-end mt-3">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-save"
+            label="Salvar usuários"
+            class="p-button-sm"
+            [loading]="savingUsers()"
+            (click)="saveUsers()"
+          ></button>
+        </div>
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+
+  <ng-template pTemplate="footer">
+    <button pButton type="button" (click)="close()" icon="pi pi-times" class="p-button-text p-button-sm" label="Fechar"></button>
+  </ng-template>
+</p-dialog>

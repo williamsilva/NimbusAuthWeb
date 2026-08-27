@@ -18,6 +18,16 @@ export const routes: Routes = [
           import('./features/apps/apps-list/apps-list.component').then((m) => m.AppsListComponent),
       },
       {
+        path: 'users',
+        loadComponent: () =>
+          import('./features/users/users-list/users-list.component').then((m) => m.UsersListComponent),
+      },
+      {
+        path: 'groups',
+        loadComponent: () =>
+          import('./features/groups/groups-list/groups-list.component').then((m) => m.GroupsListComponent),
+      },
+      {
         path: 'security-settings',
         loadComponent: () =>
           import('./features/security-settings/security-settings-page.component').then(

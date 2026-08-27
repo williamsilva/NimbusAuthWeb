@@ -1,0 +1,75 @@
+<p-confirmDialog />
+
+<div class="flex justify-content-between align-items-center mb-3">
+  <h2 class="m-0">Grupos</h2>
+  <div class="flex gap-2">
+    <input
+      pInputText
+      type="text"
+      placeholder="Buscar por nome/descrição"
+      [(ngModel)]="globalFilter"
+      (keyup.enter)="search()"
+      class="w-20rem"
+    />
+    <button pButton type="button" icon="pi pi-search" (click)="search()" class="p-button-outlined"></button>
+    <button pButton type="button" icon="pi pi-plus" label="Novo grupo" (click)="goNew()"></button>
+  </div>
+</div>
+
+<p-table
+  [value]="groups()"
+  [lazy]="true"
+  [paginator]="true"
+  [rows]="20"
+  [totalRecords]="totalRecords()"
+  [loading]="loading()"
+  (onLazyLoad)="onLazyLoad($event)"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  dataKey="id"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Nome</th>
+      <th>Descrição</th>
+      <th>Usuários</th>
+      <th>Permissões</th>
+      <th>Criado em</th>
+      <th style="width: 12rem">Ações</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      <td>{{ row.name }}</td>
+      <td>{{ row.description || '—' }}</td>
+      <td>{{ row.usersCount }}</td>
+      <td>{{ row.permissionsCount }}</td>
+      <td>{{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '—' }}</td>
+      <td>
+        <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" pTooltip="Editar" (click)="edit(row)"></button>
+        <button pButton type="button" icon="pi pi-shield" class="p-button-text p-button-sm" pTooltip="Gerenciar permissões/usuários" (click)="manage(row)"></button>
+        <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" pTooltip="Excluir" (click)="confirmDelete(row)"></button>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6" class="text-center">Nenhum grupo cadastrado ainda.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-groups-form-dialog
+  [visible]="dialogVisible()"
+  [group]="editingGroup()"
+  (visibleChange)="onDialogVisibleChange($event)"
+  (saved)="onSaved()"
+/>
+
+<app-group-manage-dialog
+  [visible]="manageDialogVisible()"
+  [group]="managingGroup()"
+  (visibleChange)="onManageDialogVisibleChange($event)"
+  (saved)="onManageSaved()"
+/>

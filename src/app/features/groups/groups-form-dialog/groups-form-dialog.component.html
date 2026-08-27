@@ -1,0 +1,37 @@
+<p-dialog
+  [modal]="true"
+  appendTo="body"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [visible]="visible()"
+  [style]="{ width: '520px', maxWidth: '95vw' }"
+  [header]="isEditMode() ? 'Editar grupo' : 'Novo grupo'"
+>
+  <form [formGroup]="form" class="flex flex-column gap-3">
+    <div class="grid formgrid">
+      <div class="col-12 field">
+        <label for="name">Nome *</label>
+        <input id="name" pInputText type="text" formControlName="name" class="w-full" />
+        @if (submitted() && form.controls.name.invalid) {
+          <small class="p-error">Obrigatório (3 a 120 caracteres).</small>
+        }
+      </div>
+
+      <div class="col-12 field">
+        <label for="description">Descrição *</label>
+        <textarea id="description" pTextarea rows="3" formControlName="description" class="w-full"></textarea>
+        @if (submitted() && form.controls.description.invalid) {
+          <small class="p-error">Obrigatório.</small>
+        }
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button pButton type="button" (click)="close()" icon="pi pi-times" class="p-button-text p-button-sm"
+            label="Cancelar" [disabled]="saving()"></button>
+    <button pButton type="button" (click)="save()" icon="pi pi-save" class="p-button-sm"
+            [loading]="saving()" label="Salvar" [disabled]="saving()"></button>
+  </ng-template>
+</p-dialog>

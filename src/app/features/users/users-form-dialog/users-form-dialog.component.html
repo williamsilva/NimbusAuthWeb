@@ -1,0 +1,74 @@
+<p-dialog
+  [modal]="true"
+  appendTo="body"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [visible]="visible()"
+  [style]="{ width: '520px', maxWidth: '95vw' }"
+  [header]="isEditMode() ? 'Editar usuário' : 'Novo usuário'"
+>
+  <form [formGroup]="form" class="flex flex-column gap-3">
+    <div class="grid formgrid">
+      <div class="col-12 field">
+        <label for="name">Nome *</label>
+        <input id="name" pInputText type="text" formControlName="name" class="w-full" />
+        @if (submitted() && form.controls.name.invalid) {
+          <small class="p-error">Obrigatório.</small>
+        }
+      </div>
+
+      <div class="col-12 field">
+        <label for="userName">E-mail (login) *</label>
+        <input id="userName" pInputText type="text" formControlName="userName" class="w-full" placeholder="usuario@exemplo.com.br" />
+        @if (submitted() && form.controls.userName.invalid) {
+          <small class="p-error">Informe um e-mail válido.</small>
+        }
+      </div>
+
+      <div class="col-12 field">
+        <label for="document">CPF/CNPJ *</label>
+        <input id="document" pInputText type="text" formControlName="document" class="w-full" placeholder="Só números" />
+        @if (submitted() && form.controls.document.invalid) {
+          <small class="p-error">Informe um CPF ou CNPJ válido.</small>
+        }
+      </div>
+
+      <div class="col-12 field">
+        <label for="groupIds">Grupos *</label>
+        <p-multiSelect
+          inputId="groupIds"
+          formControlName="groupIds"
+          [options]="groupOptions()"
+          optionLabel="name"
+          optionValue="id"
+          display="chip"
+          placeholder="Selecione ao menos 1 grupo"
+          class="w-full"
+        />
+        @if (submitted() && form.controls.groupIds.invalid) {
+          <small class="p-error">Selecione ao menos 1 grupo.</small>
+        }
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    @if (canResendInvite()) {
+      <button
+        pButton
+        type="button"
+        (click)="onResendInvite()"
+        icon="pi pi-send"
+        class="p-button-text p-button-sm"
+        label="Reenviar convite"
+        [loading]="sendingInvite()"
+        [disabled]="saving()"
+      ></button>
+    }
+    <button pButton type="button" (click)="close()" icon="pi pi-times" class="p-button-text p-button-sm"
+            label="Cancelar" [disabled]="saving()"></button>
+    <button pButton type="button" (click)="save()" icon="pi pi-save" class="p-button-sm"
+            [loading]="saving()" label="Salvar" [disabled]="saving()"></button>
+  </ng-template>
+</p-dialog>

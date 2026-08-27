@@ -1,0 +1,92 @@
+<p-confirmDialog />
+
+<div class="flex justify-content-between align-items-center mb-3">
+  <h2 class="m-0">Usuários</h2>
+  <div class="flex gap-2">
+    <p-select
+      [options]="statusOptions"
+      [(ngModel)]="statusFilter"
+      optionLabel="label"
+      optionValue="value"
+      (onChange)="search()"
+      placeholder="Status"
+      class="w-12rem"
+    />
+    <input
+      pInputText
+      type="text"
+      placeholder="Buscar por nome/e-mail/documento"
+      [(ngModel)]="globalFilter"
+      (keyup.enter)="search()"
+      class="w-20rem"
+    />
+    <button pButton type="button" icon="pi pi-search" (click)="search()" class="p-button-outlined"></button>
+    <button pButton type="button" icon="pi pi-plus" label="Novo usuário" (click)="goNew()"></button>
+  </div>
+</div>
+
+<p-table
+  [value]="users()"
+  [lazy]="true"
+  [paginator]="true"
+  [rows]="20"
+  [totalRecords]="totalRecords()"
+  [loading]="loading()"
+  (onLazyLoad)="onLazyLoad($event)"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  dataKey="id"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Nome</th>
+      <th>E-mail</th>
+      <th>CPF/CNPJ</th>
+      <th>Status</th>
+      <th>Último login</th>
+      <th>Criado em</th>
+      <th style="width: 12rem">Ações</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      <td>{{ row.name }}</td>
+      <td>{{ row.userName }}</td>
+      <td>{{ formatDocument(row.document) }}</td>
+      <td>
+        <p-tag [severity]="statusSeverity(row.status)" [value]="statusLabel(row.status)" />
+      </td>
+      <td>{{ row.lastLoginAt ? (row.lastLoginAt | date: 'dd/MM/yyyy HH:mm') : '—' }}</td>
+      <td>{{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '—' }}</td>
+      <td>
+        <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" pTooltip="Editar" (click)="edit(row)"></button>
+        @if (canResendInvite(row)) {
+          <button pButton type="button" icon="pi pi-send" class="p-button-text p-button-sm" pTooltip="Reenviar convite" (click)="resendInvite(row)"></button>
+        }
+        <button
+          pButton
+          type="button"
+          [icon]="row.status === 1 ? 'pi pi-ban' : 'pi pi-check'"
+          class="p-button-text p-button-sm"
+          [class.p-button-danger]="row.status === 1"
+          [class.p-button-success]="row.status !== 1"
+          [pTooltip]="row.status === 1 ? 'Inativar' : 'Ativar'"
+          (click)="toggleActive(row)"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="7" class="text-center">Nenhum usuário encontrado.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-users-form-dialog
+  [visible]="dialogVisible()"
+  [user]="editingUser()"
+  (visibleChange)="onDialogVisibleChange($event)"
+  (saved)="onSaved()"
+/>

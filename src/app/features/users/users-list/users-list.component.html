@@ -3,7 +3,14 @@
 <div class="flex justify-content-between align-items-center mb-3">
   <h2 class="m-0">Usuários</h2>
   <div class="flex gap-2">
-    <button pButton type="button" icon="pi pi-refresh" (click)="refresh()" class="p-button-text p-button-sm" label="Atualizar"></button>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-refresh"
+      (click)="refresh()"
+      class="p-button-text p-button-sm"
+      label="Atualizar"
+    ></button>
     <button
       pButton
       type="button"
@@ -34,18 +41,24 @@
 />
 
 <app-filters-panel
-  [collapsed]="true"
+  title="Filtrar"
   (clear)="clear()"
+  [collapsed]="true"
   (search)="search()"
   [actionsAlign]="'start'"
   [activeCount]="activeFiltersCount()"
-  title="Filtrar"
   [activeFilterGroups]="activeFilterGroups()"
 >
   <div class="grid formgrid gap-0 align-items-end">
     <div class="col-12 md:col-3 p-1">
       <p-floatLabel variant="on" class="w-full">
-        <input id="name" pInputText [value]="name()" class="w-full p-inputtext-sm" (input)="name.set(($any($event.target).value ?? '').toString())" />
+        <input
+          id="name"
+          pInputText
+          [value]="name()"
+          class="w-full p-inputtext-sm"
+          (input)="name.set(($any($event.target).value ?? '').toString())"
+        />
         <label for="name">Nome</label>
       </p-floatLabel>
     </div>
@@ -83,12 +96,13 @@
           size="small"
           class="w-full"
           appendTo="body"
-          inputId="groupAppKey"
           [showClear]="true"
           optionLabel="label"
           optionValue="value"
-          [ngModel]="groupAppKey()"
+          inputId="groupAppKey"
           [options]="appOptions()"
+          [ngModel]="groupAppKey()"
+          placeholder="Todos os apps"
           (ngModelChange)="groupAppKey.set($event ?? null)"
         ></p-select>
         <label for="groupAppKey">App</label>
@@ -272,7 +286,11 @@
             (onChange)="toggleHeaderSelection(!!$event.checked)"
           ></p-checkbox>
         } @else {
-          <i class="pi pi-info-circle opacity-70" pTooltip="Selecione uma linha primeiro" tooltipPosition="top"></i>
+          <i
+            class="pi pi-info-circle opacity-70"
+            pTooltip="Selecione uma linha primeiro"
+            tooltipPosition="top"
+          ></i>
         }
       </th>
 
@@ -281,7 +299,17 @@
           <span class="th-label">E-mail</span>
           <span class="th-icons">
             <p-sortIcon field="userName"></p-sortIcon>
-            <p-columnFilter type="text" display="menu" class="ml-auto" field="userName" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+            <p-columnFilter
+              type="text"
+              display="menu"
+              class="ml-auto"
+              field="userName"
+              matchMode="contains"
+              [useGrouping]="false"
+              [showOperator]="false"
+              [showAddButton]="false"
+              styleClass="app-colfilter"
+            ></p-columnFilter>
           </span>
         </div>
       </th>
@@ -291,7 +319,17 @@
           <span class="th-label">Nome</span>
           <span class="th-icons">
             <p-sortIcon field="name"></p-sortIcon>
-            <p-columnFilter type="text" field="name" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+            <p-columnFilter
+              type="text"
+              field="name"
+              display="menu"
+              class="ml-auto"
+              matchMode="contains"
+              [useGrouping]="false"
+              [showOperator]="false"
+              [showAddButton]="false"
+              styleClass="app-colfilter"
+            ></p-columnFilter>
           </span>
         </div>
       </th>
@@ -307,7 +345,15 @@
           <span class="th-label">CPF/CNPJ</span>
           <span class="th-icons">
             <p-sortIcon field="document"></p-sortIcon>
-            <p-columnFilter display="menu" field="document" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+            <p-columnFilter
+              display="menu"
+              field="document"
+              matchMode="contains"
+              [useGrouping]="false"
+              [showOperator]="false"
+              [showAddButton]="false"
+              styleClass="app-colfilter"
+            ></p-columnFilter>
           </span>
         </div>
       </th>
@@ -317,9 +363,27 @@
           <span class="th-label">Status</span>
           <span class="th-icons">
             <p-sortIcon field="status"></p-sortIcon>
-            <p-columnFilter field="status" display="menu" matchMode="in" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
+            <p-columnFilter
+              field="status"
+              display="menu"
+              matchMode="in"
+              [showOperator]="false"
+              [showAddButton]="false"
+              [showMatchModes]="false"
+              styleClass="app-colfilter"
+            >
               <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                <p-multiSelect class="w-full" appendTo="body" [ngModel]="value" [showClear]="true" optionLabel="label" optionValue="value" [options]="statusOptions" (onChange)="filter($event.value)" placeholder="Todos"></p-multiSelect>
+                <p-multiSelect
+                  class="w-full"
+                  appendTo="body"
+                  [ngModel]="value"
+                  [showClear]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  [options]="statusOptions"
+                  (onChange)="filter($event.value)"
+                  placeholder="Todos"
+                ></p-multiSelect>
               </ng-template>
             </p-columnFilter>
           </span>
@@ -352,9 +416,27 @@
           <span class="th-label">Criado em</span>
           <span class="th-icons">
             <p-sortIcon field="createdAt"></p-sortIcon>
-            <p-columnFilter display="menu" field="createdAt" matchMode="between" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
+            <p-columnFilter
+              display="menu"
+              field="createdAt"
+              matchMode="between"
+              [showOperator]="false"
+              [showAddButton]="false"
+              [showMatchModes]="false"
+              styleClass="app-colfilter"
+            >
               <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                <p-datepicker class="w-full" appendTo="body" [showIcon]="true" [ngModel]="value" selectionMode="range" dateFormat="dd/mm/yy" [readonlyInput]="true" (ngModelChange)="filter($event)" placeholder="Período"></p-datepicker>
+                <p-datepicker
+                  class="w-full"
+                  appendTo="body"
+                  [showIcon]="true"
+                  [ngModel]="value"
+                  selectionMode="range"
+                  dateFormat="dd/mm/yy"
+                  [readonlyInput]="true"
+                  (ngModelChange)="filter($event)"
+                  placeholder="Período"
+                ></p-datepicker>
               </ng-template>
             </p-columnFilter>
           </span>
@@ -366,9 +448,28 @@
           <span class="th-label">Criado por</span>
           <span class="th-icons">
             <p-sortIcon field="createdBy"></p-sortIcon>
-            <p-columnFilter display="menu" matchMode="in" field="createdBy" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
+            <p-columnFilter
+              display="menu"
+              matchMode="in"
+              field="createdBy"
+              [showOperator]="false"
+              [showAddButton]="false"
+              [showMatchModes]="false"
+              styleClass="app-colfilter"
+            >
               <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                <p-multiSelect class="w-full" appendTo="body" [filter]="true" [ngModel]="value" [showClear]="true" optionLabel="name" optionValue="id" [options]="usersOptions()" (onChange)="filter($event.value)" placeholder="Todos"></p-multiSelect>
+                <p-multiSelect
+                  class="w-full"
+                  appendTo="body"
+                  [filter]="true"
+                  [ngModel]="value"
+                  [showClear]="true"
+                  optionLabel="name"
+                  optionValue="id"
+                  [options]="usersOptions()"
+                  (onChange)="filter($event.value)"
+                  placeholder="Todos"
+                ></p-multiSelect>
               </ng-template>
             </p-columnFilter>
           </span>
@@ -386,7 +487,12 @@
   <ng-template pTemplate="body" let-row>
     <tr>
       <td class="text-center">
-        <p-checkbox [binary]="true" [ngModel]="isRowSelected(row)" [disabled]="isRowCheckboxDisabled(row)" (onChange)="toggleRowSelection(row, !!$event.checked)"></p-checkbox>
+        <p-checkbox
+          [binary]="true"
+          [ngModel]="isRowSelected(row)"
+          [disabled]="isRowCheckboxDisabled(row)"
+          (onChange)="toggleRowSelection(row, !!$event.checked)"
+        ></p-checkbox>
       </td>
 
       <td>{{ row.userName }}</td>
@@ -403,25 +509,49 @@
       </td>
 
       <td class="text-center">
-        <span [pTooltip]="row.document" tooltipPosition="top">{{ formatDocument(row.document) }}</span>
+        <span [pTooltip]="row.document" tooltipPosition="top">{{
+          formatDocument(row.document)
+        }}</span>
       </td>
 
       <td class="text-center">
         <p-tag [severity]="statusSeverity(row.status)" [value]="statusLabel(row.status)" />
       </td>
 
-      <td class="text-center">{{ row.lastLoginAt ? (row.lastLoginAt | date: 'dd/MM/yyyy HH:mm') : '-' }}</td>
-      <td class="text-center">{{ row.blockedUntil ? (row.blockedUntil | date: 'dd/MM/yyyy HH:mm') : '-' }}</td>
-      <td class="text-center">{{ row.passwordExpiresAt ? (row.passwordExpiresAt | date: 'dd/MM/yyyy') : '-' }}</td>
+      <td class="text-center">
+        {{ row.lastLoginAt ? (row.lastLoginAt | date: 'dd/MM/yyyy HH:mm') : '-' }}
+      </td>
+      <td class="text-center">
+        {{ row.blockedUntil ? (row.blockedUntil | date: 'dd/MM/yyyy HH:mm') : '-' }}
+      </td>
+      <td class="text-center">
+        {{ row.passwordExpiresAt ? (row.passwordExpiresAt | date: 'dd/MM/yyyy') : '-' }}
+      </td>
       <td class="text-center">{{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '-' }}</td>
       <td class="text-center">{{ row.createdBy?.name ?? '-' }}</td>
 
       <td class="text-center">
         <div class="table-actions">
-          <button pButton type="button" icon="pi pi-pencil" (click)="edit(row)" tooltipPosition="top" class="p-button-text p-button-sm" pTooltip="Editar"></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-pencil"
+            (click)="edit(row)"
+            tooltipPosition="top"
+            class="p-button-text p-button-sm"
+            pTooltip="Editar"
+          ></button>
 
           @if (canResendInvite(row)) {
-            <button pButton type="button" icon="pi pi-send" (click)="resendInvite(row)" tooltipPosition="top" class="p-button-text p-button-sm" pTooltip="Reenviar convite"></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-send"
+              (click)="resendInvite(row)"
+              tooltipPosition="top"
+              class="p-button-text p-button-sm"
+              pTooltip="Reenviar convite"
+            ></button>
           }
 
           <button

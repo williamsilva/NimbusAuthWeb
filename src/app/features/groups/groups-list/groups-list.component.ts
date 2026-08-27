@@ -93,7 +93,10 @@ export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, Gr
   readonly loading = signal(false);
   readonly loadedOnce = signal(false);
   readonly usersOptions = signal<UserOption[]>([]);
-  readonly appOptions = signal<{ label: string; value: string | null }[]>([{ label: 'Todos os apps', value: null }]);
+  // Sem opção "Todos os apps" com value:null aqui de propósito - misturada às opções reais, o
+  // p-floatLabel acha o campo vazio (value null) mas o select mostra o texto dela mesmo assim,
+  // sobrepondo com o label flutuante. "Todos os apps" vira o placeholder do p-select no HTML.
+  readonly appOptions = signal<{ label: string; value: string }[]>([]);
   private readonly appNames = signal<Record<string, string>>({});
 
   readonly name = signal('');
@@ -139,7 +142,7 @@ export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, Gr
     this.usersApi.optionsFilter().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((opts) => this.usersOptions.set(opts));
     this.appsApi.search('', 0, 100).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result) => {
       const apps = result._embedded?.content ?? [];
-      this.appOptions.set([{ label: 'Todos os apps', value: null }, ...apps.map((a) => ({ label: a.name, value: a.appKey }))]);
+      this.appOptions.set(apps.map((a) => ({ label: a.name, value: a.appKey })));
       this.appNames.set(Object.fromEntries(apps.map((a) => [a.appKey, a.name])));
     });
     this.initStatefulList();

@@ -18,14 +18,27 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { buildListQuery } from '../../../core/list-base/list-query.builder';
-import { readArrayFilterValues, readDateRangeFilterValue, readSingleFilterValue } from '../../../core/list-base/table-filter-readers';
+import {
+  readArrayFilterValues,
+  readDateRangeFilterValue,
+  readSingleFilterValue,
+} from '../../../core/list-base/table-filter-readers';
 import { StatefulListPage } from '../../../core/list-base/stateful-list-page';
 import { BulkActionListPage } from '../../../core/list-base/bulk-action-list-page';
 import { STATE_KEY } from '../../../core/state-key.constants';
-import { ActiveFilterItem, FiltersPanelComponent } from '../../../shared/filters-panel/filters-panel.component';
+import {
+  ActiveFilterItem,
+  FiltersPanelComponent,
+} from '../../../shared/filters-panel/filters-panel.component';
 import { CpfCnpjMaskDirective } from '../../../shared/directives/cpf-cnpj-mask.directive';
 import { AppsApiService } from '../../apps/apps.api.service';
-import { statusCode, statusLabel, statusName, statusSeverity, USER_STATUS_OPTIONS } from '../user-status';
+import {
+  statusCode,
+  statusLabel,
+  statusName,
+  statusSeverity,
+  USER_STATUS_OPTIONS,
+} from '../user-status';
 import { BulkUserActionMode, UsersSelectionPolicy } from '../users-selection.policy';
 import { UsersApiService } from '../users.api.service';
 import { UserModel, UserOption, UsersAdvancedFilters, UsersFiltersState } from '../users.models';
@@ -70,7 +83,8 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   protected readonly confirm = inject(ConfirmationService);
   protected readonly selectionPolicy = inject(UsersSelectionPolicy);
 
-  override rows = Number(localStorage.getItem(this.tableRowsKey())) || StatefulListPage.DEFAULT_ROWS;
+  override rows =
+    Number(localStorage.getItem(this.tableRowsKey())) || StatefulListPage.DEFAULT_ROWS;
 
   private readonly bulk = new (class extends BulkActionListPage {
     protected override readonly toast = inject(MessageService);
@@ -88,7 +102,10 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   readonly loading = signal(false);
   readonly loadedOnce = signal(false);
   readonly usersOptions = signal<UserOption[]>([]);
-  readonly appOptions = signal<{ label: string; value: string | null }[]>([{ label: 'Todos os apps', value: null }]);
+  // Sem opção "Todos os apps" com value:null aqui de propósito - misturada às opções reais, o
+  // p-floatLabel acha o campo vazio (value null) mas o select mostra o texto dela mesmo assim,
+  // sobrepondo com o label flutuante. "Todos os apps" vira o placeholder do p-select no HTML.
+  readonly appOptions = signal<{ label: string; value: string }[]>([]);
   private readonly appNames = signal<Record<string, string>>({});
 
   readonly name = signal('');
@@ -133,13 +150,19 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     return selectedCount > 0 && selectedCount < eligible.length;
   });
 
-  readonly selectedActivatableRows = computed(() => this.selectedRows().filter((row) => this.selectionPolicy.modeForRow(row) === 'activate'));
+  readonly selectedActivatableRows = computed(() =>
+    this.selectedRows().filter((row) => this.selectionPolicy.modeForRow(row) === 'activate'),
+  );
   readonly selectedDeactivatableRows = computed(() =>
     this.selectedRows().filter((row) => this.selectionPolicy.modeForRow(row) === 'deactivate'),
   );
 
-  readonly canActivateSelected = computed(() => this.selectionMode() === 'activate' && this.selectedActivatableRows().length > 0);
-  readonly canDeactivateSelected = computed(() => this.selectionMode() === 'deactivate' && this.selectedDeactivatableRows().length > 0);
+  readonly canActivateSelected = computed(
+    () => this.selectionMode() === 'activate' && this.selectedActivatableRows().length > 0,
+  );
+  readonly canDeactivateSelected = computed(
+    () => this.selectionMode() === 'deactivate' && this.selectedDeactivatableRows().length > 0,
+  );
 
   readonly selectionModeLabel = computed(() => {
     const mode = this.selectionMode();
@@ -182,28 +205,46 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     }
 
     if (create?.[0] && create?.[1]) {
-      items.push({ label: 'Criado em', value: `${this.formatDate(create[0])} – ${this.formatDate(create[1])}` });
+      items.push({
+        label: 'Criado em',
+        value: `${this.formatDate(create[0])} – ${this.formatDate(create[1])}`,
+      });
     }
     if (last?.[0] && last?.[1]) {
-      items.push({ label: 'Último login', value: `${this.formatDate(last[0])} – ${this.formatDate(last[1])}` });
+      items.push({
+        label: 'Último login',
+        value: `${this.formatDate(last[0])} – ${this.formatDate(last[1])}`,
+      });
     }
     if (blocked?.[0] && blocked?.[1]) {
-      items.push({ label: 'Bloqueado até', value: `${this.formatDate(blocked[0])} – ${this.formatDate(blocked[1])}` });
+      items.push({
+        label: 'Bloqueado até',
+        value: `${this.formatDate(blocked[0])} – ${this.formatDate(blocked[1])}`,
+      });
     }
     if (expires?.[0] && expires?.[1]) {
-      items.push({ label: 'Senha expira em', value: `${this.formatDate(expires[0])} – ${this.formatDate(expires[1])}` });
+      items.push({
+        label: 'Senha expira em',
+        value: `${this.formatDate(expires[0])} – ${this.formatDate(expires[1])}`,
+      });
     }
 
     return items;
   });
 
   ngOnInit(): void {
-    this.api.optionsFilter().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((opts) => this.usersOptions.set(opts));
-    this.appsApi.search('', 0, 100).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result) => {
-      const apps = result._embedded?.content ?? [];
-      this.appOptions.set([{ label: 'Todos os apps', value: null }, ...apps.map((a) => ({ label: a.name, value: a.appKey }))]);
-      this.appNames.set(Object.fromEntries(apps.map((a) => [a.appKey, a.name])));
-    });
+    this.api
+      .optionsFilter()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((opts) => this.usersOptions.set(opts));
+    this.appsApi
+      .search('', 0, 100)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        const apps = result._embedded?.content ?? [];
+        this.appOptions.set(apps.map((a) => ({ label: a.name, value: a.appKey })));
+        this.appNames.set(Object.fromEntries(apps.map((a) => [a.appKey, a.name])));
+      });
     this.initStatefulList();
   }
 
@@ -245,9 +286,17 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   }
 
   resendInvite(row: UserModel): void {
-    this.api.resendInvite(row.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => this.toast.add({ severity: 'success', summary: 'Convite reenviado', detail: `E-mail reenviado para ${row.userName}.` }),
-    });
+    this.api
+      .resendInvite(row.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () =>
+          this.toast.add({
+            severity: 'success',
+            summary: 'Convite reenviado',
+            detail: `E-mail reenviado para ${row.userName}.`,
+          }),
+      });
   }
 
   isRowCheckboxDisabled(row: UserModel): boolean {
@@ -299,11 +348,17 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   }
 
   activate(row: UserModel): void {
-    this.bulk.executeAction(this.api.activate(row.id).pipe(tap(() => this.reloadAfterAction())), `"${row.name}" foi ativado.`);
+    this.bulk.executeAction(
+      this.api.activate(row.id).pipe(tap(() => this.reloadAfterAction())),
+      `"${row.name}" foi ativado.`,
+    );
   }
 
   deactivate(row: UserModel): void {
-    this.bulk.executeAction(this.api.deactivate(row.id).pipe(tap(() => this.reloadAfterAction())), `"${row.name}" foi inativado.`);
+    this.bulk.executeAction(
+      this.api.deactivate(row.id).pipe(tap(() => this.reloadAfterAction())),
+      `"${row.name}" foi inativado.`,
+    );
   }
 
   confirmActivate(row: UserModel): void {
@@ -445,10 +500,14 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
       status: status?.length ? status.map((c) => statusName(c) ?? '') : null,
       groupAppKey: this.groupAppKey(),
       createdBy: this.createdBy()?.length ? this.createdBy() : null,
-      lastLoginAtRange: last?.[0] && last?.[1] ? [last[0].toISOString(), last[1].toISOString()] : null,
-      createdAtRange: create?.[0] && create?.[1] ? [create[0].toISOString(), create[1].toISOString()] : null,
-      blockedUntilRange: blocked?.[0] && blocked?.[1] ? [blocked[0].toISOString(), blocked[1].toISOString()] : null,
-      passwordExpiresAtRange: expires?.[0] && expires?.[1] ? [expires[0].toISOString(), expires[1].toISOString()] : null,
+      lastLoginAtRange:
+        last?.[0] && last?.[1] ? [last[0].toISOString(), last[1].toISOString()] : null,
+      createdAtRange:
+        create?.[0] && create?.[1] ? [create[0].toISOString(), create[1].toISOString()] : null,
+      blockedUntilRange:
+        blocked?.[0] && blocked?.[1] ? [blocked[0].toISOString(), blocked[1].toISOString()] : null,
+      passwordExpiresAtRange:
+        expires?.[0] && expires?.[1] ? [expires[0].toISOString(), expires[1].toISOString()] : null,
     };
   }
 
@@ -456,15 +515,33 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     this.name.set(s.name ?? '');
     this.userName.set(s.userName ?? '');
     this.document.set(s.document ?? '');
-    this.status.set(s.status?.length ? (s.status.map((n) => statusCode(n)).filter((c): c is number => c !== null)) : null);
+    this.status.set(
+      s.status?.length
+        ? s.status.map((n) => statusCode(n)).filter((c): c is number => c !== null)
+        : null,
+    );
     this.groupAppKey.set(s.groupAppKey ?? null);
     this.createdBy.set(s.createdBy ?? null);
 
-    this.lastLoginAtRange.set(s.lastLoginAtRange?.[0] && s.lastLoginAtRange?.[1] ? [new Date(s.lastLoginAtRange[0]), new Date(s.lastLoginAtRange[1])] : null);
-    this.createdAtRange.set(s.createdAtRange?.[0] && s.createdAtRange?.[1] ? [new Date(s.createdAtRange[0]), new Date(s.createdAtRange[1])] : null);
-    this.blockedUntilRange.set(s.blockedUntilRange?.[0] && s.blockedUntilRange?.[1] ? [new Date(s.blockedUntilRange[0]), new Date(s.blockedUntilRange[1])] : null);
+    this.lastLoginAtRange.set(
+      s.lastLoginAtRange?.[0] && s.lastLoginAtRange?.[1]
+        ? [new Date(s.lastLoginAtRange[0]), new Date(s.lastLoginAtRange[1])]
+        : null,
+    );
+    this.createdAtRange.set(
+      s.createdAtRange?.[0] && s.createdAtRange?.[1]
+        ? [new Date(s.createdAtRange[0]), new Date(s.createdAtRange[1])]
+        : null,
+    );
+    this.blockedUntilRange.set(
+      s.blockedUntilRange?.[0] && s.blockedUntilRange?.[1]
+        ? [new Date(s.blockedUntilRange[0]), new Date(s.blockedUntilRange[1])]
+        : null,
+    );
     this.passwordExpiresAtRange.set(
-      s.passwordExpiresAtRange?.[0] && s.passwordExpiresAtRange?.[1] ? [new Date(s.passwordExpiresAtRange[0]), new Date(s.passwordExpiresAtRange[1])] : null,
+      s.passwordExpiresAtRange?.[0] && s.passwordExpiresAtRange?.[1]
+        ? [new Date(s.passwordExpiresAtRange[0]), new Date(s.passwordExpiresAtRange[1])]
+        : null,
     );
 
     this.applyDefaultAdvancedFiltersIfEmpty();
@@ -481,7 +558,11 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
       userName: this.userName().trim() || undefined,
       document: this.document().replace(/\D+/g, '') || undefined,
       groupAppKey: this.groupAppKey() || undefined,
-      status: this.status()?.length ? (this.status()!.map((c) => statusName(c)).filter((n): n is NonNullable<typeof n> => !!n)) : undefined,
+      status: this.status()?.length
+        ? this.status()!
+            .map((c) => statusName(c))
+            .filter((n): n is NonNullable<typeof n> => !!n)
+        : undefined,
       createdBy: this.createdBy()?.length ? this.createdBy()! : undefined,
       createdAtFrom: create?.[0] ? create[0].toISOString() : undefined,
       createdAtTo: create?.[1] ? create[1].toISOString() : undefined,
@@ -494,7 +575,9 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     };
   }
 
-  protected override mapTableFiltersToActiveItems(filters: Record<string, unknown> | null): ActiveFilterItem[] {
+  protected override mapTableFiltersToActiveItems(
+    filters: Record<string, unknown> | null,
+  ): ActiveFilterItem[] {
     const items: ActiveFilterItem[] = [];
 
     const userName = readSingleFilterValue(filters, 'userName');
@@ -508,16 +591,31 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
 
     const statuses = readArrayFilterValues(filters, 'status');
     if (statuses.length) {
-      items.push({ label: 'Status', value: statuses.map((v) => statusLabel(Number(v))).join(', ') });
+      items.push({
+        label: 'Status',
+        value: statuses.map((v) => statusLabel(Number(v))).join(', '),
+      });
     }
 
-    const lastLoginAt = readDateRangeFilterValue(filters, 'lastLoginAt', this.formatDate.bind(this));
+    const lastLoginAt = readDateRangeFilterValue(
+      filters,
+      'lastLoginAt',
+      this.formatDate.bind(this),
+    );
     if (lastLoginAt) items.push({ label: 'Último login', value: lastLoginAt });
 
-    const blockedUntil = readDateRangeFilterValue(filters, 'blockedUntil', this.formatDate.bind(this));
+    const blockedUntil = readDateRangeFilterValue(
+      filters,
+      'blockedUntil',
+      this.formatDate.bind(this),
+    );
     if (blockedUntil) items.push({ label: 'Bloqueado até', value: blockedUntil });
 
-    const passwordExpiresAt = readDateRangeFilterValue(filters, 'passwordExpiresAt', this.formatDate.bind(this));
+    const passwordExpiresAt = readDateRangeFilterValue(
+      filters,
+      'passwordExpiresAt',
+      this.formatDate.bind(this),
+    );
     if (passwordExpiresAt) items.push({ label: 'Senha expira em', value: passwordExpiresAt });
 
     const createdAt = readDateRangeFilterValue(filters, 'createdAt', this.formatDate.bind(this));
@@ -528,31 +626,39 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
       const labels = this.usersOptions()
         .filter((option) => createdByValues.includes(option.id))
         .map((option) => option.name);
-      items.push({ label: 'Criado por', value: (labels.length ? labels : createdByValues).join(', ') });
+      items.push({
+        label: 'Criado por',
+        value: (labels.length ? labels : createdByValues).join(', '),
+      });
     }
 
     return items;
   }
 
-  protected override loadPage(query: ReturnType<typeof buildListQuery<UsersAdvancedFilters>>): void {
+  protected override loadPage(
+    query: ReturnType<typeof buildListQuery<UsersAdvancedFilters>>,
+  ): void {
     this.clearSelection();
     this.loadPageInternal(query);
   }
 
   private loadPageInternal(query: ReturnType<typeof buildListQuery<UsersAdvancedFilters>>): void {
     this.loading.set(true);
-    this.api.search(query).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (result) => {
-        this.users.set(result._embedded?.content ?? []);
-        this.totalRecords.set(result.page.totalElements);
-        this.loading.set(false);
-        this.loadedOnce.set(true);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.loadedOnce.set(true);
-      },
-    });
+    this.api
+      .search(query)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.users.set(result._embedded?.content ?? []);
+          this.totalRecords.set(result.page.totalElements);
+          this.loading.set(false);
+          this.loadedOnce.set(true);
+        },
+        error: () => {
+          this.loading.set(false);
+          this.loadedOnce.set(true);
+        },
+      });
   }
 
   private reloadAfterAction(): void {

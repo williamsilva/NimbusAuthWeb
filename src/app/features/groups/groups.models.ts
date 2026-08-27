@@ -30,6 +30,7 @@ export interface GroupModel {
   id: string;
   name: string;
   description: string | null;
+  appKey: string;
   usersCount: number;
   permissionsCount: number;
   createdAt: string | null;
@@ -38,14 +39,18 @@ export interface GroupModel {
   permissions: PermissionOption[];
 }
 
-/** appKey NÃO vai no body - o backend resolve pela claim app_key do client autenticado (ver
- *  GroupsController#resolveAppKey), sempre 'nimbusauth' pro client nimbusauth-web. */
+/** appKey só é considerado na CRIAÇÃO, e só tem efeito vindo do client nimbusauth-web (painel
+ *  central de administração) - qualquer outro client (cardsync-bff, ...) ignora este campo e cria
+ *  sempre no próprio app (ver GroupsController#resolveAppKey). Imutável depois de criado - nunca
+ *  enviado no update. */
 export interface GroupInput {
   name: string;
   description: string;
+  appKey?: string;
 }
 
-/** Espelha GroupsFilter (domain/filter/GroupsFilter.java) - só o campo usado pela tela. */
+/** Espelha GroupsFilter (domain/filter/GroupsFilter.java) - só o campo usado pela tela. null/vazio
+ *  = todos os apps (o backend não aplica o filtro). */
 export interface GroupsFilter {
-  appKey: string;
+  appKey: string | null;
 }

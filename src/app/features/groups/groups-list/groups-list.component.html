@@ -3,6 +3,15 @@
 <div class="flex justify-content-between align-items-center mb-3">
   <h2 class="m-0">Grupos</h2>
   <div class="flex gap-2">
+    <p-select
+      [options]="appOptions()"
+      [(ngModel)]="appFilter"
+      optionLabel="label"
+      optionValue="value"
+      (onChange)="search()"
+      placeholder="App"
+      class="w-12rem"
+    />
     <input
       pInputText
       type="text"
@@ -30,6 +39,7 @@
   <ng-template pTemplate="header">
     <tr>
       <th>Nome</th>
+      <th>App</th>
       <th>Descrição</th>
       <th>Usuários</th>
       <th>Permissões</th>
@@ -41,6 +51,7 @@
   <ng-template pTemplate="body" let-row>
     <tr>
       <td>{{ row.name }}</td>
+      <td><p-tag severity="secondary" [value]="appName(row.appKey)" /></td>
       <td>{{ row.description || '—' }}</td>
       <td>{{ row.usersCount }}</td>
       <td>{{ row.permissionsCount }}</td>
@@ -55,7 +66,7 @@
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="6" class="text-center">Nenhum grupo cadastrado ainda.</td>
+      <td colspan="7" class="text-center">Nenhum grupo cadastrado ainda.</td>
     </tr>
   </ng-template>
 </p-table>

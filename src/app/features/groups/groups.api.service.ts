@@ -11,14 +11,15 @@ export class GroupsApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${API.base}/v1/groups`;
 
-  search(globalFilter: string, page: number, size: number): Observable<HalPagedResponse<GroupModel>> {
+  /** appKey null = todos os apps (painel central) - ver GroupsFilter no backend. */
+  search(globalFilter: string, page: number, size: number, appKey: string | null): Observable<HalPagedResponse<GroupModel>> {
     const body: ListQueryBody<GroupsFilter> = {
       page,
       size,
       sort: [{ field: 'name', order: 1 }],
       tableFilters: {},
       globalFilter: globalFilter || null,
-      advanced: { appKey: APP_KEY },
+      advanced: { appKey: appKey || null },
     };
     return this.http.post<HalPagedResponse<GroupModel>>(`${this.baseUrl}/search`, body);
   }
@@ -56,9 +57,9 @@ export class GroupsApiService {
     return this.http.get<GroupOption[]>(`${this.baseUrl}/options`, { params });
   }
 
-  /** Catálogo de permissões do app nimbusauth, para a aba "Permissões" do diálogo de grupo. */
-  permissionOptions(): Observable<PermissionOption[]> {
-    const params = new HttpParams().set('appKey', APP_KEY);
+  /** Catálogo de permissões do app do grupo sendo gerenciado, para a aba "Permissões" do diálogo. */
+  permissionOptions(appKey: string): Observable<PermissionOption[]> {
+    const params = new HttpParams().set('appKey', appKey);
     return this.http.get<PermissionOption[]>(`${API.base}/v1/permissions/options`, { params });
   }
 

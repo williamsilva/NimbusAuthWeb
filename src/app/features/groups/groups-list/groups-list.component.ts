@@ -7,16 +7,20 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { TableModule, TableLazyLoadEvent } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 
+import { AppsApiService } from '../../apps/apps.api.service';
 import { GroupsApiService } from '../groups.api.service';
 import { GroupModel } from '../groups.models';
 import { GroupsFormDialogComponent } from '../groups-form-dialog/groups-form-dialog.component';
 import { GroupManageDialogComponent } from '../group-manage-dialog/group-manage-dialog.component';
 
-/** Tela única de gestão de Grupos, restrita ao app nimbusauth (GroupsApiService#search já fixa
- *  appKey). Criar/editar só nome+descrição (dialog simples); permissões e usuários do grupo são
+/** Tela única de gestão de Grupos - painel central, lista/gerencia grupos de TODOS os apps
+ *  cadastrados (cardsync/nimbusflow/nimbusnovax/nimbusauth), com filtro por app. Criar/editar só
+ *  nome+descrição+app (dialog simples, app imutável depois); permissões e usuários do grupo são
  *  geridos num dialog à parte (group-manage-dialog). */
 @Component({
   standalone: true,
@@ -28,7 +32,9 @@ import { GroupManageDialogComponent } from '../group-manage-dialog/group-manage-
     DatePipe,
     FormsModule,
     InputTextModule,
+    SelectModule,
     TableModule,
+    TagModule,
     TooltipModule,
     GroupsFormDialogComponent,
     GroupManageDialogComponent,
@@ -36,6 +42,7 @@ import { GroupManageDialogComponent } from '../group-manage-dialog/group-manage-
 })
 export class GroupsListComponent implements OnInit {
   private readonly api = inject(GroupsApiService);
+  private readonly appsApi = inject(AppsApiService);
   private readonly toast = inject(MessageService);
   private readonly confirm = inject(ConfirmationService);
   private readonly destroyRef = inject(DestroyRef);
@@ -44,6 +51,9 @@ export class GroupsListComponent implements OnInit {
   readonly totalRecords = signal(0);
   readonly loading = signal(false);
   readonly globalFilter = signal('');
+  readonly appFilter = signal<string | null>(null);
+  readonly appOptions = signal<{ label: string; value: string | null }[]>([{ label: 'Todos os apps', value: null }]);
+  private readonly appNames = signal<Record<string, string>>({});
 
   readonly dialogVisible = signal(false);
   readonly editingGroup = signal<GroupModel | null>(null);
@@ -55,7 +65,16 @@ export class GroupsListComponent implements OnInit {
   private lastSize = 20;
 
   ngOnInit(): void {
+    this.appsApi.search('', 0, 100).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result) => {
+      const apps = result._embedded?.content ?? [];
+      this.appOptions.set([{ label: 'Todos os apps', value: null }, ...apps.map((a) => ({ label: a.name, value: a.appKey }))]);
+      this.appNames.set(Object.fromEntries(apps.map((a) => [a.appKey, a.name])));
+    });
     this.load(0, this.lastSize);
+  }
+
+  appName(appKey: string): string {
+    return this.appNames()[appKey] ?? appKey;
   }
 
   onLazyLoad(event: TableLazyLoadEvent): void {
@@ -73,7 +92,7 @@ export class GroupsListComponent implements OnInit {
     this.lastSize = size;
     this.loading.set(true);
 
-    this.api.search(this.globalFilter(), page, size).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.api.search(this.globalFilter(), page, size, this.appFilter()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {
         this.groups.set(result._embedded?.content ?? []);
         this.totalRecords.set(result.page.totalElements);

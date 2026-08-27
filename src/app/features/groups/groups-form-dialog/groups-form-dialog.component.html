@@ -10,6 +10,30 @@
 >
   <form [formGroup]="form" class="flex flex-column gap-3">
     <div class="grid formgrid">
+      @if (isEditMode()) {
+        <div class="col-12 field">
+          <label>App</label>
+          <div><span class="p-tag">{{ group()!.appKey }}</span></div>
+          <small>Não pode ser alterado depois de criado.</small>
+        </div>
+      } @else {
+        <div class="col-12 field">
+          <label for="appKey">App *</label>
+          <p-select
+            inputId="appKey"
+            formControlName="appKey"
+            [options]="appOptions()"
+            optionLabel="name"
+            optionValue="appKey"
+            placeholder="Selecione o app"
+            class="w-full"
+          />
+          @if (submitted() && form.controls.appKey.invalid) {
+            <small class="p-error">Obrigatório.</small>
+          }
+        </div>
+      }
+
       <div class="col-12 field">
         <label for="name">Nome *</label>
         <input id="name" pInputText type="text" formControlName="name" class="w-full" />

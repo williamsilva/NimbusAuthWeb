@@ -45,7 +45,6 @@ export class GroupManageDialogComponent {
   private lastLoadedId: string | null = null;
 
   constructor() {
-    this.api.permissionOptions().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((opts) => this.permissionOptions.set(opts));
     this.api.userOptions().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((opts) => this.userOptions.set(opts));
 
     effect(() => {
@@ -61,6 +60,10 @@ export class GroupManageDialogComponent {
       this.lastLoadedId = group.id;
       this.selectedPermissionIds.set((group.permissions ?? []).map((p) => p.id));
       this.selectedUserIds.set((group.users ?? []).map((u) => u.id));
+
+      // Catálogo de permissões é compartilhado entre apps - precisa ser do app DESTE grupo, não
+      // fixo em nimbusauth (painel central gerencia grupos de qualquer app).
+      this.api.permissionOptions(group.appKey).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((opts) => this.permissionOptions.set(opts));
     });
   }
 

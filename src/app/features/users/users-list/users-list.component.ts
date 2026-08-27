@@ -17,7 +17,6 @@ import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { APP_KEY } from '../../../core/api/api.config';
 import { buildListQuery } from '../../../core/list-base/list-query.builder';
 import { readArrayFilterValues, readDateRangeFilterValue, readSingleFilterValue } from '../../../core/list-base/table-filter-readers';
 import { StatefulListPage } from '../../../core/list-base/stateful-list-page';
@@ -25,6 +24,7 @@ import { BulkActionListPage } from '../../../core/list-base/bulk-action-list-pag
 import { STATE_KEY } from '../../../core/state-key.constants';
 import { ActiveFilterItem, FiltersPanelComponent } from '../../../shared/filters-panel/filters-panel.component';
 import { CpfCnpjMaskDirective } from '../../../shared/directives/cpf-cnpj-mask.directive';
+import { AppsApiService } from '../../apps/apps.api.service';
 import { statusCode, statusLabel, statusName, statusSeverity, USER_STATUS_OPTIONS } from '../user-status';
 import { BulkUserActionMode, UsersSelectionPolicy } from '../users-selection.policy';
 import { UsersApiService } from '../users.api.service';
@@ -33,9 +33,10 @@ import { UsersFormDialogComponent } from '../users-form-dialog/users-form-dialog
 
 /** Tela de gestão de Usuários (globais - compartilhados entre cardsync/nimbusflow/nimbusnovax/
  *  nimbusauth), no mesmo padrão de lista avançada do CardSyncWeb (StatefulListPage +
- *  cs-filters-panel + p-columnFilter por coluna, ver core/list-base). Lista sempre restrita a quem
- *  tem grupo do app nimbusauth (groupAppKey fixo em buildAdvancedFilters). Sem exclusão - não
- *  existe endpoint de delete de usuário no backend, só ativar/inativar. */
+ *  cs-filters-panel + p-columnFilter por coluna, ver core/list-base). Painel central: lista TODOS
+ *  os usuários por padrão (groupAppKey só entra no filtro se o usuário escolher um app específico
+ *  no painel avançado - mesmo tratamento já dado à tela de Grupos). Sem exclusão - não existe
+ *  endpoint de delete de usuário no backend, só ativar/inativar. */
 @Component({
   standalone: true,
   selector: 'app-users-list',
@@ -63,6 +64,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   @ViewChild('dt') private dt?: Table;
 
   private readonly api = inject(UsersApiService);
+  private readonly appsApi = inject(AppsApiService);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly toast = inject(MessageService);
   protected readonly confirm = inject(ConfirmationService);
@@ -86,11 +88,14 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   readonly loading = signal(false);
   readonly loadedOnce = signal(false);
   readonly usersOptions = signal<UserOption[]>([]);
+  readonly appOptions = signal<{ label: string; value: string | null }[]>([{ label: 'Todos os apps', value: null }]);
+  private readonly appNames = signal<Record<string, string>>({});
 
   readonly name = signal('');
   readonly userName = signal('');
   readonly document = signal('');
   readonly status = signal<number[] | null>(this.defaultStatus());
+  readonly groupAppKey = signal<string | null>(null);
   readonly createdBy = signal<string[] | null>(null);
   readonly createdAtRange = signal<Date[] | null>(null);
   readonly lastLoginAtRange = signal<Date[] | null>(null);
@@ -161,6 +166,9 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     if (userName) items.push({ label: 'E-mail', value: userName });
     if (document) items.push({ label: 'Documento', value: document });
 
+    const appKey = this.groupAppKey();
+    if (appKey) items.push({ label: 'App', value: this.appName(appKey) });
+
     if (statuses?.length) {
       items.push({ label: 'Status', value: statuses.map((v) => statusLabel(v)).join(', ') });
     }
@@ -191,7 +199,16 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
 
   ngOnInit(): void {
     this.api.optionsFilter().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((opts) => this.usersOptions.set(opts));
+    this.appsApi.search('', 0, 100).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result) => {
+      const apps = result._embedded?.content ?? [];
+      this.appOptions.set([{ label: 'Todos os apps', value: null }, ...apps.map((a) => ({ label: a.name, value: a.appKey }))]);
+      this.appNames.set(Object.fromEntries(apps.map((a) => [a.appKey, a.name])));
+    });
     this.initStatefulList();
+  }
+
+  appName(appKey: string): string {
+    return this.appNames()[appKey] ?? appKey;
   }
 
   clear(): void {
@@ -398,6 +415,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     this.userName.set('');
     this.document.set('');
     this.status.set(null);
+    this.groupAppKey.set(null);
     this.createdBy.set(null);
     this.createdAtRange.set(null);
     this.lastLoginAtRange.set(null);
@@ -419,6 +437,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
       userName: this.userName(),
       document: this.document(),
       status: status?.length ? status.map((c) => statusName(c) ?? '') : null,
+      groupAppKey: this.groupAppKey(),
       createdBy: this.createdBy()?.length ? this.createdBy() : null,
       lastLoginAtRange: last?.[0] && last?.[1] ? [last[0].toISOString(), last[1].toISOString()] : null,
       createdAtRange: create?.[0] && create?.[1] ? [create[0].toISOString(), create[1].toISOString()] : null,
@@ -432,6 +451,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     this.userName.set(s.userName ?? '');
     this.document.set(s.document ?? '');
     this.status.set(s.status?.length ? (s.status.map((n) => statusCode(n)).filter((c): c is number => c !== null)) : null);
+    this.groupAppKey.set(s.groupAppKey ?? null);
     this.createdBy.set(s.createdBy ?? null);
 
     this.lastLoginAtRange.set(s.lastLoginAtRange?.[0] && s.lastLoginAtRange?.[1] ? [new Date(s.lastLoginAtRange[0]), new Date(s.lastLoginAtRange[1])] : null);
@@ -454,7 +474,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
       name: this.name().trim() || undefined,
       userName: this.userName().trim() || undefined,
       document: this.document().replace(/\D+/g, '') || undefined,
-      groupAppKey: APP_KEY,
+      groupAppKey: this.groupAppKey() || undefined,
       status: this.status()?.length ? (this.status()!.map((c) => statusName(c)).filter((n): n is NonNullable<typeof n> => !!n)) : undefined,
       createdBy: this.createdBy()?.length ? this.createdBy()! : undefined,
       createdAtFrom: create?.[0] ? create[0].toISOString() : undefined,

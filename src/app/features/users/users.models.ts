@@ -50,6 +50,7 @@ export interface UsersFiltersState {
   userName: string;
   document: string;
   status: string[] | null;
+  groupAppKey: string | null;
   createdBy: string[] | null;
   createdAtRange: [string, string] | null;
   lastLoginAtRange: [string, string] | null;

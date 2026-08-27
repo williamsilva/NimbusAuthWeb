@@ -4,9 +4,9 @@ import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Va
 
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { FieldsetModule } from 'primeng/fieldset';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { TabsModule } from 'primeng/tabs';
 import { TextareaModule } from 'primeng/textarea';
 import { MessageService } from 'primeng/api';
 
@@ -25,7 +25,7 @@ function splitList(value: string): string[] {
   selector: 'app-security-settings-page',
   templateUrl: './security-settings-page.component.html',
   styleUrl: './security-settings-page.component.scss',
-  imports: [ButtonModule, CheckboxModule, FieldsetModule, InputNumberModule, InputTextModule, TextareaModule, ReactiveFormsModule],
+  imports: [ButtonModule, CheckboxModule, InputNumberModule, InputTextModule, TabsModule, TextareaModule, ReactiveFormsModule],
 })
 export class SecuritySettingsPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);

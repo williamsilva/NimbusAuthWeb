@@ -4,7 +4,16 @@
   <p>Carregando…</p>
 } @else {
   <form [formGroup]="form" class="settings-form">
-    <p-fieldset legend="Senha">
+    <p-tabs value="0">
+      <p-tablist>
+        <p-tab value="0">Senha</p-tab>
+        <p-tab value="1">Bloqueio (lockout)</p-tab>
+        <p-tab value="2">Rate-limit por IP</p-tab>
+        <p-tab value="3">Tokens</p-tab>
+        <p-tab value="4">Outros</p-tab>
+      </p-tablist>
+      <p-tabpanels>
+        <p-tabpanel value="0">
       <div formGroupName="password">
         <div class="settings-grid">
           <div class="field">
@@ -223,9 +232,9 @@
           </div>
         </div>
       </div>
-    </p-fieldset>
+        </p-tabpanel>
 
-    <p-fieldset legend="Bloqueio por tentativas (lockout)">
+        <p-tabpanel value="1">
       <div formGroupName="lockout">
         <div class="flex gap-4 mb-3">
           <div class="field-checkbox">
@@ -291,9 +300,9 @@
           (click)="addRule()"
         ></button>
       </div>
-    </p-fieldset>
+        </p-tabpanel>
 
-    <p-fieldset legend="Rate-limit de login por IP">
+        <p-tabpanel value="2">
       <div class="settings-grid" formGroupName="ipRateLimit">
         <div class="field-checkbox">
           <p-checkbox
@@ -324,9 +333,9 @@
           />
         </div>
       </div>
-    </p-fieldset>
+        </p-tabpanel>
 
-    <p-fieldset legend="Tokens">
+        <p-tabpanel value="3">
       <div class="settings-grid" formGroupName="token">
         <div class="field">
           <label for="sessionTimeout">Timeout de sessão (login)</label>
@@ -364,9 +373,9 @@
           />
         </div>
       </div>
-    </p-fieldset>
+        </p-tabpanel>
 
-    <p-fieldset legend="Outros">
+        <p-tabpanel value="4">
       <div class="settings-grid settings-grid--wide">
         <div class="field field--full">
           <label for="loginDefaultTarget">URL padrão pós-login (fallback)</label>
@@ -391,7 +400,9 @@
           />
         </div>
       </div>
-    </p-fieldset>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
 
     <div>
       <button

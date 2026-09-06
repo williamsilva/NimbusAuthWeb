@@ -20,7 +20,7 @@
 <app-filters-panel
   [collapsed]="true"
   (clear)="clear()"
-  (search)="search()"
+  (searchClick)="search()"
   [actionsAlign]="'start'"
   [activeFilterGroups]="activeFilterGroups()"
   [activeCount]="activeFiltersCount()"
@@ -223,9 +223,12 @@
         <td class="text-center">{{ row.permissionsCount ?? '-' }}</td>
         <td class="text-center">
           <div class="table-actions">
-            <button pButton type="button" icon="pi pi-pencil" (click)="edit(row)" class="p-button-text p-button-sm" pTooltip="Editar" tooltipPosition="top"></button>
-            <button pButton type="button" icon="pi pi-shield" (click)="manage(row)" class="p-button-text p-button-sm" pTooltip="Gerenciar permissões/usuários" tooltipPosition="top"></button>
-            <button pButton type="button" icon="pi pi-trash" (click)="confirmDelete(row)" class="p-button-text p-button-sm p-button-danger" pTooltip="Excluir" tooltipPosition="top"></button>
+            <button pButton type="button" icon="pi pi-pencil" (click)="edit(row)" class="p-button-text p-button-sm" pTooltip="Editar"
+            aria-label="Editar" tooltipPosition="top"></button>
+            <button pButton type="button" icon="pi pi-shield" (click)="manage(row)" class="p-button-text p-button-sm" pTooltip="Gerenciar permissões/usuários"
+            aria-label="Gerenciar permissões/usuários" tooltipPosition="top"></button>
+            <button pButton type="button" icon="pi pi-trash" (click)="confirmDelete(row)" class="p-button-text p-button-sm p-button-danger" pTooltip="Excluir"
+            aria-label="Excluir" tooltipPosition="top"></button>
           </div>
         </td>
       </tr>

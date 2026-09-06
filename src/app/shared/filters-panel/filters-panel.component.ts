@@ -38,7 +38,7 @@ export class FiltersPanelComponent {
   @Input() actionsAlign: 'start' | 'center' | 'end' = 'end';
 
   @Output() clear = new EventEmitter<void>();
-  @Output() search = new EventEmitter<void>();
+  @Output() searchClick = new EventEmitter<void>();
 
   private hideTimer: ReturnType<typeof setTimeout> | null = null;
 

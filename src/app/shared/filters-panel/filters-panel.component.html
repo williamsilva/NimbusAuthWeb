@@ -19,6 +19,7 @@
           <span>{{ activeCount }} {{ activeCount === 1 ? 'filtro ativo' : 'filtros ativos' }}</span>
 
           <!-- não pode fechar o painel ao interagir com o ícone/popover -->
+          <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- só existe pra impedir que o clique propague pro header (que togglaria o painel); abrir o popover é via hover -->
           <i
             class="pi pi-info-circle text-primary cursor-pointer"
             (click)="$event.stopPropagation()"
@@ -27,6 +28,7 @@
           ></i>
 
           <p-popover #op styleClass="app-filter-popover">
+            <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- só existe pra impedir que o clique dentro do popover propague pro header, não é uma interação em si -->
             <div
               class="flex flex-column p-0"
               style="min-width: 280px"
@@ -44,6 +46,7 @@
                         <div class="text-xs flex align-items-center">
                           <span class="text-color-secondary"> {{ f.label }}: </span>
 
+                          <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- só existe pra impedir que o clique no valor propague pro header, não é uma interação em si -->
                           <span
                             class="text-color font-medium ml-1 truncate-value"
                             [pTooltip]="f.value"
@@ -62,6 +65,7 @@
                   <div class="px-2 py-1 text-xs flex align-items-center">
                     <span class="text-color-secondary"> {{ f.label }}: </span>
 
+                    <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -- só existe pra impedir que o clique no valor propague pro header, não é uma interação em si -->
                     <span
                       class="text-color font-medium ml-1 truncate-value"
                       [pTooltip]="f.value"
@@ -95,7 +99,7 @@
     [class.justify-content-center]="actionsAlign === 'center'"
   >
     <!-- botões não devem togglar o painel -->
-    <button pButton type="button" class="p-button-sm" label="Buscar" (click)="$event.stopPropagation(); search.emit()"></button>
+    <button pButton type="button" class="p-button-sm" label="Buscar" (click)="$event.stopPropagation(); searchClick.emit()"></button>
 
     <button
       pButton

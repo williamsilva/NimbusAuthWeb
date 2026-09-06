@@ -44,7 +44,7 @@
   title="Filtrar"
   (clear)="clear()"
   [collapsed]="true"
-  (search)="search()"
+  (searchClick)="search()"
   [actionsAlign]="'start'"
   [activeCount]="activeFiltersCount()"
   [activeFilterGroups]="activeFilterGroups()"
@@ -539,6 +539,7 @@
             tooltipPosition="top"
             class="p-button-text p-button-sm"
             pTooltip="Editar"
+            aria-label="Editar"
           ></button>
 
           @if (canResendInvite(row)) {
@@ -550,6 +551,7 @@
               tooltipPosition="top"
               class="p-button-text p-button-sm"
               pTooltip="Reenviar convite"
+              aria-label="Reenviar convite"
             ></button>
           }
 
@@ -561,6 +563,7 @@
             class="p-button-text p-button-sm"
             [disabled]="!selectionPolicy.canActivate(row)"
             pTooltip="Ativar"
+            aria-label="Ativar"
             (click)="confirmActivate(row)"
           ></button>
 
@@ -572,6 +575,7 @@
             class="p-button-text p-button-sm"
             [disabled]="!selectionPolicy.canDeactivate(row)"
             pTooltip="Inativar"
+            aria-label="Inativar"
             (click)="confirmDeactivate(row)"
           ></button>
         </div>

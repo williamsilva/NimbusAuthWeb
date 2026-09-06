@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ViewChild, computed, inject, signal, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -57,7 +57,7 @@ import { GroupManageDialogComponent } from '../group-manage-dialog/group-manage-
     GroupManageDialogComponent,
   ],
 })
-export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, GroupsAdvancedFilters> {
+export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, GroupsAdvancedFilters> implements OnInit {
   @ViewChild('dt') private dt?: Table;
 
   private readonly api = inject(GroupsApiService);
@@ -75,6 +75,8 @@ export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, Gr
     constructor(private readonly host: GroupsListComponent) {
       super();
     }
+    // essa lista não usa seleção em lote, então não há nada pra limpar.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     protected override clearSelection(): void {}
 
     confirmDelete(row: GroupModel): void {

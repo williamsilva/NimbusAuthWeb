@@ -1,4 +1,4 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, signal, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
@@ -34,6 +34,8 @@ const RETURN_TO_KEY = 'nimbusauth_web_return_to';
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly http = inject(HttpClient);
+
   private readonly tokenState = signal<StoredToken | null>(this.readStoredToken());
 
   readonly isAuthenticated = computed(() => {
@@ -49,9 +51,9 @@ export class AuthService {
    *  payload do access token - decode client-side só pra UI (ex.: bloquear auto-desativação na
    *  tela de Usuários), NUNCA usado como fonte de verdade de segurança (o backend valida tudo de
    *  novo via CheckSecurity). */
-  readonly currentUsername = computed(() => this.decodeUsername(this.tokenState()?.accessToken ?? null));
-
-  constructor(private readonly http: HttpClient) {}
+  readonly currentUsername = computed(() =>
+    this.decodeUsername(this.tokenState()?.accessToken ?? null),
+  );
 
   get accessToken(): string | null {
     const token = this.tokenState();
@@ -102,9 +104,13 @@ export class AuthService {
       .set('code_verifier', verifier);
 
     const response = await firstValueFrom(
-      this.http.post<TokenResponse>(new URL('/oauth2/token', environment.auth.issuer).toString(), body.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      }),
+      this.http.post<TokenResponse>(
+        new URL('/oauth2/token', environment.auth.issuer).toString(),
+        body.toString(),
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        },
+      ),
     );
 
     this.storeToken(response);

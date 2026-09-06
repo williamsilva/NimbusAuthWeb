@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ViewChild, computed, inject, signal, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -73,7 +73,7 @@ import { UsersFormDialogComponent } from '../users-form-dialog/users-form-dialog
     UsersFormDialogComponent,
   ],
 })
-export class UsersListComponent extends StatefulListPage<UsersFiltersState, UsersAdvancedFilters> {
+export class UsersListComponent extends StatefulListPage<UsersFiltersState, UsersAdvancedFilters> implements OnInit {
   @ViewChild('dt') private dt?: Table;
 
   private readonly api = inject(UsersApiService);

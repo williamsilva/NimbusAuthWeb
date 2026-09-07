@@ -1,0 +1,15 @@
+# Sobe o frontend do NimbusAuth sozinho (build de produção servido via nginx dentro do
+# container). Uso normal é via ../docker-compose.yml (na raiz do produto, "include:" deste
+# arquivo + do NimbusAuthServer/docker-compose.yml) - rode daqui direto só se já tiver o backend
+# rodando de outro jeito e só quiser o frontend em container.
+services:
+  nimbus-auth-web:
+    build:
+      context: .
+    ports:
+      # 4200 - bate com o client "nimbusauth-web" (redirect-uri/post-logout/allowed-origin)
+      # seedado em application-dev.yml do NimbusAuthServer, e com environment.ts (apiBaseUrl/
+      # auth.* apontando pra localhost:9090/localhost:4200). ATENCAO: 4200 e tambem a porta
+      # nativa do "ng serve" do CardSyncWeb - nao suba os dois ao mesmo tempo (o container
+      # nginx e o "ng serve" nativo vao disputar a mesma porta do host).
+      - "127.0.0.1:4200:80"

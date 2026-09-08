@@ -16,4 +16,11 @@ export const STATE_KEY = {
       ROWS: { V1: 'nimbusauth.groups.table.rows.v1' },
     },
   },
+  EMAIL_LOG: {
+    FILTERS: { V1: 'nimbusauth.email-log.filters.v1' },
+    TABLE: {
+      STATE: { V1: 'nimbusauth.email-log.table.state.v1' },
+      ROWS: { V1: 'nimbusauth.email-log.table.rows.v1' },
+    },
+  },
 } as const;

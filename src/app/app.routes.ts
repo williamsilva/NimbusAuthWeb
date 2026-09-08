@@ -41,6 +41,13 @@ export const routes: Routes = [
             (m) => m.EmailSettingsPageComponent,
           ),
       },
+      {
+        path: 'email-log',
+        loadComponent: () =>
+          import('./features/email-log/email-log-list/email-log-list.component').then(
+            (m) => m.EmailLogListComponent,
+          ),
+      },
       { path: '**', redirectTo: 'apps' },
     ],
   },

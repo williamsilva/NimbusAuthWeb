@@ -63,26 +63,49 @@ export class AuthService {
     return token.accessToken;
   }
 
+  /** Trava contra chamada concorrente de startLogin() - acessar "/" dispara um redirect interno
+   *  de rota (redirectTo: 'apps'), e isso conta como uma NOVA navegação pro Angular Router, que
+   *  reavalia o guard da rota pai de novo. Como startLogin() é assíncrono (gera o code challenge
+   *  via Web Crypto antes de gravar no sessionStorage), duas chamadas em sequência rápida podiam
+   *  se intercalar e sobrescrever o verifier/state uma da outra - só um dos dois pares realmente
+   *  batia com o redirect que o navegador completava, causando "Estado OAuth2 inválido ou
+   *  expirado" no callback (reproduzido só ao acessar "/", nunca "/apps" direto, que não passa
+   *  por esse redirect). Setada SINCRONAMENTE, antes de qualquer await, pra fechar a janela de
+   *  corrida por completo. */
+  private loginRedirectInFlight = false;
+
   /** Redireciona (navegação de página inteira, não XHR) pro /oauth2/authorize do NimbusAuth. */
   async startLogin(returnTo: string): Promise<void> {
-    const verifier = generateRandomString();
-    const state = generateRandomString(32);
-    const challenge = await generateCodeChallenge(verifier);
+    if (this.loginRedirectInFlight) {
+      return;
+    }
+    this.loginRedirectInFlight = true;
 
-    sessionStorage.setItem(VERIFIER_KEY, verifier);
-    sessionStorage.setItem(STATE_KEY, state);
-    sessionStorage.setItem(RETURN_TO_KEY, returnTo || '/');
+    try {
+      const verifier = generateRandomString();
+      const state = generateRandomString(32);
+      const challenge = await generateCodeChallenge(verifier);
 
-    const url = new URL('/oauth2/authorize', environment.auth.issuer);
-    url.searchParams.set('response_type', 'code');
-    url.searchParams.set('client_id', environment.auth.clientId);
-    url.searchParams.set('scope', environment.auth.scope);
-    url.searchParams.set('redirect_uri', environment.auth.redirectUri);
-    url.searchParams.set('state', state);
-    url.searchParams.set('code_challenge', challenge);
-    url.searchParams.set('code_challenge_method', 'S256');
+      sessionStorage.setItem(VERIFIER_KEY, verifier);
+      sessionStorage.setItem(STATE_KEY, state);
+      sessionStorage.setItem(RETURN_TO_KEY, returnTo || '/');
 
-    window.location.assign(url.toString());
+      const url = new URL('/oauth2/authorize', environment.auth.issuer);
+      url.searchParams.set('response_type', 'code');
+      url.searchParams.set('client_id', environment.auth.clientId);
+      url.searchParams.set('scope', environment.auth.scope);
+      url.searchParams.set('redirect_uri', environment.auth.redirectUri);
+      url.searchParams.set('state', state);
+      url.searchParams.set('code_challenge', challenge);
+      url.searchParams.set('code_challenge_method', 'S256');
+
+      window.location.assign(url.toString());
+    } catch (err) {
+      // Falha antes de sair da página (ex.: Web Crypto indisponível) - libera a trava, senão um
+      // retry do usuário ficaria travado pra sempre nesta mesma carga de página.
+      this.loginRedirectInFlight = false;
+      throw err;
+    }
   }
 
   /** Chamado pela rota /auth-callback - troca o code pelo token e devolve a rota pra onde voltar. */

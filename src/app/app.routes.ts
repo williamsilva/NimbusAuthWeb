@@ -48,6 +48,11 @@ export const routes: Routes = [
             (m) => m.EmailLogListComponent,
           ),
       },
+      {
+        path: 'backup',
+        loadComponent: () =>
+          import('./features/backup/backup-page.component').then((m) => m.BackupPageComponent),
+      },
       { path: '**', redirectTo: 'apps' },
     ],
   },

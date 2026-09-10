@@ -1,0 +1,11 @@
+.status-icon {
+  margin-right: 0.5rem;
+
+  &--ok {
+    color: var(--p-green-500);
+  }
+
+  &--off {
+    color: var(--p-red-500);
+  }
+}

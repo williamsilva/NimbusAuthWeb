@@ -1,11 +1,16 @@
 /** Espelha EmailLogStatusEnum/EmailLogEventTypeEnum (NimbusCommonsLegacy, compartilhado entre
  *  todos os apps Nimbus). Código (número) é o formato usado por EmailLogModel.status/eventType
  *  vindo como STRING do nome do enum (Jackson serializa enum pelo nome, sem @JsonValue custom) e
- *  pelo p-columnFilter (whitelist enumAsIntegerCode - EmailLogAllowedFields). Só PASSWORD_RESET e
- *  FIRST_PASSWORD fazem sentido aqui - CHARGEBACK_DETECTED é exclusivo do CardSync (nunca gerado
- *  pelo NimbusAuthServer), omitido das opções de filtro pra não confundir. */
+ *  pelo p-columnFilter (whitelist enumAsIntegerCode - EmailLogAllowedFields). Só PASSWORD_RESET,
+ *  FIRST_PASSWORD e BACKUP_NOTIFICATION fazem sentido aqui - CHARGEBACK_DETECTED é exclusivo do
+ *  CardSync (nunca gerado pelo NimbusAuthServer), omitido das opções de filtro pra não confundir. */
 export type EmailLogStatusName = 'NULL' | 'SENT' | 'FAILED';
-export type EmailLogEventTypeName = 'NULL' | 'PASSWORD_RESET' | 'FIRST_PASSWORD' | 'CHARGEBACK_DETECTED';
+export type EmailLogEventTypeName =
+  | 'NULL'
+  | 'PASSWORD_RESET'
+  | 'FIRST_PASSWORD'
+  | 'CHARGEBACK_DETECTED'
+  | 'BACKUP_NOTIFICATION';
 
 const STATUS_NAME_TO_CODE: Record<EmailLogStatusName, number> = { NULL: 0, SENT: 1, FAILED: 2 };
 const EVENT_TYPE_NAME_TO_CODE: Record<EmailLogEventTypeName, number> = {
@@ -13,6 +18,7 @@ const EVENT_TYPE_NAME_TO_CODE: Record<EmailLogEventTypeName, number> = {
   PASSWORD_RESET: 1,
   FIRST_PASSWORD: 2,
   CHARGEBACK_DETECTED: 3,
+  BACKUP_NOTIFICATION: 4,
 };
 
 const STATUS_LABELS: Record<number, string> = { 1: 'Enviado', 2: 'Falhou' };
@@ -22,6 +28,7 @@ const EVENT_TYPE_LABELS: Record<number, string> = {
   1: 'Reset de senha',
   2: 'Primeiro acesso',
   3: 'Chargeback detectado',
+  4: 'Notificação de backup',
 };
 
 export function statusCode(name: string): number | null {
@@ -54,10 +61,12 @@ export function eventTypeLabel(code: number | null | undefined): string {
   return (code != null && EVENT_TYPE_LABELS[code]) || '—';
 }
 
-/** Só os 2 eventos que o NimbusAuthServer de fato gera (convite de 1º acesso / reset de senha). */
+/** Só os eventos que o NimbusAuthServer de fato gera (convite de 1º acesso, reset de senha,
+ *  notificação de backup). */
 export const EMAIL_LOG_EVENT_TYPE_OPTIONS = [
   { label: 'Reset de senha', value: 1 },
   { label: 'Primeiro acesso', value: 2 },
+  { label: 'Notificação de backup', value: 4 },
 ];
 
 export const EMAIL_LOG_STATUS_OPTIONS = [

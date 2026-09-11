@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { API } from '../../core/api/api.config';
-import { BackupExecution, GoogleDriveStatus } from './backup.models';
+import { BackupExecution, BackupNotificationRecipient, GoogleDriveStatus } from './backup.models';
 
 @Injectable({ providedIn: 'root' })
 export class BackupApiService {
@@ -20,5 +20,17 @@ export class BackupApiService {
 
   googleDriveStatus(): Observable<GoogleDriveStatus> {
     return this.http.get<GoogleDriveStatus>(`${this.baseUrl}/google-drive/status`);
+  }
+
+  notificationRecipients(): Observable<BackupNotificationRecipient[]> {
+    return this.http.get<BackupNotificationRecipient[]>(`${this.baseUrl}/notification-recipients`);
+  }
+
+  addNotificationRecipient(email: string): Observable<BackupNotificationRecipient> {
+    return this.http.post<BackupNotificationRecipient>(`${this.baseUrl}/notification-recipients`, { email });
+  }
+
+  deleteNotificationRecipient(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/notification-recipients/${id}`);
   }
 }

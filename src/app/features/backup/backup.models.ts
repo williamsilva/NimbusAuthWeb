@@ -14,3 +14,9 @@ export interface GoogleDriveStatus {
   connectedAt: string | null;
   connectedByUsername: string | null;
 }
+
+export interface BackupNotificationRecipient {
+  id: string;
+  email: string;
+  createdAt: string;
+}

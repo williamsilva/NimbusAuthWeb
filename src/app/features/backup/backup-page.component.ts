@@ -1,19 +1,21 @@
 import { DatePipe } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FieldsetModule } from 'primeng/fieldset';
+import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
 import { environment } from '../../../environments/environment';
 import { BackupApiService } from './backup.api.service';
 import { formatBytes, statusLabel, statusSeverity } from './backup-status';
-import { BackupExecution, GoogleDriveStatus } from './backup.models';
+import { BackupExecution, BackupNotificationRecipient, GoogleDriveStatus } from './backup.models';
 
 /** Tela única (não é lista CRUD) - status da conexão com o Google Drive, disparo manual do
  *  backup centralizado e histórico das últimas execuções. O disparo é assíncrono no backend
@@ -24,7 +26,7 @@ import { BackupExecution, GoogleDriveStatus } from './backup.models';
   selector: 'app-backup-page',
   templateUrl: './backup-page.component.html',
   styleUrl: './backup-page.component.scss',
-  imports: [ButtonModule, ConfirmDialogModule, DatePipe, FieldsetModule, TableModule, TagModule],
+  imports: [ButtonModule, ConfirmDialogModule, DatePipe, FieldsetModule, FormsModule, InputTextModule, TableModule, TagModule],
   providers: [ConfirmationService],
 })
 export class BackupPageComponent implements OnInit {
@@ -45,6 +47,11 @@ export class BackupPageComponent implements OnInit {
   readonly driveStatus = signal<GoogleDriveStatus | null>(null);
   readonly executions = signal<BackupExecution[]>([]);
 
+  readonly loadingRecipients = signal(true);
+  readonly savingRecipient = signal(false);
+  readonly recipients = signal<BackupNotificationRecipient[]>([]);
+  readonly newRecipientEmail = signal('');
+
   private pollTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
@@ -59,6 +66,7 @@ export class BackupPageComponent implements OnInit {
     this.handleGoogleDriveCallback();
     this.loadDriveStatus();
     this.loadExecutions();
+    this.loadRecipients();
   }
 
   // O redirect de volta de /backup/google-drive/{connect,disconnect} traz o resultado como
@@ -182,5 +190,69 @@ export class BackupPageComponent implements OnInit {
       return 'Agendado';
     }
     return triggeredBy || '-';
+  }
+
+  private loadRecipients(): void {
+    this.loadingRecipients.set(true);
+    this.api
+      .notificationRecipients()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (list) => {
+          this.recipients.set(list);
+          this.loadingRecipients.set(false);
+        },
+        error: () => this.loadingRecipients.set(false),
+      });
+  }
+
+  protected addRecipient(): void {
+    const email = this.newRecipientEmail().trim();
+    if (!email) {
+      return;
+    }
+
+    this.savingRecipient.set(true);
+    this.api
+      .addNotificationRecipient(email)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.savingRecipient.set(false);
+          this.newRecipientEmail.set('');
+          this.toast.add({ severity: 'success', summary: 'Destinatário adicionado', detail: email });
+          this.loadRecipients();
+        },
+        error: (err) => {
+          this.savingRecipient.set(false);
+          this.toast.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: err?.error?.message || 'Não foi possível adicionar o destinatário.',
+          });
+        },
+      });
+  }
+
+  protected removeRecipient(recipient: BackupNotificationRecipient): void {
+    this.confirmationService.confirm({
+      header: 'Remover destinatário',
+      message: `Remover "${recipient.email}" da lista de notificações de backup?`,
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.api
+          .deleteNotificationRecipient(recipient.id)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => {
+              this.toast.add({ severity: 'success', summary: 'Removido', detail: recipient.email });
+              this.loadRecipients();
+            },
+            error: () => {
+              this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível remover o destinatário.' });
+            },
+          });
+      },
+    });
   }
 }

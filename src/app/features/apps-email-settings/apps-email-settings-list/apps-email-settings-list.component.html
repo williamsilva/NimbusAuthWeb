@@ -1,0 +1,46 @@
+<h2 class="mb-3">E-mail dos Apps</h2>
+<p class="text-color-secondary mb-3">
+  Config de e-mail (SMTP/Brevo/remetente) de cada app satélite - lida e gravada remotamente no
+  próprio app. A configuração de e-mail do NimbusAuth fica em "Configurações de E-mail".
+</p>
+
+<p-table [value]="apps()" [loading]="loading()" dataKey="id">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Nome</th>
+      <th>appKey</th>
+      <th style="width: 8rem">Ações</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      <td>{{ row.name }}</td>
+      <td>{{ row.appKey }}</td>
+      <td>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-pencil"
+          class="p-button-text p-button-sm"
+          pTooltip="Editar config de e-mail"
+          aria-label="Editar config de e-mail"
+          (click)="edit(row)"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="3" class="text-center">Nenhum app satélite cadastrado ainda.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-apps-email-settings-dialog
+  [visible]="dialogVisible()"
+  [appKey]="editingApp()?.appKey ?? null"
+  [appName]="editingApp()?.name ?? null"
+  (visibleChange)="onDialogVisibleChange($event)"
+/>

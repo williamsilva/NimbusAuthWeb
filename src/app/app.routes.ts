@@ -42,6 +42,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'apps-email-settings',
+        loadComponent: () =>
+          import('./features/apps-email-settings/apps-email-settings-list/apps-email-settings-list.component').then(
+            (m) => m.AppsEmailSettingsListComponent,
+          ),
+      },
+      {
         path: 'email-log',
         loadComponent: () =>
           import('./features/email-log/email-log-list/email-log-list.component').then(

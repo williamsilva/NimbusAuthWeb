@@ -1,5 +1,6 @@
 import { Component, DestroyRef, ViewChild, computed, inject, signal, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { tap } from 'rxjs';
@@ -63,6 +64,7 @@ export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, Gr
   private readonly api = inject(GroupsApiService);
   private readonly usersApi = inject(UsersApiService);
   private readonly appsApi = inject(AppsApiService);
+  private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly toast = inject(MessageService);
   protected readonly confirm = inject(ConfirmationService);
@@ -147,7 +149,20 @@ export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, Gr
       this.appOptions.set(apps.map((a) => ({ label: a.name, value: a.appKey })));
       this.appNames.set(Object.fromEntries(apps.map((a) => [a.appKey, a.name])));
     });
-    this.initStatefulList();
+
+    const appKeyFromQuery = this.route.snapshot.queryParamMap.get('appKey');
+    if (appKeyFromQuery) {
+      // Veio do link "Segurança > Grupos" de outro app (CardSync/NimbusFlow/...) - ignora o
+      // filtro persistido desta tela e força o appKey da query string ("olhar fresco", sem
+      // restaurar paginação/ordenação salva). Não persiste esse filtro (sem persistFilters()).
+      this.resetFilters();
+      this.appKey.set(appKeyFromQuery);
+      this.searchedOnce = true;
+      this.loadFirstPage();
+      this.skipNextLazy = true;
+    } else {
+      this.initStatefulList();
+    }
   }
 
   appName(appKey: string): string {

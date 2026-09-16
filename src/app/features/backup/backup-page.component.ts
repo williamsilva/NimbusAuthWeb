@@ -1,36 +1,55 @@
 import { DatePipe } from '@angular/common';
+import { HttpResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
 import { environment } from '../../../environments/environment';
+import { AppsApiService } from '../apps/apps.api.service';
+import { AppModel } from '../apps/apps.models';
 import { BackupApiService } from './backup.api.service';
 import { formatBytes, statusLabel, statusSeverity } from './backup-status';
 import { BackupExecution, BackupNotificationRecipient, GoogleDriveStatus } from './backup.models';
 
 /** Tela única (não é lista CRUD) - status da conexão com o Google Drive, disparo manual do
- *  backup centralizado e histórico das últimas execuções. O disparo é assíncrono no backend
- *  (BackupAsyncExecutor) - por isso o polling automático enquanto houver uma execução RUNNING,
- *  pra não obrigar o usuário a ficar clicando "Atualizar" pra ver o resultado. */
+ *  backup centralizado, backup avulso de 1 app só e histórico das últimas execuções. O disparo
+ *  consolidado é assíncrono no backend (BackupAsyncExecutor) - por isso o polling automático
+ *  enquanto houver uma execução RUNNING, pra não obrigar o usuário a ficar clicando "Atualizar"
+ *  pra ver o resultado. Já o backup avulso (BackupController.executeSingle) é síncrono - baixa
+ *  na hora, não entra no histórico de execuções (não é agendado nem consolidado). */
 @Component({
   standalone: true,
   selector: 'app-backup-page',
   templateUrl: './backup-page.component.html',
   styleUrl: './backup-page.component.scss',
-  imports: [ButtonModule, ConfirmDialogModule, DatePipe, FieldsetModule, FormsModule, InputTextModule, TableModule, TagModule],
+  imports: [
+    ButtonModule,
+    CheckboxModule,
+    ConfirmDialogModule,
+    DatePipe,
+    FieldsetModule,
+    FormsModule,
+    InputTextModule,
+    SelectModule,
+    TableModule,
+    TagModule,
+  ],
   providers: [ConfirmationService],
 })
 export class BackupPageComponent implements OnInit {
   private readonly api = inject(BackupApiService);
+  private readonly appsApi = inject(AppsApiService);
   private readonly toast = inject(MessageService);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly destroyRef = inject(DestroyRef);
@@ -52,6 +71,12 @@ export class BackupPageComponent implements OnInit {
   readonly recipients = signal<BackupNotificationRecipient[]>([]);
   readonly newRecipientEmail = signal('');
 
+  readonly loadingApps = signal(true);
+  readonly apps = signal<AppModel[]>([]);
+  readonly selectedAppKey = signal<string | null>(null);
+  readonly includeFiles = signal(true);
+  readonly generatingSingle = signal(false);
+
   private pollTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
@@ -67,6 +92,7 @@ export class BackupPageComponent implements OnInit {
     this.loadDriveStatus();
     this.loadExecutions();
     this.loadRecipients();
+    this.loadApps();
   }
 
   // O redirect de volta de /backup/google-drive/{connect,disconnect} traz o resultado como
@@ -232,6 +258,59 @@ export class BackupPageComponent implements OnInit {
           });
         },
       });
+  }
+
+  private loadApps(): void {
+    this.loadingApps.set(true);
+    this.appsApi
+      .search('', 0, 100)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          const content = result._embedded?.content ?? [];
+          this.apps.set(content.filter((app) => app.appKey !== 'nimbusauth'));
+          this.loadingApps.set(false);
+        },
+        error: () => this.loadingApps.set(false),
+      });
+  }
+
+  protected generateSingle(): void {
+    const appKey = this.selectedAppKey();
+    if (!appKey) {
+      return;
+    }
+
+    this.generatingSingle.set(true);
+    this.api
+      .executeSingle(appKey, this.includeFiles())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.generatingSingle.set(false);
+          this.downloadBlob(response, `backup-${appKey}.zip`);
+        },
+        error: () => {
+          this.generatingSingle.set(false);
+          this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível gerar o backup deste app.' });
+        },
+      });
+  }
+
+  private downloadBlob(response: HttpResponse<Blob>, fallbackFilename: string): void {
+    const blob = response.body;
+    if (!blob) return;
+
+    const contentDisposition = response.headers.get('Content-Disposition') ?? '';
+    const filenameMatch = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(contentDisposition);
+    const filename = filenameMatch?.[1] ?? fallbackFilename;
+
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.click();
+    URL.revokeObjectURL(url);
   }
 
   protected removeRecipient(recipient: BackupNotificationRecipient): void {

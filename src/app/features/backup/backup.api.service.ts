@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -32,5 +32,13 @@ export class BackupApiService {
 
   deleteNotificationRecipient(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/notification-recipients/${id}`);
+  }
+
+  executeSingle(appKey: string, includeFiles: boolean): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.baseUrl}/apps/${appKey}/execute`, {
+      params: { includeFiles },
+      responseType: 'blob',
+      observe: 'response',
+    });
   }
 }

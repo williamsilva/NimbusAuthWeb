@@ -33,6 +33,35 @@
   <button pButton type="button" icon="pi pi-play" label="Executar backup agora" [loading]="executing()" (click)="executeNow()"></button>
 </p-fieldset>
 
+<p-fieldset legend="Backup avulso" class="mt-3">
+  <p class="mb-3">Gera e baixa na hora o backup de um único app do ecossistema, sem esperar o processo consolidado.</p>
+  <div class="flex align-items-center gap-3 flex-wrap">
+    <p-select
+      [options]="apps()"
+      optionLabel="name"
+      optionValue="appKey"
+      placeholder="Selecione um app"
+      class="w-15rem"
+      [loading]="loadingApps()"
+      [ngModel]="selectedAppKey()"
+      (ngModelChange)="selectedAppKey.set($event)"
+    />
+    <div class="flex align-items-center gap-2">
+      <p-checkbox [binary]="true" inputId="includeFiles" [ngModel]="includeFiles()" (ngModelChange)="includeFiles.set($event)" />
+      <label for="includeFiles">Incluir arquivos</label>
+    </div>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-download"
+      label="Gerar agora"
+      [loading]="generatingSingle()"
+      [disabled]="!selectedAppKey()"
+      (click)="generateSingle()"
+    ></button>
+  </div>
+</p-fieldset>
+
 <p-fieldset legend="Notificações por e-mail" class="mt-3">
   <p class="mb-3">Ao fim de cada execução (manual ou agendada), um e-mail com o status é enviado pra estes destinatários.</p>
 

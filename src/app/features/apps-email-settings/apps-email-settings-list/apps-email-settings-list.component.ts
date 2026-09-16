@@ -1,5 +1,6 @@
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -24,6 +25,7 @@ import { AppsEmailSettingsDialogComponent } from '../apps-email-settings-dialog/
 })
 export class AppsEmailSettingsListComponent implements OnInit {
   private readonly api = inject(AppsApiService);
+  private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly apps = signal<AppModel[]>([]);
@@ -43,9 +45,19 @@ export class AppsEmailSettingsListComponent implements OnInit {
         const content = result._embedded?.content ?? [];
         this.apps.set(content.filter((app) => app.appKey !== 'nimbusauth'));
         this.loading.set(false);
+        this.openFromQueryParamIfPresent();
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  /** Veio do link "Configurações > E-mail" de outro app (?appKey=X na URL) - abre o dialog de
+   *  edição direto naquele app, em vez de deixar o usuário procurar na tabela. */
+  private openFromQueryParamIfPresent(): void {
+    const appKey = this.route.snapshot.queryParamMap.get('appKey');
+    if (!appKey) return;
+    const row = this.apps().find((app) => app.appKey === appKey);
+    if (row) this.edit(row);
   }
 
   edit(row: AppModel): void {

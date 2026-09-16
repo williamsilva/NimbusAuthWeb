@@ -1,14 +1,20 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideAppInitializer, provideZoneChangeDetection, importProvidersFrom, inject } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter, withNavigationErrorHandler } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+
+import { NIMBUS_THEME_CONFIG } from '@williamsilva/nimbus-web-commons';
 
 import Lara from '@primeuix/themes/lara';
 import { providePrimeNG } from 'primeng/config';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/auth.interceptor';
+import { provideNimbusLayoutHosts } from './core/layout/layout-providers';
+import { PtBrTranslateLoader } from './core/i18n/pt-br-translate.loader';
 
 /** Chunk lazy (rota carregada sob demanda, ex.: /users) pode ter mudado de hash entre o deploy que
  *  gerou o index.html já carregado nesta aba e o deploy atual - o browser pede o arquivo antigo,
@@ -32,6 +38,14 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
 
+    // appId igual à chave de storage já usada pelo ThemeService local antigo ("nimbusauth.theme")
+    // - preserva a preferência de tema já salva no navegador de quem já usa o app.
+    { provide: NIMBUS_THEME_CONFIG, useValue: { appId: 'nimbusauth' } },
+
+    // NIMBUS_SIDEBAR_HOST/NIMBUS_TOPBAR_HOST (SidebarComponent/TopbarComponent compartilhados) -
+    // ver core/layout/layout-providers.ts.
+    ...provideNimbusLayoutHosts(),
+
     provideRouter(routes, withNavigationErrorHandler((event) => reloadOnChunkLoadError(event.error))),
 
     provideHttpClient(withInterceptors([authInterceptor])),
@@ -44,6 +58,20 @@ export const appConfig: ApplicationConfig = {
           cssLayer: { name: 'primeng', order: 'primeng' },
         },
       },
+    }),
+
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: { provide: TranslateLoader, useClass: PtBrTranslateLoader },
+        isolate: false,
+      }),
+    ),
+
+    provideAppInitializer(() => {
+      const translate = inject(TranslateService);
+      translate.addLangs(['pt-BR', 'en', 'es']);
+      translate.setDefaultLang('pt-BR');
+      return firstValueFrom(translate.use('pt-BR'));
     }),
 
     provideAnimationsAsync(),

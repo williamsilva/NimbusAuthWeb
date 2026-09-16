@@ -6,6 +6,13 @@ services:
   nimbus-auth-web:
     build:
       context: .
+      # NODE_AUTH_TOKEN: o .npmrc do projeto (@williamsilva:registry) precisa dessa var pra
+      # autenticar no GitHub Packages durante `npm ci` (baixa @williamsilva/nimbus-web-commons).
+      # Sete num .env (nao commitado). Via secrets (nao args/build-arg) - build-arg fica visivel
+      # em texto puro no log de build/`docker history`; secret so existe durante o RUN que o
+      # monta explicitamente (ver Dockerfile).
+      secrets:
+        - node_auth_token
     ports:
       # 4200 - bate com o client "nimbusauth-web" (redirect-uri/post-logout/allowed-origin)
       # seedado em application-dev.yml do NimbusAuthServer, e com environment.ts (apiBaseUrl/
@@ -13,3 +20,7 @@ services:
       # nativa do "ng serve" do CardSyncWeb - nao suba os dois ao mesmo tempo (o container
       # nginx e o "ng serve" nativo vao disputar a mesma porta do host).
       - "127.0.0.1:4200:80"
+
+secrets:
+  node_auth_token:
+    environment: NODE_AUTH_TOKEN

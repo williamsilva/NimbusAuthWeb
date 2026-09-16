@@ -1,0 +1,55 @@
+{
+  "app": {
+    "name": "NimbusAuth"
+  },
+  "sidebar": {
+    "userFallback": "Admin",
+    "logout": "Sair"
+  },
+  "confirm": {
+    "logoutTitle": "Sair",
+    "logoutMessage": "Tem certeza que deseja encerrar a sessão?"
+  },
+  "common": {
+    "logout": "Sair",
+    "cancel": "Cancelar"
+  },
+  "footer": {
+    "copyright": "NimbusAuth",
+    "madeWith": "Identidade & Acesso"
+  },
+  "topbar": {
+    "sidebarHideTooltip": "Ocultar menu",
+    "sidebarShowTooltip": "Mostrar menu",
+    "sidebarToggleAria": "Alternar menu lateral",
+    "brandName": "Auth",
+    "brandSub": "Identidade & Acesso",
+    "sessionExpired": "Sessão expirada",
+    "online": "Online",
+    "sessionExpireTooltip": "Tempo restante da sessão",
+    "themeToggleAria": "Alternar tema claro/escuro",
+    "langAria": "Selecionar idioma"
+  },
+  "menu": {
+    "me": "Meu perfil",
+    "security": {
+      "changePassword": "Trocar senha",
+      "title": "Segurança",
+      "users": "Usuários",
+      "groups": "Grupos",
+      "settings": "Configurações de Segurança"
+    },
+    "apps": "Apps",
+    "email": {
+      "title": "E-mail",
+      "settings": "Configurações de E-mail",
+      "appsSettings": "E-mail dos Apps"
+    },
+    "audit": {
+      "title": "Auditoria",
+      "email": "Auditoria de E-mail",
+      "appsEmail": "Auditoria dos Apps"
+    },
+    "backup": "Backup"
+  }
+}

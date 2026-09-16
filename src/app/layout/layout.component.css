@@ -1,0 +1,106 @@
+:host {
+  display: block;
+  height: 100dvh;
+  box-sizing: border-box;
+  padding-top: 8px; /* pequeno espaço superior no topbar */
+}
+
+/* Topbar wrapper (altura fixa real) */
+.topbar-wrapper {
+  height: 56px;
+  display: block;
+}
+
+/* Área principal */
+.shell {
+  display: grid;
+  grid-template-columns: 272px 1fr;
+  gap: 8px;
+  padding: 8px;
+
+  transition: grid-template-columns 160ms ease;
+
+  /* Altura total - topbar - espaço superior */
+  height: calc(100% - 56px);
+  min-height: 0;
+}
+
+/* Sidebar colapsada (desktop) */
+.shell.sidebar-collapsed {
+  grid-template-columns: 0 1fr;
+}
+
+/* Sidebar ocupa toda altura disponível */
+.sidebar-host {
+  height: 100%;
+  min-width: 0;
+}
+
+/* Conteúdo rola */
+.content {
+  grid-column: 2;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* espaço reservado para o footer fixo */
+  padding-bottom: 56px;
+}
+
+/* Card principal */
+.content-inner {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow controlado (sem gerar scroll) */
+.content-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+
+  background:
+    radial-gradient(520px 180px at 18% 0%, rgba(59, 130, 246, 0.16), transparent 62%),
+    radial-gradient(460px 180px at 92% 10%, rgba(168, 85, 247, 0.12), transparent 62%);
+  opacity: 0.9;
+  filter: blur(8px);
+  z-index: -1;
+}
+
+/* Footer fixo alinhado SOMENTE com a coluna do conteúdo (não cobre a sidebar) */
+.footer-fixed {
+  position: fixed;
+  bottom: 8px;
+  z-index: 100;
+
+  height: 48px;
+
+  /* === alinhamento com o grid do shell ===
+     shell: padding 8px, sidebar 272px, gap 8px
+     então a área do conteúdo começa em: 8 + 272 + 8 = 288px
+  */
+  left: calc(8px + 272px + 8px);
+  right: 8px;
+}
+
+/* Quando a sidebar está colapsada, o footer volta a começar no padding */
+.footer-fixed.sidebar-collapsed {
+  left: 8px;
+  right: 8px;
+}
+
+/* Quando sidebar some no mobile, o footer volta a ocupar a tela toda */
+@media (max-width: 1024px) {
+  .footer-fixed {
+    left: 8px;
+    right: 8px;
+  }
+}

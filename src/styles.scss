@@ -7,8 +7,8 @@ html, body {
 }
 
 body {
-  background: var(--p-content-background);
-  color: var(--p-text-color);
+  background: var(--surface-ground);
+  color: var(--text-color);
 }
 
 // darkModeSelector: '.dark' (ver app.config.ts) - a classe é aplicada em :root pelo ThemeService.
@@ -21,4 +21,32 @@ body {
 
 code {
   font-size: 0.9em;
+}
+
+/* ===== Glassmorphism (mesmo padrão visual dos outros 4 apps - CardSyncWeb/etc.) =====
+ * .cs-glass é aplicada direto pelos componentes de layout compartilhados
+ * (@williamsilva/nimbus-web-commons: sidebar/topbar/footer) e por layout.component.html - a lib
+ * só assume que essa classe existe no app consumidor, não traz o CSS dela. */
+:root {
+  --cs-card-light: rgba(255, 255, 255, 0.62);
+  --cs-card-dark: rgba(17, 24, 39, 0.52);
+  --cs-border-light: rgba(0, 0, 0, 0.08);
+  --cs-border-dark: rgba(255, 255, 255, 0.12);
+}
+
+.cs-glass {
+  background: var(--cs-card-light);
+  border: 1px solid var(--cs-border-light);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.22) inset;
+}
+
+:root.dark .cs-glass {
+  background: var(--cs-card-dark);
+  border: 1px solid var(--cs-border-dark);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 }

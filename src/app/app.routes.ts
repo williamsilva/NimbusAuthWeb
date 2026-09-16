@@ -2,13 +2,13 @@ import { Routes } from '@angular/router';
 
 import { authGuard } from './core/auth/auth.guard';
 import { AuthCallbackComponent } from './core/auth/auth-callback.component';
-import { ShellComponent } from './layout/shell/shell.component';
+import { LayoutComponent } from './layout/layout.component';
 
 export const routes: Routes = [
   { path: 'auth-callback', component: AuthCallbackComponent },
   {
     path: '',
-    component: ShellComponent,
+    component: LayoutComponent,
     canActivate: [authGuard],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'apps' },

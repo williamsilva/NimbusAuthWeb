@@ -56,6 +56,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'apps-email-log',
+        loadComponent: () =>
+          import('./features/apps-email-log/apps-email-log-list/apps-email-log-list.component').then(
+            (m) => m.AppsEmailLogListComponent,
+          ),
+      },
+      {
         path: 'backup',
         loadComponent: () =>
           import('./features/backup/backup-page.component').then((m) => m.BackupPageComponent),

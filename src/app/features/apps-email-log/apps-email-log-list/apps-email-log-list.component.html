@@ -1,0 +1,128 @@
+<h2 class="mb-3">Auditoria dos Apps</h2>
+
+<div class="surface-card border-round p-3 mb-3">
+  <div class="grid formgrid gap-0 align-items-end">
+    <div class="col-12 md:col-3 p-1">
+      <label class="block mb-1 text-sm">App</label>
+      <p-select
+        [options]="apps()"
+        optionLabel="name"
+        optionValue="appKey"
+        placeholder="Selecione um app"
+        class="w-full"
+        [loading]="loadingApps()"
+        [ngModel]="selectedAppKey()"
+        (ngModelChange)="onAppChange($event)"
+      />
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <label class="block mb-1 text-sm">Destinatário</label>
+      <input pInputText class="w-full" [ngModel]="recipient()" (ngModelChange)="recipient.set($event)" (keyup.enter)="search()" />
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <label class="block mb-1 text-sm">Assunto</label>
+      <input pInputText class="w-full" [ngModel]="subject()" (ngModelChange)="subject.set($event)" (keyup.enter)="search()" />
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <label class="block mb-1 text-sm">Tipo de evento</label>
+      <input pInputText class="w-full" [ngModel]="eventType()" (ngModelChange)="eventType.set($event)" (keyup.enter)="search()" />
+    </div>
+
+    <div class="col-12 md:col-1 p-1">
+      <label class="block mb-1 text-sm">Status</label>
+      <p-select
+        [options]="statusOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Todos"
+        [showClear]="true"
+        class="w-full"
+        [ngModel]="status()"
+        (ngModelChange)="status.set($event)"
+      />
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <label class="block mb-1 text-sm">Enviado em</label>
+      <p-datepicker
+        class="w-full"
+        [showIcon]="true"
+        [readonlyInput]="true"
+        selectionMode="range"
+        dateFormat="dd/mm/yy"
+        [ngModel]="sentAtRange()"
+        (ngModelChange)="sentAtRange.set($event ?? null)"
+      />
+    </div>
+  </div>
+
+  <div class="flex gap-2 mt-2">
+    <button pButton type="button" icon="pi pi-search" label="Filtrar" [disabled]="!selectedAppKey()" (click)="search()"></button>
+    <button pButton type="button" icon="pi pi-times" label="Limpar" class="p-button-text" [disabled]="!selectedAppKey()" (click)="clear()"></button>
+  </div>
+</div>
+
+<div class="surface-card border-round px-3 pt-2 pb-3">
+  <p-table
+    dataKey="sentAt"
+    size="small"
+    [lazy]="true"
+    showGridlines
+    stripedRows
+    [value]="items()"
+    [rowHover]="true"
+    [paginator]="true"
+    [rows]="rows"
+    [loading]="loading()"
+    [totalRecords]="totalRecords()"
+    (onPage)="onPageChange($event)"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="{first} a {last} de {totalRecords}"
+    [tableStyle]="{ width: '100%', 'min-width': '58rem' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Destinatário</th>
+        <th>Assunto</th>
+        <th>Template</th>
+        <th class="text-center">Status</th>
+        <th>Tipo de evento</th>
+        <th class="text-center">Enviado em</th>
+        <th class="text-center">Erro</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-row>
+      <tr>
+        <td>{{ row.recipients }}</td>
+        <td>{{ row.subject }}</td>
+        <td>{{ row.template }}</td>
+        <td class="text-center"><p-tag [severity]="statusSeverity(row.status)" [value]="row.status ?? '-'" /></td>
+        <td>{{ row.eventType ?? '-' }}</td>
+        <td class="text-center">{{ row.sentAt ? (row.sentAt | date: 'dd/MM/yyyy HH:mm') : '-' }}</td>
+        <td class="text-center">
+          @if (row.errorMessage) {
+            <i class="pi pi-exclamation-triangle text-red-500" [pTooltip]="row.errorMessage" tooltipPosition="top"></i>
+          } @else {
+            -
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7" class="text-center py-5 opacity-70">
+          @if (!selectedAppKey()) {
+            Selecione um app para ver a auditoria de e-mail.
+          } @else {
+            {{ loadedOnce() ? 'Nenhum e-mail encontrado.' : 'Carregando…' }}
+          }
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

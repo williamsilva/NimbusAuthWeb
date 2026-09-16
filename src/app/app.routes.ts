@@ -67,6 +67,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/backup/backup-page.component').then((m) => m.BackupPageComponent),
       },
+      // Destinos hardcoded pelo TopbarComponent compartilhado (@williamsilva/nimbus-web-commons)
+      // no menu de conta ("Meu perfil"/"Trocar senha") - mesmos paths usados pelos outros 4 apps.
+      {
+        path: 'security/account/profile',
+        loadComponent: () =>
+          import('./features/account/profile/profile.component').then((m) => m.ProfilePageComponent),
+      },
+      {
+        path: 'security/account/password',
+        loadComponent: () =>
+          import('./features/account/account-password/account-password.component').then(
+            (m) => m.AccountPasswordComponent,
+          ),
+      },
       { path: '**', redirectTo: 'apps' },
     ],
   },

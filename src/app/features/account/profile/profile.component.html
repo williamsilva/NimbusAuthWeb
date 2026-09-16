@@ -1,0 +1,134 @@
+<h2 class="mb-3">Meu Perfil</h2>
+
+@if (loading()) {
+  <p>Carregando…</p>
+} @else if (loadError()) {
+  <div class="surface-card border-round p-4">
+    <p class="text-red-500 m-0">{{ loadError() }}</p>
+  </div>
+} @else {
+  <div class="grid">
+    <!-- HERO -->
+    <div class="col-12 lg:col-4">
+      <p-card class="h-full">
+        <div class="flex flex-column align-items-center text-center gap-2 mb-3">
+          <div
+            class="border-circle flex align-items-center justify-content-center font-bold text-2xl"
+            style="width: 72px; height: 72px; background: var(--primary-color); color: var(--primary-contrast-color)"
+          >
+            {{ initials(me()?.name) }}
+          </div>
+
+          <div class="text-xl font-semibold">{{ fmtValue(me()?.name) }}</div>
+          <div class="text-sm opacity-70">{{ fmtValue(me()?.username) }}</div>
+          <div class="text-xs opacity-60">ID: {{ fmtValue(details()?.id) }}</div>
+
+          <p-tag [severity]="statusSeverity(details()?.status)" [value]="statusLabel(details()?.status)" />
+        </div>
+
+        <p-divider />
+
+        <div class="flex flex-column gap-2 mb-3">
+          <div
+            role="button"
+            tabindex="0"
+            class="flex align-items-center justify-content-between surface-100 border-round px-3 py-2 cursor-pointer"
+            (click)="openGroupsModal()"
+            (keydown.enter)="openGroupsModal()"
+          >
+            <span>Grupos</span>
+            <p-tag severity="info" [value]="groups().length.toString()" />
+          </div>
+
+          <div
+            role="button"
+            tabindex="0"
+            class="flex align-items-center justify-content-between surface-100 border-round px-3 py-2 cursor-pointer"
+            (click)="openPermissionsModal()"
+            (keydown.enter)="openPermissionsModal()"
+          >
+            <span>Permissões</span>
+            <p-tag severity="warn" [value]="permissions().length.toString()" />
+          </div>
+        </div>
+
+        <p-divider />
+
+        <button pButton type="button" class="w-full" icon="pi pi-lock" label="Trocar senha" routerLink="/security/account/password"></button>
+      </p-card>
+    </div>
+
+    <!-- DATA -->
+    <div class="col-12 lg:col-8">
+      <p-card class="h-full" header="Dados do usuário">
+        <div class="flex flex-column gap-4">
+          <section>
+            <div class="font-semibold mb-2 opacity-80">Identificação</div>
+            <div class="grid">
+              <div class="col-12 md:col-4"><span class="opacity-70">Nome:</span> {{ fmtValue(details()?.name) }}</div>
+              <div class="col-12 md:col-4"><span class="opacity-70">Usuário:</span> {{ fmtValue(details()?.userName) }}</div>
+              <div class="col-12 md:col-4"><span class="opacity-70">Documento:</span> {{ documentMask(details()?.document) }}</div>
+            </div>
+          </section>
+
+          <section>
+            <div class="font-semibold mb-2 opacity-80">Segurança</div>
+            <div class="grid">
+              <div class="col-12 md:col-4"><span class="opacity-70">Status:</span> {{ statusLabel(details()?.status) }}</div>
+              <div class="col-12 md:col-4"><span class="opacity-70">Bloqueado:</span> {{ blockedLabel(details()?.blockedUntil) }}</div>
+              <div class="col-12 md:col-4"><span class="opacity-70">Bloqueado até:</span> {{ fmtDateTime(details()?.blockedUntil) }}</div>
+              <div class="col-12 md:col-4"><span class="opacity-70">Senha expira em:</span> {{ passwordExpiryLabel(details()?.passwordExpiresAt) }}</div>
+              <div class="col-12 md:col-4"><span class="opacity-70">Senha expira em (data):</span> {{ fmtDateTime(details()?.passwordExpiresAt) }}</div>
+            </div>
+          </section>
+
+          <section>
+            <div class="font-semibold mb-2 opacity-80">Auditoria</div>
+            <div class="grid">
+              <div class="col-12 md:col-4"><span class="opacity-70">Criado em:</span> {{ fmtDateTime(details()?.createdAt) }}</div>
+              <div class="col-12 md:col-4"><span class="opacity-70">Último login:</span> {{ fmtDateTime(details()?.lastLoginAt) }}</div>
+            </div>
+          </section>
+        </div>
+      </p-card>
+    </div>
+  </div>
+}
+
+<p-dialog
+  [modal]="true"
+  appendTo="body"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  [(visible)]="groupsModalVisible"
+  header="Grupos"
+  [style]="{ width: '92vw', 'max-width': '600px' }"
+>
+  <div class="flex flex-column gap-2">
+    @for (g of sortedList(groups()); track g) {
+      <div class="surface-100 border-round px-3 py-2">{{ g }}</div>
+    } @empty {
+      <span class="text-sm opacity-60">Nenhum grupo.</span>
+    }
+  </div>
+</p-dialog>
+
+<p-dialog
+  [modal]="true"
+  appendTo="body"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  [(visible)]="permissionsModalVisible"
+  header="Permissões"
+  [style]="{ width: '92vw', 'max-width': '900px' }"
+>
+  <div class="flex flex-wrap gap-2">
+    @for (p of sortedList(permissions()); track p) {
+      <p-tag severity="secondary" [value]="p" />
+    } @empty {
+      <span class="text-sm opacity-60">Nenhuma permissão.</span>
+    }
+  </div>
+</p-dialog>

@@ -18,6 +18,18 @@ interface StoredToken {
   expiresAt: number;
 }
 
+/** Claims custom do access token (ver JwtClaimsCustomizer no NimbusAuthServer) - groups/
+ *  permissions já vêm filtrados pelo appKey do client atual ("nimbusauth"), então decodificar
+ *  client-side aqui é seguro pra exibição (ex.: tela de Perfil) sem round-trip nenhum; nunca usado
+ *  como fonte de verdade de autorização (o backend valida tudo de novo via CheckSecurity). */
+export interface TokenClaims {
+  userId: string | null;
+  username: string | null;
+  name: string | null;
+  groups: string[];
+  permissions: string[];
+}
+
 const STORAGE_KEY = 'nimbusauth_web_token';
 const VERIFIER_KEY = 'nimbusauth_web_pkce_verifier';
 const STATE_KEY = 'nimbusauth_web_oauth_state';
@@ -53,6 +65,11 @@ export class AuthService {
    *  novo via CheckSecurity). */
   readonly currentUsername = computed(() =>
     this.decodeUsername(this.tokenState()?.accessToken ?? null),
+  );
+
+  /** Claims completos do access token atual (ver TokenClaims) - alimenta MeStore. */
+  readonly claims = computed<TokenClaims | null>(() =>
+    this.decodeClaims(this.tokenState()?.accessToken ?? null),
   );
 
   get accessToken(): string | null {
@@ -179,6 +196,33 @@ export class AuthService {
       const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
       const json = JSON.parse(atob(base64)) as { username?: unknown };
       return typeof json.username === 'string' ? json.username : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private decodeClaims(accessToken: string | null): TokenClaims | null {
+    if (!accessToken) return null;
+    try {
+      const payload = accessToken.split('.')[1];
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const json = JSON.parse(atob(base64)) as {
+        userId?: unknown;
+        username?: unknown;
+        name?: unknown;
+        groups?: unknown;
+        permissions?: unknown;
+      };
+
+      return {
+        userId: typeof json.userId === 'string' ? json.userId : null,
+        username: typeof json.username === 'string' ? json.username : null,
+        name: typeof json.name === 'string' ? json.name : null,
+        groups: Array.isArray(json.groups) ? json.groups.filter((g): g is string => typeof g === 'string') : [],
+        permissions: Array.isArray(json.permissions)
+          ? json.permissions.filter((p): p is string => typeof p === 'string')
+          : [],
+      };
     } catch {
       return null;
     }

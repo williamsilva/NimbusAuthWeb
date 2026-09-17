@@ -18,10 +18,12 @@ import { TooltipModule } from 'primeng/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { buildListQuery } from '../../../core/list-base/list-query.builder';
+import { PersistedFilters } from '../../../core/list-base/persisted-filters';
+import { STATE_KEY } from '../../../core/state-key.constants';
 import { AppsApiService } from '../../apps/apps.api.service';
 import { AppModel } from '../../apps/apps.models';
 import { I18nService } from '../../../core/i18n/i18n.service';
-import { FiltersPanelComponent } from '../../../shared/filters-panel/filters-panel.component';
+import { ActiveFilterItem, FiltersPanelComponent } from '../../../shared/filters-panel/filters-panel.component';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { eventTypeCode } from '../../email-log/email-log-status';
 import { EmailLogApiService } from '../../email-log/email-log.api.service';
@@ -67,6 +69,10 @@ export class AppsEmailLogListComponent implements OnInit {
   private readonly i18n = inject(I18nService);
   private readonly sanitizer = inject(DomSanitizer);
 
+  /** Sem StatefulListPage aqui (contrato flat/GET, ver javadoc da classe) - persistência simples
+   *  via PersistedFilters direto, mesma ideia (grava só ao clicar Buscar/Limpar). */
+  private readonly persistedFilters = new PersistedFilters<AppsEmailLogFiltersState>(STATE_KEY.APPS_EMAIL_LOG.FILTERS.V1);
+
   /** appKey sintético - não existe de verdade como "satélite" (é o próprio NimbusAuth), mas
    *  aparece como qualquer outro no seletor (ver loadApps()). */
   private static readonly NIMBUS_AUTH_APP_KEY = 'nimbusauth';
@@ -91,6 +97,34 @@ export class AppsEmailLogListComponent implements OnInit {
   readonly sortField = signal<string | null>(null);
   readonly sortOrder = signal<'asc' | 'desc'>('desc');
 
+  /** Sem distinção "avançado" vs "coluna" aqui - os p-columnFilter do cabeçalho escrevem direto
+   *  nestes MESMOS signals (ver javadoc da classe), então 1 lista só de chips já cobre os dois. */
+  readonly activeFilters = computed<ActiveFilterItem[]>(() => {
+    const items: ActiveFilterItem[] = [];
+
+    const recipient = this.recipient().trim();
+    const subject = this.subject().trim();
+    const eventType = this.eventType().trim();
+    const status = this.status();
+    const sentAt = this.sentAtRange();
+
+    if (recipient) items.push({ label: this.i18n.tUi('appsEmailLog.list.fields.recipient', 'Destinatário'), value: recipient });
+    if (subject) items.push({ label: this.i18n.tUi('appsEmailLog.list.fields.subject', 'Assunto'), value: subject });
+    if (eventType) items.push({ label: this.i18n.tUi('appsEmailLog.list.fields.eventType', 'Tipo de evento'), value: eventType });
+    if (status) items.push({ label: this.i18n.tUi('appsEmailLog.list.fields.status', 'Status'), value: this.statusLabel(status) });
+
+    if (sentAt?.[0] && sentAt?.[1]) {
+      items.push({
+        label: this.i18n.tUi('appsEmailLog.list.fields.sentAt', 'Enviado em'),
+        value: `${this.formatDate(sentAt[0])} – ${this.formatDate(sentAt[1])}`,
+      });
+    }
+
+    return items;
+  });
+
+  readonly activeFiltersCount = computed(() => this.activeFilters().length);
+
   readonly items = signal<AppEmailLogItem[]>([]);
   readonly totalRecords = signal(0);
   readonly rows = 20;
@@ -114,17 +148,52 @@ export class AppsEmailLogListComponent implements OnInit {
       next: (result) => {
         this.apps.set(result._embedded?.content ?? []);
         this.loadingApps.set(false);
-        this.preselectFromQueryParamIfPresent();
+        // query param (deep link de outro app) tem prioridade sobre o filtro persistido.
+        if (!this.preselectFromQueryParamIfPresent()) {
+          this.restorePersistedFilters();
+        }
       },
       error: () => this.loadingApps.set(false),
     });
   }
 
-  private preselectFromQueryParamIfPresent(): void {
+  private preselectFromQueryParamIfPresent(): boolean {
     const appKey = this.route.snapshot.queryParamMap.get('appKey');
-    if (!appKey) return;
+    if (!appKey) return false;
     const row = this.apps().find((app) => app.appKey === appKey);
-    if (row) this.onAppChange(row.appKey);
+    if (!row) return false;
+    this.onAppChange(row.appKey);
+    return true;
+  }
+
+  private restorePersistedFilters(): void {
+    const state = this.persistedFilters.load();
+    if (!state) return;
+
+    this.recipient.set(state.recipient ?? '');
+    this.subject.set(state.subject ?? '');
+    this.eventType.set(state.eventType ?? '');
+    this.status.set(state.status ?? null);
+    this.sentAtRange.set(
+      state.sentAtRange?.[0] && state.sentAtRange?.[1] ? [new Date(state.sentAtRange[0]), new Date(state.sentAtRange[1])] : null,
+    );
+
+    const appKey = state.appKey;
+    if (appKey && this.apps().some((app) => app.appKey === appKey)) {
+      this.onAppChange(appKey);
+    }
+  }
+
+  private persistCurrentFilters(): void {
+    const sentAt = this.sentAtRange();
+    this.persistedFilters.save({
+      appKey: this.selectedAppKey(),
+      recipient: this.recipient(),
+      subject: this.subject(),
+      eventType: this.eventType(),
+      status: this.status(),
+      sentAtRange: sentAt?.[0] && sentAt?.[1] ? [sentAt[0].toISOString(), sentAt[1].toISOString()] : null,
+    });
   }
 
   onAppChange(appKey: string | null): void {
@@ -138,6 +207,8 @@ export class AppsEmailLogListComponent implements OnInit {
   search(page = 0): void {
     const appKey = this.selectedAppKey();
     if (!appKey) return;
+
+    this.persistCurrentFilters();
 
     if (appKey === AppsEmailLogListComponent.NIMBUS_AUTH_APP_KEY) {
       this.searchNimbusAuth(page);
@@ -288,6 +359,19 @@ export class AppsEmailLogListComponent implements OnInit {
         return row.eventType;
     }
   }
+
+  private formatDate(value: Date): string {
+    return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' }).format(value);
+  }
+}
+
+interface AppsEmailLogFiltersState {
+  appKey: string | null;
+  recipient: string;
+  subject: string;
+  eventType: string;
+  status: string | null;
+  sentAtRange: [string, string] | null;
 }
 
 /** EmailLogModel (NimbusAuth, recipient singular) -> AppEmailLogItem (recipients plural) - mesmo

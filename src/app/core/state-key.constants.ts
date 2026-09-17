@@ -38,6 +38,7 @@ export const STATE_KEY = {
     },
   },
   APPS_EMAIL_LOG: {
+    FILTERS: { V1: 'nimbusauth.apps-email-log.filters.v1' },
     TABLE: {
       STATE: { V1: 'nimbusauth.apps-email-log.table.state.v1' },
       ROWS: { V1: 'nimbusauth.apps-email-log.table.rows.v1' },

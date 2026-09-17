@@ -50,13 +50,13 @@ export const APP_MENU: AppMenuItem[] = [
     // AppsEmailLogListComponent. Volta a ser 1 item flat (sem submenu), mesmo padrão de
     // menu.apps/menu.backup.
     labelKey: 'menu.audit.email',
-    icon: 'pi pi-history text-sky-600',
+    icon: 'pi pi-history text-purple-600',
     route: '/apps-email-log',
     exact: false,
   },
   {
     labelKey: 'menu.backup',
-    icon: 'pi pi-database text-indigo-600',
+    icon: 'pi pi-database text-cyan-600',
     route: '/backup',
     exact: false,
   },

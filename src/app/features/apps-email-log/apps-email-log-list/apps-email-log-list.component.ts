@@ -102,6 +102,15 @@ export class AppsEmailLogListComponent implements OnInit {
   readonly activeFilters = computed<ActiveFilterItem[]>(() => {
     const items: ActiveFilterItem[] = [];
 
+    // App é obrigatório pra ver qualquer dado (ver javadoc da classe) - mesmo assim conta como
+    // filtro ativo (é o que de fato restringe a consulta a 1 sistema só), senão "0 filtros
+    // ativos" nunca mudaria mesmo com um app selecionado.
+    const appKey = this.selectedAppKey();
+    if (appKey) {
+      const appName = this.apps().find((app) => app.appKey === appKey)?.name ?? appKey;
+      items.push({ label: this.i18n.tUi('appsEmailLog.list.fields.app', 'App'), value: appName });
+    }
+
     const recipient = this.recipient().trim();
     const subject = this.subject().trim();
     const eventType = this.eventType().trim();

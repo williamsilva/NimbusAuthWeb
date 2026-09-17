@@ -6,6 +6,7 @@
   [resizable]="false"
   [(visible)]="visible"
   styleClass="na-session-expiry-dialog"
+  [style]="{ width: '420px', maxWidth: '95vw' }"
   [header]="(expired() ? 'session.expired.title' : 'session.expiring.title') | translate"
   (wheel)="touchInteraction()"
   (keydown)="touchInteraction()"

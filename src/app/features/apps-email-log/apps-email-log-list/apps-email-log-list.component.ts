@@ -23,7 +23,7 @@ import { STATE_KEY } from '../../../core/state-key.constants';
 import { AppsApiService } from '../../apps/apps.api.service';
 import { AppModel } from '../../apps/apps.models';
 import { I18nService } from '../../../core/i18n/i18n.service';
-import { ActiveFilterItem, FiltersPanelComponent } from '../../../shared/filters-panel/filters-panel.component';
+import { ActiveFilterGroup, ActiveFilterItem, FiltersPanelComponent } from '../../../shared/filters-panel/filters-panel.component';
 import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { eventTypeCode } from '../../email-log/email-log-status';
 import { EmailLogApiService } from '../../email-log/email-log.api.service';
@@ -130,6 +130,16 @@ export class AppsEmailLogListComponent implements OnInit {
     }
 
     return items;
+  });
+
+  /** Só 1 grupo aqui (sem "Filtros da tabela" separado) - os p-columnFilter do cabeçalho
+   *  escrevem direto nos MESMOS signals do painel avançado (ver javadoc da classe), não existe
+   *  um estado de "filtro de tabela" de verdade e diferente pra mostrar à parte; ainda assim
+   *  usa o mesmo componente/visual de grupo com título das outras telas (StatefulListPage), em
+   *  vez da lista plana sem título de antes. */
+  readonly activeFilterGroups = computed<ActiveFilterGroup[]>(() => {
+    const filters = this.activeFilters();
+    return filters.length ? [{ title: this.i18n.tUi('common.advancedFilters', 'Filtros avançados'), filters }] : [];
   });
 
   readonly activeFiltersCount = computed(() => this.activeFilters().length);

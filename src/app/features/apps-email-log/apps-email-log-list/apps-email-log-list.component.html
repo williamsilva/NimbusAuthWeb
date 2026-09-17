@@ -83,19 +83,20 @@
   [collapsed]="true"
   (searchClick)="search()"
   [actionsAlign]="'start'"
-  [activeFilters]="activeFilters()"
+  [activeFilterGroups]="activeFilterGroups()"
   [title]="'appsEmailLog.list.filtersTitle' | translate"
 >
   <div class="grid formgrid gap-0 align-items-end">
     <div class="col-12 md:col-3 p-1">
       <p-floatLabel variant="on" class="w-full">
         <p-select
+          size="small"
+          class="w-full"
+          appendTo="body"
           inputId="appKey"
           [options]="apps()"
           optionLabel="name"
           optionValue="appKey"
-          class="w-full"
-          appendTo="body"
           [loading]="loadingApps()"
           [ngModel]="selectedAppKey()"
           (ngModelChange)="onAppChange($event)"
@@ -207,12 +208,12 @@
     <ng-template pTemplate="colgroup">
       <colgroup>
         <col style="width: auto" />
-        <col style="width: 200px" />
-        <col style="width: 200px" />
+        <col style="width: 250px" />
+        <col style="width: 250px" />
         <col style="width: 140px" />
         <col style="width: 160px" />
         <col style="width: 130px" />
-        <col style="width: 100px" />
+        <col style="width: 200px" />
         <col style="width: 50px" />
       </colgroup>
     </ng-template>

@@ -16,7 +16,8 @@
     "success": "Éxito",
     "notNow": "Ahora no",
     "renewSession": "Renovar sesión",
-    "goToLogin": "Ir a iniciar sesión"
+    "goToLogin": "Ir a iniciar sesión",
+    "advancedFilters": "Filtros avanzados"
   },
   "session": {
     "expiring": {

@@ -16,7 +16,8 @@
     "success": "Success",
     "notNow": "Not now",
     "renewSession": "Renew session",
-    "goToLogin": "Go to login"
+    "goToLogin": "Go to login",
+    "advancedFilters": "Advanced filters"
   },
   "session": {
     "expiring": {

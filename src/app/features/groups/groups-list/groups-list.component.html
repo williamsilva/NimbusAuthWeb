@@ -146,7 +146,7 @@
       <tr>
         <th pSortableColumn="name">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'groups.list.columns.name' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'groups.list.columns.name' | translate">{{ 'groups.list.columns.name' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="name"></p-sortIcon>
               <p-columnFilter field="name" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
@@ -155,12 +155,12 @@
         </th>
 
         <th class="text-center">
-          <div class="th-flex text-center justify-content-center"><span class="th-label">{{ 'groups.list.columns.app' | translate }}</span></div>
+          <div class="th-flex text-center justify-content-center"><span class="th-label" tooltipPosition="top" [pTooltip]="'groups.list.columns.app' | translate">{{ 'groups.list.columns.app' | translate }}</span></div>
         </th>
 
         <th pSortableColumn="description">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'groups.list.columns.description' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'groups.list.columns.description' | translate">{{ 'groups.list.columns.description' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="description"></p-sortIcon>
               <p-columnFilter type="text" display="menu" class="ml-auto" field="description" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
@@ -170,7 +170,7 @@
 
         <th pSortableColumn="createdAt">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'groups.list.columns.createdAt' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'groups.list.columns.createdAt' | translate">{{ 'groups.list.columns.createdAt' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="createdAt"></p-sortIcon>
               <p-columnFilter display="menu" field="createdAt" matchMode="between" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
@@ -184,7 +184,7 @@
 
         <th pSortableColumn="createdBy">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'groups.list.columns.createdBy' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'groups.list.columns.createdBy' | translate">{{ 'groups.list.columns.createdBy' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="createdBy"></p-sortIcon>
               <p-columnFilter display="menu" matchMode="in" field="createdBy" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
@@ -197,25 +197,37 @@
         </th>
 
         <th>
-          <div class="th-flex text-center justify-content-center"><span class="th-label">{{ 'groups.list.columns.users' | translate }}</span></div>
+          <div class="th-flex text-center justify-content-center"><span class="th-label" tooltipPosition="top" [pTooltip]="'groups.list.columns.users' | translate">{{ 'groups.list.columns.users' | translate }}</span></div>
         </th>
         <th>
-          <div class="th-flex text-center justify-content-center"><span class="th-label">{{ 'groups.list.columns.permissions' | translate }}</span></div>
+          <div class="th-flex text-center justify-content-center"><span class="th-label" tooltipPosition="top" [pTooltip]="'groups.list.columns.permissions' | translate">{{ 'groups.list.columns.permissions' | translate }}</span></div>
         </th>
 
         <th class="text-center">
-          <div class="th-flex text-center justify-content-center"><span class="th-label">{{ 'groups.list.columns.actions' | translate }}</span></div>
+          <div class="th-flex text-center justify-content-center"><span class="th-label" tooltipPosition="top" [pTooltip]="'groups.list.columns.actions' | translate">{{ 'groups.list.columns.actions' | translate }}</span></div>
         </th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-row>
       <tr>
-        <td>{{ row.name }}</td>
+        <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.name">{{ row.name }}</span></td>
         <td class="text-center"><p-tag severity="secondary" [value]="appName(row.appKey)" /></td>
-        <td>{{ row.description || '—' }}</td>
+        <td>
+          @if (row.description) {
+            <span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.description">{{ row.description }}</span>
+          } @else {
+            —
+          }
+        </td>
         <td class="text-center">{{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '-' }}</td>
-        <td class="text-center">{{ row.createdBy?.name ?? '-' }}</td>
+        <td class="text-center">
+          @if (row.createdBy?.name) {
+            <span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.createdBy?.name">{{ row.createdBy?.name }}</span>
+          } @else {
+            -
+          }
+        </td>
         <td class="text-center">{{ row.usersCount ?? '-' }}</td>
         <td class="text-center">{{ row.permissionsCount ?? '-' }}</td>
         <td class="text-center">

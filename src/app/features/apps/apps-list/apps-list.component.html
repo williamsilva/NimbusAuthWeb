@@ -147,7 +147,7 @@
         <col style="width: auto" />
         <col style="width: 140px" />
         <col style="width: 160px" />
-        <col style="width: 150px" />
+        <col style="width: 200px" />
         <col style="width: 130px" />
         <col style="width: 130px" />
         <col style="width: 100px" />
@@ -161,7 +161,7 @@
       <tr>
         <th pSortableColumn="name">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'apps.list.columns.name' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.name' | translate">{{ 'apps.list.columns.name' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="name"></p-sortIcon>
               <p-columnFilter
@@ -181,7 +181,7 @@
 
         <th pSortableColumn="appKey">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'apps.list.columns.appKey' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.appKey' | translate">{{ 'apps.list.columns.appKey' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="appKey"></p-sortIcon>
               <p-columnFilter
@@ -201,7 +201,7 @@
 
         <th pSortableColumn="clientId">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'apps.list.columns.clientId' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.clientId' | translate">{{ 'apps.list.columns.clientId' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="clientId"></p-sortIcon>
               <p-columnFilter
@@ -220,18 +220,18 @@
         </th>
 
         <th>
-          <span class="th-label">{{ 'apps.list.columns.allowedOrigin' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.allowedOrigin' | translate">{{ 'apps.list.columns.allowedOrigin' | translate }}</span>
         </th>
         <th>
-          <span class="th-label">{{ 'apps.list.columns.accessTokenTtl' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.accessTokenTtl' | translate">{{ 'apps.list.columns.accessTokenTtl' | translate }}</span>
         </th>
         <th>
-          <span class="th-label">{{ 'apps.list.columns.refreshTokenTtl' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.refreshTokenTtl' | translate">{{ 'apps.list.columns.refreshTokenTtl' | translate }}</span>
         </th>
 
         <th pSortableColumn="active" class="text-center">
           <div class="th-flex text-center justify-content-center">
-            <span class="th-label">{{ 'apps.list.columns.status' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.status' | translate">{{ 'apps.list.columns.status' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="active"></p-sortIcon>
               <p-columnFilter
@@ -263,7 +263,7 @@
 
         <th pSortableColumn="createdAt">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'apps.list.columns.createdAt' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.createdAt' | translate">{{ 'apps.list.columns.createdAt' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="createdAt"></p-sortIcon>
               <p-columnFilter
@@ -295,7 +295,7 @@
 
         <th pSortableColumn="createdBy">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'apps.list.columns.createdBy' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.createdBy' | translate">{{ 'apps.list.columns.createdBy' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="createdBy"></p-sortIcon>
               <p-columnFilter
@@ -327,19 +327,25 @@
         </th>
 
         <th class="text-center">
-          <span class="th-label">{{ 'apps.list.columns.actions' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'apps.list.columns.actions' | translate">{{ 'apps.list.columns.actions' | translate }}</span>
         </th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-row>
       <tr>
-        <td>{{ row.name }}</td>
-        <td>{{ row.appKey }}</td>
+        <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.name">{{ row.name }}</span></td>
+        <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.appKey">{{ row.appKey }}</span></td>
         <td>
           <code>{{ row.clientId }}</code>
         </td>
-        <td>{{ row.allowedOrigin || '—' }}</td>
+        <td>
+          @if (row.allowedOrigin) {
+            <span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.allowedOrigin">{{ row.allowedOrigin }}</span>
+          } @else {
+            —
+          }
+        </td>
         <td>
           @if (row.accessTokenTtl) {
             {{ row.accessTokenTtl }}
@@ -373,7 +379,13 @@
         <td class="text-center">
           {{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '-' }}
         </td>
-        <td class="text-center">{{ row.createdBy?.name ?? '-' }}</td>
+        <td class="text-center">
+          @if (row.createdBy?.name) {
+            <span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.createdBy?.name">{{ row.createdBy?.name }}</span>
+          } @else {
+            -
+          }
+        </td>
 
         <td class="text-center">
           <div class="table-actions">

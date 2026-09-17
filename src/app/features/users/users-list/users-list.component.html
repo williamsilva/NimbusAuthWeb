@@ -292,7 +292,7 @@
 
       <th pSortableColumn="userName">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'users.list.columns.email' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.email' | translate">{{ 'users.list.columns.email' | translate }}</span>
           <span class="th-icons">
             <p-sortIcon field="userName"></p-sortIcon>
             <p-columnFilter
@@ -312,7 +312,7 @@
 
       <th pSortableColumn="name">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'users.list.columns.name' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.name' | translate">{{ 'users.list.columns.name' | translate }}</span>
           <span class="th-icons">
             <p-sortIcon field="name"></p-sortIcon>
             <p-columnFilter
@@ -332,13 +332,13 @@
 
       <th>
         <div class="th-flex text-center justify-content-center">
-          <span class="th-label">{{ 'users.list.columns.apps' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.apps' | translate">{{ 'users.list.columns.apps' | translate }}</span>
         </div>
       </th>
 
       <th pSortableColumn="document">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'users.list.columns.document' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.document' | translate">{{ 'users.list.columns.document' | translate }}</span>
           <span class="th-icons">
             <p-sortIcon field="document"></p-sortIcon>
             <p-columnFilter
@@ -356,7 +356,7 @@
 
       <th pSortableColumn="status">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'users.list.columns.status' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.status' | translate">{{ 'users.list.columns.status' | translate }}</span>
           <span class="th-icons">
             <p-sortIcon field="status"></p-sortIcon>
             <p-columnFilter
@@ -388,28 +388,28 @@
 
       <th pSortableColumn="lastLoginAt">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'users.list.columns.lastLoginAt' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.lastLoginAt' | translate">{{ 'users.list.columns.lastLoginAt' | translate }}</span>
           <span class="th-icons"><p-sortIcon field="lastLoginAt"></p-sortIcon></span>
         </div>
       </th>
 
       <th pSortableColumn="blockedUntil">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'users.list.columns.blockedUntil' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.blockedUntil' | translate">{{ 'users.list.columns.blockedUntil' | translate }}</span>
           <span class="th-icons"><p-sortIcon field="blockedUntil"></p-sortIcon></span>
         </div>
       </th>
 
       <th pSortableColumn="passwordExpiresAt">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'users.list.columns.passwordExpiresAt' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.passwordExpiresAt' | translate">{{ 'users.list.columns.passwordExpiresAt' | translate }}</span>
           <span class="th-icons"><p-sortIcon field="passwordExpiresAt"></p-sortIcon></span>
         </div>
       </th>
 
       <th pSortableColumn="createdAt">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'users.list.columns.createdAt' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.createdAt' | translate">{{ 'users.list.columns.createdAt' | translate }}</span>
           <span class="th-icons">
             <p-sortIcon field="createdAt"></p-sortIcon>
             <p-columnFilter
@@ -441,7 +441,7 @@
 
       <th pSortableColumn="createdBy">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'users.list.columns.createdBy' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.createdBy' | translate">{{ 'users.list.columns.createdBy' | translate }}</span>
           <span class="th-icons">
             <p-sortIcon field="createdBy"></p-sortIcon>
             <p-columnFilter
@@ -474,7 +474,7 @@
 
       <th class="text-center">
         <div class="th-flex text-center justify-content-center">
-          <span class="th-label">{{ 'users.list.columns.actions' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'users.list.columns.actions' | translate">{{ 'users.list.columns.actions' | translate }}</span>
         </div>
       </th>
     </tr>
@@ -491,8 +491,8 @@
         ></p-checkbox>
       </td>
 
-      <td>{{ row.userName }}</td>
-      <td>{{ row.name }}</td>
+      <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.userName">{{ row.userName }}</span></td>
+      <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.name">{{ row.name }}</span></td>
 
       <td class="text-center">
         <div class="flex flex-wrap justify-content-center gap-1">
@@ -524,7 +524,13 @@
         {{ row.passwordExpiresAt ? (row.passwordExpiresAt | date: 'dd/MM/yyyy') : '-' }}
       </td>
       <td class="text-center">{{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '-' }}</td>
-      <td class="text-center">{{ row.createdBy?.name ?? '-' }}</td>
+      <td class="text-center">
+        @if (row.createdBy?.name) {
+          <span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.createdBy?.name">{{ row.createdBy?.name }}</span>
+        } @else {
+          -
+        }
+      </td>
 
       <td class="text-center">
         <div class="table-actions">

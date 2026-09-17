@@ -93,14 +93,14 @@
       <p-table [value]="recipients()" [loading]="loadingRecipients()" dataKey="id" stripedRows class="app-admin-table">
         <ng-template pTemplate="header">
           <tr>
-            <th><div class="th-flex"><span class="th-label">{{ 'backup.notifications.columns.email' | translate }}</span></div></th>
-            <th><div class="th-flex"><span class="th-label">{{ 'backup.notifications.columns.createdAt' | translate }}</span></div></th>
+            <th><div class="th-flex"><span class="th-label" tooltipPosition="top" [pTooltip]="'backup.notifications.columns.email' | translate">{{ 'backup.notifications.columns.email' | translate }}</span></div></th>
+            <th><div class="th-flex"><span class="th-label" tooltipPosition="top" [pTooltip]="'backup.notifications.columns.createdAt' | translate">{{ 'backup.notifications.columns.createdAt' | translate }}</span></div></th>
             <th style="width: 4rem"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr>
-            <td>{{ row.email }}</td>
+            <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.email">{{ row.email }}</span></td>
             <td>{{ row.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
             <td>
               <div class="table-actions">
@@ -124,12 +124,12 @@
       <p-table [value]="executions()" [loading]="loadingExecutions()" dataKey="id" stripedRows class="app-admin-table">
         <ng-template pTemplate="header">
           <tr>
-            <th><div class="th-flex"><span class="th-label">{{ 'backup.history.columns.status' | translate }}</span></div></th>
-            <th><div class="th-flex"><span class="th-label">{{ 'backup.history.columns.startedAt' | translate }}</span></div></th>
-            <th><div class="th-flex"><span class="th-label">{{ 'backup.history.columns.finishedAt' | translate }}</span></div></th>
-            <th><div class="th-flex"><span class="th-label">{{ 'backup.history.columns.triggeredBy' | translate }}</span></div></th>
-            <th><div class="th-flex"><span class="th-label">{{ 'backup.history.columns.size' | translate }}</span></div></th>
-            <th><div class="th-flex"><span class="th-label">{{ 'backup.history.columns.errors' | translate }}</span></div></th>
+            <th><div class="th-flex"><span class="th-label" tooltipPosition="top" [pTooltip]="'backup.history.columns.status' | translate">{{ 'backup.history.columns.status' | translate }}</span></div></th>
+            <th><div class="th-flex"><span class="th-label" tooltipPosition="top" [pTooltip]="'backup.history.columns.startedAt' | translate">{{ 'backup.history.columns.startedAt' | translate }}</span></div></th>
+            <th><div class="th-flex"><span class="th-label" tooltipPosition="top" [pTooltip]="'backup.history.columns.finishedAt' | translate">{{ 'backup.history.columns.finishedAt' | translate }}</span></div></th>
+            <th><div class="th-flex"><span class="th-label" tooltipPosition="top" [pTooltip]="'backup.history.columns.triggeredBy' | translate">{{ 'backup.history.columns.triggeredBy' | translate }}</span></div></th>
+            <th><div class="th-flex"><span class="th-label" tooltipPosition="top" [pTooltip]="'backup.history.columns.size' | translate">{{ 'backup.history.columns.size' | translate }}</span></div></th>
+            <th><div class="th-flex"><span class="th-label" tooltipPosition="top" [pTooltip]="'backup.history.columns.errors' | translate">{{ 'backup.history.columns.errors' | translate }}</span></div></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
@@ -137,9 +137,15 @@
             <td><p-tag [severity]="statusSeverity(row.status)" [value]="statusLabel(row.status)" /></td>
             <td>{{ row.startedAt | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
             <td>{{ row.finishedAt ? (row.finishedAt | date: 'dd/MM/yyyy HH:mm:ss') : '-' }}</td>
-            <td>{{ triggeredByLabel(row.triggeredByUsername) }}</td>
+            <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="triggeredByLabel(row.triggeredByUsername)">{{ triggeredByLabel(row.triggeredByUsername) }}</span></td>
             <td>{{ formatBytes(row.sizeBytes) }}</td>
-            <td>{{ row.errorSummary || '-' }}</td>
+            <td>
+              @if (row.errorSummary) {
+                <span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.errorSummary">{{ row.errorSummary }}</span>
+              } @else {
+                -
+              }
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">

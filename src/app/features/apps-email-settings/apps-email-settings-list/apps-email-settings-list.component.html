@@ -62,7 +62,7 @@
     <tr>
       <th pSortableColumn="name">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'appsEmailSettings.list.columns.name' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailSettings.list.columns.name' | translate">{{ 'appsEmailSettings.list.columns.name' | translate }}</span>
           <span class="th-icons">
             <p-sortIcon field="name"></p-sortIcon>
             <p-columnFilter field="name" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
@@ -72,7 +72,7 @@
 
       <th pSortableColumn="appKey">
         <div class="th-flex text-center">
-          <span class="th-label">{{ 'appsEmailSettings.list.columns.appKey' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailSettings.list.columns.appKey' | translate">{{ 'appsEmailSettings.list.columns.appKey' | translate }}</span>
           <span class="th-icons">
             <p-sortIcon field="appKey"></p-sortIcon>
             <p-columnFilter field="appKey" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
@@ -80,14 +80,14 @@
         </div>
       </th>
 
-      <th class="text-center" style="width: 8rem"><span class="th-label">{{ 'appsEmailSettings.list.columns.actions' | translate }}</span></th>
+      <th class="text-center" style="width: 8rem"><span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailSettings.list.columns.actions' | translate">{{ 'appsEmailSettings.list.columns.actions' | translate }}</span></th>
     </tr>
   </ng-template>
 
   <ng-template pTemplate="body" let-row>
     <tr>
-      <td>{{ row.name }}</td>
-      <td>{{ row.appKey }}</td>
+      <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.name">{{ row.name }}</span></td>
+      <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.appKey">{{ row.appKey }}</span></td>
       <td class="text-center">
         <div class="table-actions">
           <button

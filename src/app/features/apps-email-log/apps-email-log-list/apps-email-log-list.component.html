@@ -222,7 +222,7 @@
       <tr>
         <th pSortableColumn="recipient">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'appsEmailLog.list.columns.recipient' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.recipient' | translate">{{ 'appsEmailLog.list.columns.recipient' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="recipient"></p-sortIcon>
               <p-columnFilter
@@ -249,7 +249,7 @@
 
         <th pSortableColumn="subject">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'appsEmailLog.list.columns.subject' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.subject' | translate">{{ 'appsEmailLog.list.columns.subject' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="subject"></p-sortIcon>
               <p-columnFilter
@@ -275,12 +275,12 @@
         </th>
 
         <th>
-          <span class="th-label">{{ 'appsEmailLog.list.columns.template' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.template' | translate">{{ 'appsEmailLog.list.columns.template' | translate }}</span>
         </th>
 
         <th pSortableColumn="status" class="text-center">
           <div class="th-flex text-center justify-content-center">
-            <span class="th-label">{{ 'appsEmailLog.list.columns.status' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.status' | translate">{{ 'appsEmailLog.list.columns.status' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="status"></p-sortIcon>
               <p-columnFilter
@@ -310,7 +310,7 @@
 
         <th pSortableColumn="eventType">
           <div class="th-flex text-center">
-            <span class="th-label">{{ 'appsEmailLog.list.columns.eventType' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.eventType' | translate">{{ 'appsEmailLog.list.columns.eventType' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="eventType"></p-sortIcon>
               <p-columnFilter
@@ -337,7 +337,7 @@
 
         <th pSortableColumn="sentAt" class="text-center">
           <div class="th-flex text-center justify-content-center">
-            <span class="th-label">{{ 'appsEmailLog.list.columns.sentAt' | translate }}</span>
+            <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.sentAt' | translate">{{ 'appsEmailLog.list.columns.sentAt' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="sentAt"></p-sortIcon>
               <p-columnFilter
@@ -366,23 +366,23 @@
         </th>
 
         <th class="text-center">
-          <span class="th-label">{{ 'appsEmailLog.list.columns.error' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.error' | translate">{{ 'appsEmailLog.list.columns.error' | translate }}</span>
         </th>
         <th class="text-center">
-          <span class="th-label">{{ 'appsEmailLog.list.columns.actions' | translate }}</span>
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.actions' | translate">{{ 'appsEmailLog.list.columns.actions' | translate }}</span>
         </th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-row>
       <tr>
-        <td>{{ row.recipients }}</td>
-        <td>{{ row.subject }}</td>
-        <td>{{ row.template }}</td>
+        <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.recipients">{{ row.recipients }}</span></td>
+        <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.subject">{{ row.subject }}</span></td>
+        <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.template">{{ row.template }}</span></td>
         <td class="text-center">
           <p-tag [severity]="statusSeverity(row.status)" [value]="statusLabel(row.status)" />
         </td>
-        <td>{{ eventTypeLabel(row) }}</td>
+        <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="eventTypeLabel(row)">{{ eventTypeLabel(row) }}</span></td>
         <td class="text-center">
           {{ row.sentAt ? (row.sentAt | date: 'dd/MM/yyyy HH:mm') : '-' }}
         </td>

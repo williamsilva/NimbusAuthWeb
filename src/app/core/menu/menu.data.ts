@@ -35,40 +35,24 @@ export const APP_MENU: AppMenuItem[] = [
     ],
   },
   {
-    labelKey: 'menu.email.title',
+    // Fundiu "Configurações de E-mail" (só NimbusAuth) + "E-mail dos Apps" (proxy satélites) numa
+    // tela só (apps-email-settings-list) - a lista agora inclui "NimbusAuth" também, ver
+    // AppsEmailSettingsListComponent/AppsEmailSettingsDialogComponent. Volta a ser 1 item flat
+    // (sem submenu), mesmo padrão de menu.apps/menu.audit.email/menu.backup.
+    labelKey: 'menu.email.settings',
     icon: 'pi pi-envelope text-indigo-600',
-    children: [
-      {
-        labelKey: 'menu.email.settings',
-        icon: 'pi pi-envelope text-indigo-400',
-        route: '/email-settings',
-        exact: false,
-      },
-      {
-        labelKey: 'menu.email.appsSettings',
-        icon: 'pi pi-share-alt text-indigo-400',
-        route: '/apps-email-settings',
-        exact: false,
-      },
-    ],
+    route: '/apps-email-settings',
+    exact: false,
   },
   {
-    labelKey: 'menu.audit.title',
+    // Fundiu "Auditoria de E-mail" (só NimbusAuth) + "Auditoria dos Apps" (proxy satélites) numa
+    // tela só (apps-email-log-list) - o seletor de app dela agora inclui "NimbusAuth" também, ver
+    // AppsEmailLogListComponent. Volta a ser 1 item flat (sem submenu), mesmo padrão de
+    // menu.apps/menu.backup.
+    labelKey: 'menu.audit.email',
     icon: 'pi pi-history text-sky-600',
-    children: [
-      {
-        labelKey: 'menu.audit.email',
-        icon: 'pi pi-envelope text-sky-400',
-        route: '/email-log',
-        exact: false,
-      },
-      {
-        labelKey: 'menu.audit.appsEmail',
-        icon: 'pi pi-share-alt text-sky-400',
-        route: '/apps-email-log',
-        exact: false,
-      },
-    ],
+    route: '/apps-email-log',
+    exact: false,
   },
   {
     labelKey: 'menu.backup',

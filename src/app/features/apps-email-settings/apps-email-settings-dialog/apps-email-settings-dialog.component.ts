@@ -1,5 +1,5 @@
 import { Component, DestroyRef, EventEmitter, Output, computed, effect, inject, input, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -16,15 +16,18 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { AppsEmailSettingsApiService } from '../apps-email-settings.api.service';
 import { EmailSettings } from '../../email-settings/email-settings.models';
+import { EmailSettingsApiService } from '../../email-settings/email-settings.api.service';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { ErrorMsgComponent } from '../../../shared/error-msg/error-msg.component';
 
-/** Mesmos campos/lógica de EmailSettingsPageComponent (config do PRÓPRIO NimbusAuth), só
- *  parametrizado por appKey e num dialog (não uma página) - edita a config de e-mail de UM app
- *  satélite por vez, lida/gravada remotamente via AppsEmailSettingsApiService (proxy do
- *  NimbusAuthServer pro /internal/email-settings daquele app). PUT sempre envia a configuração
- *  inteira, exceto brevoApiKey/smtpPassword: vazios significam "não mudar o segredo salvo" - nunca
- *  reenviamos o valor mascarado de volta. */
+/** Edita a config de e-mail de UM app por vez (satélite OU o próprio NimbusAuth), aberto a partir
+ *  da tela unificada "Configurações de E-mail" (apps-email-settings-list). Quando `appKey` é
+ *  "nimbusauth", usa `EmailSettingsApiService` (endpoint próprio, `/v1/email/settings`, sem
+ *  parâmetro de app) em vez do proxy `AppsEmailSettingsApiService` (que chama `/internal/
+ *  email-settings` de cada satélite via M2M e não conhece o próprio NimbusAuth como alvo) - mesmo
+ *  adaptador client-side já usado na fusão das telas de Auditoria de E-mail. PUT sempre envia a
+ *  configuração inteira, exceto brevoApiKey/smtpPassword: vazios significam "não mudar o segredo
+ *  salvo" - nunca reenviamos o valor mascarado de volta. */
 @Component({
   standalone: true,
   selector: 'app-apps-email-settings-dialog',
@@ -52,8 +55,11 @@ export class AppsEmailSettingsDialogComponent {
 
   @Output() visibleChange = new EventEmitter<boolean>();
 
+  private static readonly NIMBUS_AUTH_APP_KEY = 'nimbusauth';
+
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(AppsEmailSettingsApiService);
+  private readonly ownApi = inject(EmailSettingsApiService);
   private readonly toast = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly i18n = inject(I18nService);
@@ -89,6 +95,12 @@ export class AppsEmailSettingsDialogComponent {
     smtpSsl: [false],
   });
 
+  private readonly implValue = toSignal(this.form.controls.impl.valueChanges, {
+    initialValue: this.form.controls.impl.value,
+  });
+  readonly showBrevoFieldset = computed(() => this.implValue() === 'api_key');
+  readonly showSmtpFieldset = computed(() => this.implValue() === 'smtp');
+
   constructor() {
     effect(() => {
       const appKey = this.appKey();
@@ -105,7 +117,9 @@ export class AppsEmailSettingsDialogComponent {
 
   private load(appKey: string): void {
     this.loading.set(true);
-    this.api.get(appKey).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    const request$ =
+      appKey === AppsEmailSettingsDialogComponent.NIMBUS_AUTH_APP_KEY ? this.ownApi.get() : this.api.get(appKey);
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (settings) => {
         this.applySettings(settings);
         this.loading.set(false);
@@ -151,8 +165,7 @@ export class AppsEmailSettingsDialogComponent {
     }
 
     const v = this.form.getRawValue();
-    this.saving.set(true);
-    this.api.update(appKey, {
+    const payload = {
       impl: v.impl,
       fromName: v.fromName.trim(),
       fromEmail: v.fromEmail.trim(),
@@ -167,7 +180,14 @@ export class AppsEmailSettingsDialogComponent {
       smtpAuth: v.smtpAuth,
       smtpStarttls: v.smtpStarttls,
       smtpSsl: v.smtpSsl,
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    };
+
+    this.saving.set(true);
+    const request$ =
+      appKey === AppsEmailSettingsDialogComponent.NIMBUS_AUTH_APP_KEY
+        ? this.ownApi.update(payload)
+        : this.api.update(appKey, payload);
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (settings) => {
         this.applySettings(settings);
         this.saving.set(false);

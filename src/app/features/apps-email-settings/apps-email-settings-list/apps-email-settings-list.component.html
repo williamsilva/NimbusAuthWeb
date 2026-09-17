@@ -1,14 +1,86 @@
 <app-page-header
   [title]="'appsEmailSettings.list.title' | translate"
   [subtitle]="'appsEmailSettings.list.subtitle' | translate"
-></app-page-header>
+>
+  <button pButton type="button" icon="pi pi-refresh" (click)="refresh()" class="p-button-text p-button-sm" [label]="'appsEmailSettings.list.refreshButton' | translate"></button>
+</app-page-header>
 
-<p-table [value]="apps()" [loading]="loading()" dataKey="id" class="app-admin-table">
+<app-filters-panel
+  [collapsed]="true"
+  (clear)="clear()"
+  (searchClick)="search()"
+  [actionsAlign]="'start'"
+  [activeFilterGroups]="activeFilterGroups()"
+  [activeCount]="activeFiltersCount()"
+  [title]="'appsEmailSettings.list.filtersTitle' | translate"
+>
+  <div class="grid formgrid gap-0 align-items-end">
+    <div class="col-12 md:col-4 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <input id="name" pInputText [value]="name()" class="w-full p-inputtext-sm" (input)="name.set(($any($event.target).value ?? '').toString())" />
+        <label for="name">{{ 'appsEmailSettings.list.fields.name' | translate }}</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-4 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <input id="appKey" pInputText [value]="appKey()" class="w-full p-inputtext-sm" (input)="appKey.set(($any($event.target).value ?? '').toString())" />
+        <label for="appKey">{{ 'appsEmailSettings.list.fields.appKey' | translate }}</label>
+      </p-floatLabel>
+    </div>
+  </div>
+</app-filters-panel>
+
+<div class="surface-card border-round px-3 pt-2 pb-3 mt-2">
+<p-table
+  #dt
+  stripedRows
+  dataKey="id"
+  size="small"
+  [rows]="rows"
+  [lazy]="true"
+  showGridlines
+  [value]="apps()"
+  [rowHover]="true"
+  [paginator]="true"
+  sortMode="multiple"
+  filterDisplay="menu"
+  stateStorage="local"
+  class="app-admin-table"
+  [loading]="loading()"
+  [stateKey]="tableStateKey()"
+  [showCurrentPageReport]="true"
+  [totalRecords]="totalRecords()"
+  (onLazyLoad)="onLazyLoad($event)"
+  [paginatorDropdownAppendTo]="'body'"
+  (onPage)="onPageChange($event)"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [tableStyle]="{ width: '100%', 'min-width': '40rem' }"
+  [currentPageReportTemplate]="'appsEmailSettings.list.pageReportTemplate' | translate"
+>
   <ng-template pTemplate="header">
     <tr>
-      <th><div class="th-flex"><span class="th-label">{{ 'appsEmailSettings.list.columns.name' | translate }}</span></div></th>
-      <th><div class="th-flex"><span class="th-label">{{ 'appsEmailSettings.list.columns.appKey' | translate }}</span></div></th>
-      <th class="text-center" style="width: 8rem"><div class="th-flex justify-content-center"><span class="th-label">{{ 'appsEmailSettings.list.columns.actions' | translate }}</span></div></th>
+      <th pSortableColumn="name">
+        <div class="th-flex text-center">
+          <span class="th-label">{{ 'appsEmailSettings.list.columns.name' | translate }}</span>
+          <span class="th-icons">
+            <p-sortIcon field="name"></p-sortIcon>
+            <p-columnFilter field="name" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+          </span>
+        </div>
+      </th>
+
+      <th pSortableColumn="appKey">
+        <div class="th-flex text-center">
+          <span class="th-label">{{ 'appsEmailSettings.list.columns.appKey' | translate }}</span>
+          <span class="th-icons">
+            <p-sortIcon field="appKey"></p-sortIcon>
+            <p-columnFilter field="appKey" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
+          </span>
+        </div>
+      </th>
+
+      <th class="text-center" style="width: 8rem"><span class="th-label">{{ 'appsEmailSettings.list.columns.actions' | translate }}</span></th>
     </tr>
   </ng-template>
 
@@ -34,10 +106,13 @@
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="3" class="text-center py-5 opacity-70">{{ 'appsEmailSettings.list.empty' | translate }}</td>
+      <td colspan="3" class="text-center py-5 opacity-70">
+        {{ (loadedOnce() ? 'appsEmailSettings.list.empty' : 'appsEmailSettings.list.loadingMessage') | translate }}
+      </td>
     </tr>
   </ng-template>
 </p-table>
+</div>
 
 <app-apps-email-settings-dialog
   [visible]="dialogVisible()"

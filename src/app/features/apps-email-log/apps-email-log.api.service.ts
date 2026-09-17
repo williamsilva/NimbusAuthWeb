@@ -19,6 +19,8 @@ export class AppsEmailLogApiService {
     if (params.status) httpParams = httpParams.set('status', params.status);
     if (params.sentAtFrom) httpParams = httpParams.set('sentAtFrom', params.sentAtFrom);
     if (params.sentAtTo) httpParams = httpParams.set('sentAtTo', params.sentAtTo);
+    if (params.sortField) httpParams = httpParams.set('sortField', params.sortField);
+    if (params.sortOrder) httpParams = httpParams.set('sortOrder', params.sortOrder);
 
     return this.http.get<AppEmailLogPage>(`${this.baseUrl}/${appKey}/email-log/search`, { params: httpParams });
   }

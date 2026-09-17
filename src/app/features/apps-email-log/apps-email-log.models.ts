@@ -11,6 +11,9 @@ export interface AppEmailLogItem {
   eventType: string | null;
   errorMessage: string | null;
   sentAt: string | null;
+  /** Corpo HTML completo - ausente/null em CardSync (única origem que não guarda essa coluna
+   *  hoje, ver cs_email_log) e em registros antigos das demais origens. */
+  body?: string | null;
 }
 
 export interface AppEmailLogPage {
@@ -30,4 +33,8 @@ export interface AppEmailLogSearchParams {
   status?: string;
   sentAtFrom?: string;
   sentAtTo?: string;
+  /** Um só campo (não "multiple") - o proxy (AppEmailLogController) e os 5 endpoints internos dos
+   *  apps satélite só aceitam 1 sortField/sortOrder por vez (ver plano de ordenação cross-repo). */
+  sortField?: string;
+  sortOrder?: 'asc' | 'desc';
 }

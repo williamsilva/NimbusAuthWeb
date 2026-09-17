@@ -35,24 +35,10 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'email-settings',
-        loadComponent: () =>
-          import('./features/email-settings/email-settings-page.component').then(
-            (m) => m.EmailSettingsPageComponent,
-          ),
-      },
-      {
         path: 'apps-email-settings',
         loadComponent: () =>
           import('./features/apps-email-settings/apps-email-settings-list/apps-email-settings-list.component').then(
             (m) => m.AppsEmailSettingsListComponent,
-          ),
-      },
-      {
-        path: 'email-log',
-        loadComponent: () =>
-          import('./features/email-log/email-log-list/email-log-list.component').then(
-            (m) => m.EmailLogListComponent,
           ),
       },
       {

@@ -12,7 +12,8 @@
   },
   "common": {
     "logout": "Sair",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "success": "Sucesso"
   },
   "footer": {
     "copyright": "NimbusAuth",
@@ -51,5 +52,724 @@
       "appsEmail": "Auditoria dos Apps"
     },
     "backup": "Backup"
+  },
+  "apps": {
+    "list": {
+      "title": "Apps",
+      "subtitle": "Clients OAuth2 (relying parties) do ecossistema Nimbus",
+      "searchPlaceholder": "Buscar por nome, appKey ou clientId",
+      "searchAria": "Buscar",
+      "newButton": "Novo App",
+      "columns": {
+        "name": "Nome",
+        "appKey": "appKey",
+        "clientId": "Client ID",
+        "allowedOrigin": "Origem CORS",
+        "accessTokenTtl": "TTL access token",
+        "refreshTokenTtl": "TTL refresh token",
+        "status": "Status",
+        "actions": "Ações"
+      },
+      "defaultTtlLabel": "Padrão",
+      "defaultTtlTooltip": "Usa o padrão global (Configurações de Segurança)",
+      "statusActive": "Ativo",
+      "statusInactive": "Inativo",
+      "editTooltip": "Editar",
+      "regenerateSecretTooltip": "Regenerar secret",
+      "deleteTooltip": "Excluir",
+      "empty": "Nenhum App cadastrado ainda.",
+      "confirmRegenerate": {
+        "header": "Regenerar secret",
+        "message": "Isso invalida o client secret atual de \"{{name}}\" imediatamente. Os apps que ainda usam o valor antigo param de autenticar até você atualizar a env var lá. Continuar?"
+      },
+      "confirmDelete": {
+        "header": "Excluir App",
+        "message": "Excluir \"{{name}}\"? Isso remove o client OAuth2 imediatamente - ninguém mais consegue logar por ele."
+      },
+      "toastDeleted": {
+        "summary": "Excluído",
+        "detail": "\"{{name}}\" foi excluído."
+      }
+    },
+    "dialog": {
+      "editTitle": "Editar App",
+      "newTitle": "Novo App",
+      "fields": {
+        "appKey": "Chave do app (appKey)",
+        "clientId": "Client ID",
+        "name": "Nome",
+        "description": "Descrição",
+        "redirectUri": "Redirect URI (login)",
+        "postLogoutRedirectUris": "URL(s) pós-logout",
+        "allowedOrigin": "Origem CORS",
+        "scopes": "Scopes",
+        "accessTokenTtl": "TTL do access token",
+        "refreshTokenTtl": "TTL do refresh token",
+        "active": "Ativo"
+      },
+      "placeholders": {
+        "appKey": "ex: nimbusflow",
+        "clientId": "ex: nimbusflow-bff",
+        "redirectUri": "https://api.exemplo.com.br/login/oauth2/code/{client-id}",
+        "postLogoutRedirectUris": "https://exemplo.com.br (separar por vírgula se mais de uma)",
+        "allowedOrigin": "https://exemplo.com.br",
+        "scopes": "openid,profile",
+        "accessTokenTtl": "PT10M (padrão global)",
+        "refreshTokenTtl": "P30D (padrão global)"
+      },
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "toastCreated": "App criado.",
+      "toastUpdated": "App atualizado."
+    }
+  },
+  "users": {
+    "list": {
+      "title": "Usuários",
+      "subtitle": "Usuários com acesso ao ecossistema Nimbus.",
+      "refreshButton": "Atualizar",
+      "activateSelectedButton": "Ativar selecionados",
+      "deactivateSelectedButton": "Inativar selecionados",
+      "newButton": "Novo usuário",
+      "filtersTitle": "Filtrar",
+      "fields": {
+        "name": "Nome",
+        "email": "E-mail",
+        "document": "CPF/CNPJ",
+        "app": "App",
+        "status": "Status",
+        "lastLoginAt": "Último login",
+        "blockedUntil": "Bloqueado até",
+        "passwordExpiresAt": "Senha expira em",
+        "createdAt": "Criado em",
+        "createdBy": "Criado por"
+      },
+      "chips": {
+        "name": "Nome",
+        "email": "E-mail",
+        "document": "Documento",
+        "app": "App",
+        "status": "Status",
+        "createdBy": "Criado por",
+        "createdAt": "Criado em",
+        "lastLoginAt": "Último login",
+        "blockedUntil": "Bloqueado até",
+        "passwordExpiresAt": "Senha expira em"
+      },
+      "columns": {
+        "email": "E-mail",
+        "name": "Nome",
+        "apps": "Sistemas",
+        "document": "CPF/CNPJ",
+        "status": "Status",
+        "lastLoginAt": "Último login",
+        "blockedUntil": "Bloqueado até",
+        "passwordExpiresAt": "Senha expira",
+        "createdAt": "Criado em",
+        "createdBy": "Criado por",
+        "actions": "Ações"
+      },
+      "selectRowFirstTooltip": "Selecione uma linha primeiro",
+      "noBulkAction": "Nenhuma ação em lote selecionada",
+      "selectedCountLabel": "{{count}} {{userWord}} {{selectedWord}}",
+      "statusFilterAllPlaceholder": "Todos",
+      "periodFilterPlaceholder": "Período",
+      "pageReportTemplate": "{first} a {last} de {totalRecords}",
+      "loadingMessage": "Carregando…",
+      "emptyMessage": "Nenhum usuário encontrado.",
+      "editTooltip": "Editar",
+      "resendInviteTooltip": "Reenviar convite",
+      "activateTooltip": "Ativar",
+      "deactivateTooltip": "Inativar",
+      "toastInviteResent": {
+        "summary": "Convite reenviado",
+        "detail": "E-mail reenviado para {{email}}."
+      },
+      "confirmActivate": {
+        "header": "Ativar usuário",
+        "message": "Ativar \"{{name}}\"?"
+      },
+      "confirmDeactivate": {
+        "header": "Inativar usuário",
+        "message": "Inativar \"{{name}}\"? A pessoa não consegue mais logar em nenhum app até ser reativada."
+      },
+      "confirmActivateSelected": {
+        "header": "Ativar selecionados",
+        "message": "Ativar {{count}} {{userWord}} {{selectedWord}}?"
+      },
+      "confirmDeactivateSelected": {
+        "header": "Inativar selecionados",
+        "message": "Inativar {{count}} {{userWord}} {{selectedWord}}?"
+      },
+      "toastActivated": "\"{{name}}\" foi ativado.",
+      "toastDeactivated": "\"{{name}}\" foi inativado.",
+      "toastActivatedBulk": "{{count}} {{userWord}} {{actionWord}}.",
+      "toastDeactivatedBulk": "{{count}} {{userWord}} {{actionWord}}.",
+      "words": {
+        "user": { "one": "usuário", "other": "usuários" },
+        "activated": { "one": "ativado", "other": "ativados" },
+        "deactivated": { "one": "inativado", "other": "inativados" },
+        "selected": { "one": "selecionado", "other": "selecionados" }
+      }
+    },
+    "dialog": {
+      "editTitle": "Editar usuário",
+      "newTitle": "Novo usuário",
+      "fields": {
+        "name": "Nome",
+        "userName": "E-mail (login)",
+        "document": "CPF/CNPJ",
+        "selectedApps": "Apps com acesso *"
+      },
+      "placeholders": {
+        "document": "Só números"
+      },
+      "groupsPlaceholder": "Selecione o(s) grupo(s)",
+      "noGroupsError": "Selecione ao menos 1 grupo em algum app.",
+      "resendInvite": "Reenviar convite",
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "toastInviteResent": {
+        "summary": "Convite reenviado",
+        "detail": "E-mail de primeiro acesso reenviado."
+      },
+      "toastUpdated": "Usuário atualizado.",
+      "toastCreated": "Usuário criado - convite de primeiro acesso enviado por e-mail."
+    },
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "blocked": "Bloqueado",
+      "disabled": "Desabilitado",
+      "pendingPassword": "Pendente (1º acesso)"
+    }
+  },
+  "groups": {
+    "list": {
+      "title": "Grupos",
+      "subtitle": "Perfis de acesso, agrupando usuários e permissões por app.",
+      "refreshButton": "Atualizar",
+      "newButton": "Novo grupo",
+      "filtersTitle": "Filtrar",
+      "fields": {
+        "name": "Nome",
+        "description": "Descrição",
+        "app": "App",
+        "createdAt": "Criado em",
+        "createdBy": "Criado por"
+      },
+      "columns": {
+        "name": "Nome",
+        "app": "App",
+        "description": "Descrição",
+        "createdAt": "Criado em",
+        "createdBy": "Criado por",
+        "users": "Usuários",
+        "permissions": "Permissões",
+        "actions": "Ações"
+      },
+      "allPlaceholder": "Todos",
+      "periodFilterPlaceholder": "Período",
+      "pageReportTemplate": "{first} a {last} de {totalRecords}",
+      "loadingMessage": "Carregando…",
+      "emptyMessage": "Nenhum grupo encontrado.",
+      "editTooltip": "Editar",
+      "manageTooltip": "Gerenciar permissões/usuários",
+      "deleteTooltip": "Excluir",
+      "confirmDelete": {
+        "header": "Excluir grupo",
+        "message": "Excluir \"{{name}}\"? Só é possível se não houver nenhum usuário vinculado a ele."
+      },
+      "toastDeleted": "\"{{name}}\" foi excluído."
+    },
+    "dialog": {
+      "editTitle": "Editar grupo",
+      "newTitle": "Novo grupo",
+      "appImmutableHint": "Não pode ser alterado depois de criado.",
+      "fields": {
+        "app": "App",
+        "name": "Nome",
+        "description": "Descrição"
+      },
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "toastUpdated": "Grupo atualizado.",
+      "toastCreated": "Grupo criado."
+    },
+    "manage": {
+      "title": "Gerenciar grupo",
+      "titleWithName": "Gerenciar grupo: {{name}}",
+      "tabs": {
+        "permissions": "Permissões",
+        "users": "Usuários"
+      },
+      "permissionsPlaceholder": "Selecione as permissões",
+      "savePermissionsButton": "Salvar permissões",
+      "usersPlaceholder": "Selecione os usuários",
+      "usersRemoveHint": "Remover um usuário daqui só é permitido se ele continuar em outro grupo do nimbusauth.",
+      "saveUsersButton": "Salvar usuários",
+      "close": "Fechar",
+      "toastPermissionsUpdated": {
+        "summary": "Sucesso",
+        "detail": "Permissões do grupo atualizadas."
+      },
+      "toastUsersUpdated": {
+        "summary": "Sucesso",
+        "detail": "Usuários do grupo atualizados."
+      }
+    }
+  },
+  "securitySettings": {
+    "title": "Configurações de Segurança",
+    "subtitle": "Política de senha, bloqueio, rate-limit e tokens - válidas pra todo o ecossistema.",
+    "loading": "Carregando…",
+    "tabs": {
+      "password": "Senha",
+      "lockout": "Bloqueio (lockout)",
+      "ipRateLimit": "Rate-limit por IP",
+      "tokens": "Tokens",
+      "other": "Outros"
+    },
+    "password": {
+      "minLength": "Tamanho mínimo",
+      "historySize": "Histórico (não repetir)",
+      "sequenceLen": "Tamanho da sequência bloqueada",
+      "maxSameInRow": "Máx. caracteres repetidos",
+      "ruleDigit": "Exigir número",
+      "ruleUpper": "Exigir maiúscula",
+      "ruleLower": "Exigir minúscula",
+      "ruleSymbol": "Exigir símbolo",
+      "ruleNoWhitespace": "Bloquear espaço",
+      "ruleCommon": "Bloquear senha comum",
+      "ruleNoUsername": "Bloquear conter usuário",
+      "ruleNoSequence": "Bloquear sequência",
+      "ruleNoRepetition": "Bloquear repetição",
+      "failIfNoExpirationData": "Bloquear se sem dado de expiração",
+      "commonPasswords": "Senhas comuns bloqueadas (separar por vírgula)",
+      "commonPasswordsPlaceholder": "123456,qwerty,password",
+      "expirationEnabled": "Expiração ativa",
+      "expirationWarnDays": "Avisar (dias antes)",
+      "expirationExpireDays": "Expira em (dias)",
+      "inviteTtl": "Validade do convite",
+      "ttlPlaceholder24h": "PT24H",
+      "resetTtl": "Validade do reset",
+      "ttlPlaceholder15m": "PT15M",
+      "resetRateLimitEnabled": "Rate-limit de reset ativo",
+      "resetRateLimitMaxRequests": "Máx. pedidos de reset",
+      "resetRateLimitWindow": "Janela do rate-limit"
+    },
+    "lockout": {
+      "enabled": "Ativo",
+      "extendWhenLocked": "Estender bloqueio se tentar de novo enquanto bloqueado",
+      "columns": {
+        "attempts": "Tentativas",
+        "duration": "Duração do bloqueio"
+      },
+      "durationPlaceholder": "PT15M",
+      "removeTooltip": "Remover",
+      "newRuleButton": "Nova regra"
+    },
+    "ipRateLimit": {
+      "enabled": "Ativo",
+      "maxAttempts": "Máx. tentativas por IP",
+      "window": "Janela",
+      "windowPlaceholder": "PT15M"
+    },
+    "token": {
+      "sessionTimeout": "Timeout de sessão (login)",
+      "sessionTimeoutPlaceholder": "PT2H",
+      "sessionTimeoutHint": "Aplicado na hora, sem restart - sessões já ativas mantêm o timeout antigo até expirar.",
+      "accessTokenTtl": "TTL padrão do access token",
+      "accessTokenTtlPlaceholder": "PT10M",
+      "accessTokenTtlHint": "Default pra Apps sem TTL próprio (ver tela Apps) - só afeta Apps criados/editados depois.",
+      "refreshTokenTtl": "TTL padrão do refresh token",
+      "refreshTokenTtlPlaceholder": "P30D"
+    },
+    "other": {
+      "loginDefaultTarget": "URL padrão pós-login (fallback)",
+      "loginDefaultTargetPlaceholder": "https://cardsync.com.br/",
+      "protectedUsernames": "Usernames protegidos (separar por vírgula)",
+      "protectedUsernamesPlaceholder": "owner,system"
+    },
+    "save": "Salvar",
+    "toastInvalid": {
+      "summary": "Formulário inválido",
+      "detail": "Verifique os campos destacados - é preciso pelo menos 1 regra de bloqueio."
+    },
+    "toastUpdated": {
+      "summary": "Sucesso",
+      "detail": "Configurações de segurança atualizadas."
+    }
+  },
+  "emailSettings": {
+    "page": {
+      "title": "Configurações de E-mail",
+      "subtitle": "Remetente, Brevo (API) e SMTP usados pelo NimbusAuth para convites e reset de senha."
+    },
+    "loading": "Carregando…",
+    "fieldset": {
+      "sender": "Remetente",
+      "brevo": "Brevo (API)",
+      "smtp": "SMTP"
+    },
+    "fields": {
+      "impl": "Modo de envio",
+      "fromName": "Nome do remetente",
+      "fromEmail": "E-mail do remetente",
+      "brevoApiKey": "Chave de API",
+      "brevoBaseUrl": "URL base",
+      "smtpHost": "Host",
+      "smtpPort": "Porta",
+      "smtpUsername": "Usuário",
+      "smtpPassword": "Senha",
+      "smtpAuth": "Autenticação",
+      "smtpStarttls": "STARTTLS",
+      "smtpSsl": "SSL"
+    },
+    "placeholders": {
+      "fromName": "Nimbus Auth",
+      "fromEmail": "contato@exemplo.com.br",
+      "brevoBaseUrl": "https://api.brevo.com/v3",
+      "smtpHost": "smtp.exemplo.com.br",
+      "secretKeepCurrent": "Deixe em branco pra manter a atual"
+    },
+    "implOptions": {
+      "fake": "Simulado (não envia de verdade)",
+      "apiKey": "API (Brevo)",
+      "smtp": "SMTP"
+    },
+    "save": "Salvar",
+    "toastInvalid": {
+      "summary": "Formulário inválido",
+      "detail": "Verifique os campos destacados."
+    },
+    "toastUpdated": {
+      "summary": "Sucesso",
+      "detail": "Configurações de e-mail atualizadas."
+    }
+  },
+  "appsEmailSettings": {
+    "list": {
+      "title": "E-mail dos Apps",
+      "subtitle": "Config de e-mail (SMTP/Brevo/remetente) de cada app satélite - lida e gravada remotamente no próprio app.",
+      "columns": {
+        "name": "Nome",
+        "appKey": "appKey",
+        "actions": "Ações"
+      },
+      "editTooltip": "Editar config de e-mail",
+      "empty": "Nenhum app satélite cadastrado ainda."
+    },
+    "dialog": {
+      "titlePrefix": "E-mail de {{name}}",
+      "close": "Fechar",
+      "save": "Salvar",
+      "toastUpdated": "Configurações de e-mail de \"{{name}}\" atualizadas."
+    }
+  },
+  "emailLog": {
+    "status": {
+      "sent": "Enviado",
+      "failed": "Falhou"
+    },
+    "eventType": {
+      "passwordReset": "Reset de senha",
+      "firstAccess": "Primeiro acesso",
+      "chargebackDetected": "Chargeback detectado",
+      "backupNotification": "Notificação de backup"
+    },
+    "list": {
+      "title": "Auditoria de E-mail",
+      "subtitle": "E-mails de convite e reset de senha disparados pelo NimbusAuth.",
+      "refreshButton": "Atualizar",
+      "filtersTitle": "Filtrar",
+      "fields": {
+        "recipient": "Destinatário",
+        "subject": "Assunto",
+        "template": "Template",
+        "status": "Status",
+        "eventType": "Tipo de evento",
+        "sentAt": "Enviado em"
+      },
+      "columns": {
+        "recipient": "Destinatário",
+        "subject": "Assunto",
+        "template": "Template",
+        "status": "Status",
+        "eventType": "Tipo de evento",
+        "sentAt": "Enviado em",
+        "actions": "Ações"
+      },
+      "allPlaceholder": "Todos",
+      "periodFilterPlaceholder": "Período",
+      "pageReportTemplate": "{first} a {last} de {totalRecords}",
+      "viewDetailTooltip": "Ver detalhe",
+      "emptyMessage": "Nenhum e-mail encontrado.",
+      "loadingMessage": "Carregando…",
+      "detail": {
+        "title": "Detalhe do e-mail",
+        "recipient": "Destinatário:",
+        "subject": "Assunto:",
+        "template": "Template:",
+        "status": "Status:",
+        "eventType": "Tipo de evento:",
+        "sentAt": "Enviado em:",
+        "error": "Erro:",
+        "bodyUnavailable": "Corpo do e-mail não disponível (registros anteriores a 19/08/2026 não guardam o HTML enviado).",
+        "close": "Fechar"
+      }
+    }
+  },
+  "appsEmailLog": {
+    "list": {
+      "title": "Auditoria dos Apps",
+      "subtitle": "E-mails enviados por cada app satélite do ecossistema Nimbus.",
+      "filtersTitle": "Filtrar",
+      "fields": {
+        "app": "App",
+        "recipient": "Destinatário",
+        "subject": "Assunto",
+        "eventType": "Tipo de evento",
+        "status": "Status",
+        "sentAt": "Enviado em"
+      },
+      "columns": {
+        "recipient": "Destinatário",
+        "subject": "Assunto",
+        "template": "Template",
+        "status": "Status",
+        "eventType": "Tipo de evento",
+        "sentAt": "Enviado em",
+        "error": "Erro"
+      },
+      "pageReportTemplate": "{first} a {last} de {totalRecords}",
+      "selectAppMessage": "Selecione um app para ver a auditoria de e-mail.",
+      "emptyMessage": "Nenhum e-mail encontrado.",
+      "loadingMessage": "Carregando…"
+    }
+  },
+  "backup": {
+    "title": "Backup",
+    "subtitle": "Google Drive, disparo manual e histórico de execuções do backup consolidado do ecossistema.",
+    "loading": "Carregando…",
+    "drive": {
+      "fieldset": "Google Drive",
+      "connected": "Conectado",
+      "by": "por",
+      "on": "em",
+      "disconnectedText": "Não conectado - os backups são gerados normalmente, mas não são enviados a lugar nenhum até conectar.",
+      "disconnectButton": "Desconectar",
+      "connectButton": "Conectar Google Drive"
+    },
+    "manual": {
+      "fieldset": "Disparo manual",
+      "description": "Executa o backup de todos os apps do ecossistema (bancos + arquivos) agora, em segundo plano.",
+      "executeButton": "Executar backup agora"
+    },
+    "single": {
+      "fieldset": "Backup avulso",
+      "description": "Gera e baixa na hora o backup de um único app do ecossistema, sem esperar o processo consolidado.",
+      "selectAppPlaceholder": "Selecione um app",
+      "includeFiles": "Incluir arquivos",
+      "generateButton": "Gerar agora"
+    },
+    "notifications": {
+      "fieldset": "Notificações por e-mail",
+      "description": "Ao fim de cada execução (manual ou agendada), um e-mail com o status é enviado pra estes destinatários.",
+      "emailPlaceholder": "email@exemplo.com.br",
+      "addButton": "Adicionar",
+      "columns": {
+        "email": "E-mail",
+        "createdAt": "Cadastrado em"
+      },
+      "removeTooltip": "Remover",
+      "empty": "Nenhum destinatário cadastrado."
+    },
+    "history": {
+      "fieldset": "Histórico de execuções",
+      "refreshButton": "Atualizar",
+      "columns": {
+        "status": "Status",
+        "startedAt": "Iniciado em",
+        "finishedAt": "Finalizado em",
+        "triggeredBy": "Disparado por",
+        "size": "Tamanho",
+        "errors": "Erros"
+      },
+      "empty": "Nenhuma execução registrada ainda.",
+      "triggeredByScheduled": "Agendado"
+    },
+    "status": {
+      "running": "Em execução",
+      "success": "Concluído",
+      "partial": "Concluído com alertas",
+      "failed": "Falhou",
+      "unknown": "Desconhecido"
+    },
+    "toastDriveConnected": {
+      "summary": "Google Drive conectado",
+      "detail": "A conta foi conectada com sucesso."
+    },
+    "toastDriveDisconnected": {
+      "summary": "Google Drive desconectado",
+      "detail": "A conta foi desconectada."
+    },
+    "toastDriveError": {
+      "summary": "Falha na conexão"
+    },
+    "driveErrors": {
+      "notConfigured": "O cliente OAuth2 do Google Drive não está configurado neste ambiente.",
+      "stateMismatch": "Estado inválido ou expirado - tente conectar de novo.",
+      "tokenExchangeFailed": "Falha ao trocar o código de autorização por um token - tente novamente.",
+      "generic": "Erro ao conectar: {{code}}"
+    },
+    "confirmDisconnect": {
+      "header": "Desconectar Google Drive",
+      "message": "Os backups automáticos vão parar de ser enviados até reconectar. Continuar?"
+    },
+    "toastBackupStarted": {
+      "summary": "Backup iniciado",
+      "detail": "A execução foi disparada em segundo plano - acompanhe o status abaixo."
+    },
+    "toastBackupError": {
+      "summary": "Erro",
+      "detail": "Não foi possível disparar o backup."
+    },
+    "toastRecipientAdded": {
+      "summary": "Destinatário adicionado"
+    },
+    "toastRecipientError": {
+      "summary": "Erro",
+      "detailFallback": "Não foi possível adicionar o destinatário."
+    },
+    "toastSingleError": {
+      "summary": "Erro",
+      "detail": "Não foi possível gerar o backup deste app."
+    },
+    "toastRemoved": {
+      "summary": "Removido"
+    },
+    "toastRemoveError": {
+      "summary": "Erro",
+      "detail": "Não foi possível remover o destinatário."
+    },
+    "confirmRemoveRecipient": {
+      "header": "Remover destinatário",
+      "message": "Remover \"{{email}}\" da lista de notificações de backup?"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "subtitle": "Consulte seus dados de perfil e cadastro.",
+    "loading": "Carregando…",
+    "loadError": "Não foi possível carregar os dados do perfil.",
+    "changePasswordButton": "Alterar senha",
+    "dataCardTitle": "Dados do usuário",
+    "itemsCount": {
+      "one": "{{count}} item",
+      "other": "{{count}} itens"
+    },
+    "sections": {
+      "identification": "Identificação",
+      "security": "Segurança",
+      "audit": "Auditoria"
+    },
+    "chips": {
+      "groups": "Grupos",
+      "permissions": "Permissões",
+      "name": "Nome",
+      "username": "Usuário",
+      "document": "Documento",
+      "status": "Status",
+      "blocked": "Bloqueado",
+      "blockedUntil": "Bloqueado até",
+      "password": "Senha",
+      "passwordExpiresAt": "Senha expira em",
+      "issuer": "Issuer",
+      "createdAt": "Criado em",
+      "lastLogin": "Último login"
+    },
+    "security": {
+      "no": "Não",
+      "yes": "Sim",
+      "notInformed": "Não informado",
+      "expired": "Expirada",
+      "today": "Hoje",
+      "oneDay": "1 dia",
+      "daysCount": "{{count}} dias"
+    },
+    "modals": {
+      "groupsTitle": "Grupos",
+      "groupsHint": "Perfis organizacionais vinculados ao usuário.",
+      "noGroups": "Nenhum grupo.",
+      "permissionsTitle": "Permissões",
+      "permissionsHint": "Acessos disponíveis para o usuário autenticado.",
+      "noPermissions": "Nenhuma permissão."
+    },
+    "permissions": {
+      "USERS_CONSULT": "Consulta os usuários cadastrados",
+      "USERS_CREATE": "Cadastra um usuário novo",
+      "USERS_CHANGE": "Altera um usuário existente",
+      "USERS_ACTIVE_OR_INACTIVE": "Ativa ou inativa um usuário",
+      "USERS_RESEND_INVITE": "Reenvia o convite de primeiro acesso",
+      "GROUPS_CONSULT": "Consulta os grupos cadastrados",
+      "GROUPS_CREATE": "Cadastra um grupo novo",
+      "GROUPS_CHANGE": "Altera um grupo existente",
+      "GROUPS_DELETE": "Exclui um grupo",
+      "GROUPS_MANAGEMENT_USER": "Gerencia os usuários de um grupo",
+      "GROUPS_MANAGEMENT_PERMISSION": "Gerencia as permissões de um grupo",
+      "APPS_CONSULT": "Consulta os Apps cadastrados",
+      "APPS_CREATE": "Cadastra um App novo",
+      "APPS_CHANGE": "Altera um App existente",
+      "APPS_DELETE": "Exclui um App",
+      "SECURITY_SETTINGS_CONSULT": "Consulta as Configurações de Segurança",
+      "SECURITY_SETTINGS_PROCESS": "Altera as Configurações de Segurança",
+      "EMAIL_SETTINGS_CONSULT": "Consulta as Configurações de E-mail",
+      "EMAIL_SETTINGS_PROCESS": "Altera as Configurações de E-mail",
+      "APPS_EMAIL_SETTINGS_CONSULT": "Consulta a config de e-mail de cada app satélite",
+      "APPS_EMAIL_SETTINGS_PROCESS": "Atualiza a config de e-mail de cada app satélite",
+      "APPS_EMAIL_LOG_CONSULT": "Consulta a auditoria de e-mail de cada app satélite",
+      "AUDIT_MAIL_CONSULT": "Consulta e-mails enviados",
+      "BACKUP_CONSULT": "Consulta o status/histórico de backup",
+      "BACKUP_PROCESS": "Dispara backup manual e conecta/desconecta o Google Drive"
+    }
+  },
+  "accountPassword": {
+    "policyTag": "Política de senha",
+    "defaultUserName": "Usuário",
+    "chips": {
+      "rules": "Regras",
+      "validRules": "Regras válidas",
+      "invalidRules": "Regras inválidas",
+      "strength": "Força",
+      "minLength": "Tamanho mínimo"
+    },
+    "profileButton": "Perfil",
+    "backButton": "Voltar",
+    "title": "Alterar senha",
+    "subtitle": "Informe sua senha atual e defina uma nova senha segura.",
+    "changeDataSection": "Dados da alteração",
+    "fields": {
+      "currentPassword": "Senha atual",
+      "newPassword": "Nova senha",
+      "confirmPassword": "Confirmar nova senha"
+    },
+    "policySection": "Política de senha",
+    "policySubtitle": "A senha deve atender às regras de segurança abaixo.",
+    "strengthTitle": "Força da senha",
+    "strengthAriaLabel": "Força da senha",
+    "strength": {
+      "empty": "Não informada",
+      "weak": "Fraca",
+      "medium": "Média",
+      "strong": "Forte"
+    },
+    "rulesMetCount": "{{valid}}/{{total}} regras atendidas",
+    "saveButton": "Salvar senha",
+    "toastChanged": {
+      "summary": "Senha alterada",
+      "detail": "Sua senha foi atualizada com sucesso."
+    },
+    "errorFallback": "Não foi possível alterar a senha. Confira a senha atual e tente novamente."
   }
 }

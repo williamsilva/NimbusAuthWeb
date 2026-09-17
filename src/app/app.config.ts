@@ -2,7 +2,6 @@ import { ApplicationConfig, provideAppInitializer, provideZoneChangeDetection, i
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter, withNavigationErrorHandler } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
 
 import { NIMBUS_THEME_CONFIG } from '@williamsilva/nimbus-web-commons';
 
@@ -14,7 +13,8 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/auth.interceptor';
 import { provideNimbusLayoutHosts } from './core/layout/layout-providers';
-import { PtBrTranslateLoader } from './core/i18n/pt-br-translate.loader';
+import { AssetsTranslateLoader } from './core/i18n/assets-translate.loader';
+import { I18nService, readPersistedLang } from './core/i18n/i18n.service';
 
 /** Chunk lazy (rota carregada sob demanda, ex.: /users) pode ter mudado de hash entre o deploy que
  *  gerou o index.html já carregado nesta aba e o deploy atual - o browser pede o arquivo antigo,
@@ -62,16 +62,17 @@ export const appConfig: ApplicationConfig = {
 
     importProvidersFrom(
       TranslateModule.forRoot({
-        loader: { provide: TranslateLoader, useClass: PtBrTranslateLoader },
+        loader: { provide: TranslateLoader, useClass: AssetsTranslateLoader },
         isolate: false,
       }),
     ),
 
     provideAppInitializer(() => {
       const translate = inject(TranslateService);
+      const i18n = inject(I18nService);
       translate.addLangs(['pt-BR', 'en', 'es']);
       translate.setDefaultLang('pt-BR');
-      return firstValueFrom(translate.use('pt-BR'));
+      return i18n.setLang(readPersistedLang());
     }),
 
     provideAnimationsAsync(),

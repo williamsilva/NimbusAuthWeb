@@ -42,14 +42,10 @@
     },
     "apps": "Apps",
     "email": {
-      "title": "Correo",
-      "settings": "Configuración de Correo",
-      "appsSettings": "Correo de los Apps"
+      "settings": "Configuración de Correo"
     },
     "audit": {
-      "title": "Auditoría",
-      "email": "Auditoría de Correo",
-      "appsEmail": "Auditoría de los Apps"
+      "email": "Auditoría de Correo"
     },
     "backup": "Copia de seguridad"
   },
@@ -57,9 +53,17 @@
     "list": {
       "title": "Apps",
       "subtitle": "Clientes OAuth2 (relying parties) del ecosistema Nimbus",
-      "searchPlaceholder": "Buscar por nombre, appKey o clientId",
-      "searchAria": "Buscar",
+      "refreshButton": "Actualizar",
       "newButton": "Nuevo App",
+      "filtersTitle": "Filtrar",
+      "fields": {
+        "name": "Nombre",
+        "appKey": "appKey",
+        "clientId": "Client ID",
+        "status": "Estado",
+        "createdAt": "Creado el",
+        "createdBy": "Creado por"
+      },
       "columns": {
         "name": "Nombre",
         "appKey": "appKey",
@@ -68,8 +72,13 @@
         "accessTokenTtl": "TTL access token",
         "refreshTokenTtl": "TTL refresh token",
         "status": "Estado",
+        "createdAt": "Creado el",
+        "createdBy": "Creado por",
         "actions": "Acciones"
       },
+      "allPlaceholder": "Todos",
+      "periodFilterPlaceholder": "Período",
+      "pageReportTemplate": "{first} a {last} de {totalRecords}",
       "defaultTtlLabel": "Predeterminado",
       "defaultTtlTooltip": "Usa el valor predeterminado global (Configuración de Seguridad)",
       "statusActive": "Activo",
@@ -77,7 +86,8 @@
       "editTooltip": "Editar",
       "regenerateSecretTooltip": "Regenerar secret",
       "deleteTooltip": "Eliminar",
-      "empty": "Aún no hay Apps registrados.",
+      "emptyMessage": "Aún no hay Apps registrados.",
+      "loadingMessage": "Cargando…",
       "confirmRegenerate": {
         "header": "Regenerar secret",
         "message": "Esto invalida inmediatamente el client secret actual de \"{{name}}\". Los apps que aún usan el valor anterior dejarán de autenticarse hasta que actualice la variable de entorno allí. ¿Continuar?"
@@ -220,9 +230,6 @@
         "userName": "Correo electrónico (login)",
         "document": "CPF/CNPJ",
         "selectedApps": "Apps con acceso *"
-      },
-      "placeholders": {
-        "document": "Solo números"
       },
       "groupsPlaceholder": "Seleccione el/los grupo(s)",
       "noGroupsError": "Seleccione al menos 1 grupo en algún app.",
@@ -402,10 +409,6 @@
     }
   },
   "emailSettings": {
-    "page": {
-      "title": "Configuración de Correo",
-      "subtitle": "Remitente, Brevo (API) y SMTP usados por NimbusAuth para invitaciones y restablecimiento de contraseña."
-    },
     "loading": "Cargando…",
     "fieldset": {
       "sender": "Remitente",
@@ -450,15 +453,23 @@
   },
   "appsEmailSettings": {
     "list": {
-      "title": "Correo de los Apps",
-      "subtitle": "Configuración de correo (SMTP/Brevo/remitente) de cada app satélite - leída y guardada remotamente en el propio app.",
+      "title": "Configuración de Correo",
+      "subtitle": "Configuración de correo (SMTP/Brevo/remitente) de NimbusAuth y de cada app satélite - leída y guardada remotamente en el propio app.",
+      "refreshButton": "Actualizar",
+      "filtersTitle": "Filtrar",
+      "fields": {
+        "name": "Nombre",
+        "appKey": "appKey"
+      },
       "columns": {
         "name": "Nombre",
         "appKey": "appKey",
         "actions": "Acciones"
       },
+      "pageReportTemplate": "{first} a {last} de {totalRecords}",
       "editTooltip": "Editar configuración de correo",
-      "empty": "Aún no hay apps satélite registrados."
+      "empty": "Aún no hay apps registrados.",
+      "loadingMessage": "Cargando…"
     },
     "dialog": {
       "titlePrefix": "Correo de {{name}}",
@@ -477,53 +488,13 @@
       "firstAccess": "Primer acceso",
       "chargebackDetected": "Contracargo detectado",
       "backupNotification": "Notificación de copia de seguridad"
-    },
-    "list": {
-      "title": "Auditoría de Correo",
-      "subtitle": "Correos de invitación y restablecimiento de contraseña enviados por NimbusAuth.",
-      "refreshButton": "Actualizar",
-      "filtersTitle": "Filtrar",
-      "fields": {
-        "recipient": "Destinatario",
-        "subject": "Asunto",
-        "template": "Plantilla",
-        "status": "Estado",
-        "eventType": "Tipo de evento",
-        "sentAt": "Enviado el"
-      },
-      "columns": {
-        "recipient": "Destinatario",
-        "subject": "Asunto",
-        "template": "Plantilla",
-        "status": "Estado",
-        "eventType": "Tipo de evento",
-        "sentAt": "Enviado el",
-        "actions": "Acciones"
-      },
-      "allPlaceholder": "Todos",
-      "periodFilterPlaceholder": "Período",
-      "pageReportTemplate": "{first} a {last} de {totalRecords}",
-      "viewDetailTooltip": "Ver detalle",
-      "emptyMessage": "Ningún correo encontrado.",
-      "loadingMessage": "Cargando…",
-      "detail": {
-        "title": "Detalle del correo",
-        "recipient": "Destinatario:",
-        "subject": "Asunto:",
-        "template": "Plantilla:",
-        "status": "Estado:",
-        "eventType": "Tipo de evento:",
-        "sentAt": "Enviado el:",
-        "error": "Error:",
-        "bodyUnavailable": "Cuerpo del correo no disponible (los registros anteriores al 19/08/2026 no guardan el HTML enviado).",
-        "close": "Cerrar"
-      }
     }
   },
   "appsEmailLog": {
     "list": {
-      "title": "Auditoría de los Apps",
-      "subtitle": "Correos enviados por cada app satélite del ecosistema Nimbus.",
+      "title": "Auditoría de Correo",
+      "subtitle": "Correos enviados por NimbusAuth y por cada app satélite del ecosistema Nimbus.",
+      "refreshButton": "Actualizar",
       "filtersTitle": "Filtrar",
       "fields": {
         "app": "App",
@@ -540,12 +511,26 @@
         "status": "Estado",
         "eventType": "Tipo de evento",
         "sentAt": "Enviado el",
-        "error": "Error"
+        "error": "Error",
+        "actions": "Acciones"
       },
       "pageReportTemplate": "{first} a {last} de {totalRecords}",
+      "viewDetailTooltip": "Ver detalle",
       "selectAppMessage": "Seleccione un app para ver la auditoría de correo.",
       "emptyMessage": "Ningún correo encontrado.",
-      "loadingMessage": "Cargando…"
+      "loadingMessage": "Cargando…",
+      "detail": {
+        "title": "Detalle del correo",
+        "recipient": "Destinatario:",
+        "subject": "Asunto:",
+        "template": "Plantilla:",
+        "status": "Estado:",
+        "eventType": "Tipo de evento:",
+        "sentAt": "Enviado el:",
+        "error": "Error:",
+        "bodyUnavailable": "Cuerpo del correo no disponible para este registro.",
+        "close": "Cerrar"
+      }
     }
   },
   "backup": {

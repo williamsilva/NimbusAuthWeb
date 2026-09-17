@@ -42,14 +42,10 @@
     },
     "apps": "Apps",
     "email": {
-      "title": "Email",
-      "settings": "Email Settings",
-      "appsSettings": "Apps Email"
+      "settings": "Email Settings"
     },
     "audit": {
-      "title": "Audit",
-      "email": "Email Audit",
-      "appsEmail": "Apps Email Audit"
+      "email": "Email Audit"
     },
     "backup": "Backup"
   },
@@ -57,9 +53,17 @@
     "list": {
       "title": "Apps",
       "subtitle": "OAuth2 clients (relying parties) of the Nimbus ecosystem",
-      "searchPlaceholder": "Search by name, appKey or clientId",
-      "searchAria": "Search",
+      "refreshButton": "Refresh",
       "newButton": "New App",
+      "filtersTitle": "Filter",
+      "fields": {
+        "name": "Name",
+        "appKey": "appKey",
+        "clientId": "Client ID",
+        "status": "Status",
+        "createdAt": "Created on",
+        "createdBy": "Created by"
+      },
       "columns": {
         "name": "Name",
         "appKey": "appKey",
@@ -68,8 +72,13 @@
         "accessTokenTtl": "Access token TTL",
         "refreshTokenTtl": "Refresh token TTL",
         "status": "Status",
+        "createdAt": "Created on",
+        "createdBy": "Created by",
         "actions": "Actions"
       },
+      "allPlaceholder": "All",
+      "periodFilterPlaceholder": "Period",
+      "pageReportTemplate": "{first} to {last} of {totalRecords}",
       "defaultTtlLabel": "Default",
       "defaultTtlTooltip": "Uses the global default (Security Settings)",
       "statusActive": "Active",
@@ -77,7 +86,8 @@
       "editTooltip": "Edit",
       "regenerateSecretTooltip": "Regenerate secret",
       "deleteTooltip": "Delete",
-      "empty": "No Apps registered yet.",
+      "emptyMessage": "No Apps registered yet.",
+      "loadingMessage": "Loading…",
       "confirmRegenerate": {
         "header": "Regenerate secret",
         "message": "This immediately invalidates the current client secret of \"{{name}}\". Apps still using the old value will stop authenticating until you update the env var there. Continue?"
@@ -220,9 +230,6 @@
         "userName": "Email (login)",
         "document": "Document (CPF/CNPJ)",
         "selectedApps": "Apps with access *"
-      },
-      "placeholders": {
-        "document": "Numbers only"
       },
       "groupsPlaceholder": "Select group(s)",
       "noGroupsError": "Select at least 1 group in some app.",
@@ -402,10 +409,6 @@
     }
   },
   "emailSettings": {
-    "page": {
-      "title": "Email Settings",
-      "subtitle": "Sender, Brevo (API) and SMTP used by NimbusAuth for invites and password reset."
-    },
     "loading": "Loading…",
     "fieldset": {
       "sender": "Sender",
@@ -450,15 +453,23 @@
   },
   "appsEmailSettings": {
     "list": {
-      "title": "Apps Email",
-      "subtitle": "Email config (SMTP/Brevo/sender) of each satellite app - read and written remotely on the app itself.",
+      "title": "Email Settings",
+      "subtitle": "Email config (SMTP/Brevo/sender) of NimbusAuth and each satellite app - read and written remotely on the app itself.",
+      "refreshButton": "Refresh",
+      "filtersTitle": "Filter",
+      "fields": {
+        "name": "Name",
+        "appKey": "appKey"
+      },
       "columns": {
         "name": "Name",
         "appKey": "appKey",
         "actions": "Actions"
       },
+      "pageReportTemplate": "{first} to {last} of {totalRecords}",
       "editTooltip": "Edit email config",
-      "empty": "No satellite apps registered yet."
+      "empty": "No apps registered yet.",
+      "loadingMessage": "Loading…"
     },
     "dialog": {
       "titlePrefix": "Email of {{name}}",
@@ -477,53 +488,13 @@
       "firstAccess": "First access",
       "chargebackDetected": "Chargeback detected",
       "backupNotification": "Backup notification"
-    },
-    "list": {
-      "title": "Email Audit",
-      "subtitle": "Invite and password reset emails sent by NimbusAuth.",
-      "refreshButton": "Refresh",
-      "filtersTitle": "Filter",
-      "fields": {
-        "recipient": "Recipient",
-        "subject": "Subject",
-        "template": "Template",
-        "status": "Status",
-        "eventType": "Event type",
-        "sentAt": "Sent on"
-      },
-      "columns": {
-        "recipient": "Recipient",
-        "subject": "Subject",
-        "template": "Template",
-        "status": "Status",
-        "eventType": "Event type",
-        "sentAt": "Sent on",
-        "actions": "Actions"
-      },
-      "allPlaceholder": "All",
-      "periodFilterPlaceholder": "Period",
-      "pageReportTemplate": "{first} to {last} of {totalRecords}",
-      "viewDetailTooltip": "View detail",
-      "emptyMessage": "No emails found.",
-      "loadingMessage": "Loading…",
-      "detail": {
-        "title": "Email detail",
-        "recipient": "Recipient:",
-        "subject": "Subject:",
-        "template": "Template:",
-        "status": "Status:",
-        "eventType": "Event type:",
-        "sentAt": "Sent on:",
-        "error": "Error:",
-        "bodyUnavailable": "Email body not available (records before 08/19/2026 do not store the sent HTML).",
-        "close": "Close"
-      }
     }
   },
   "appsEmailLog": {
     "list": {
-      "title": "Apps Email Audit",
-      "subtitle": "Emails sent by each satellite app in the Nimbus ecosystem.",
+      "title": "Email Audit",
+      "subtitle": "Emails sent by NimbusAuth and by each satellite app in the Nimbus ecosystem.",
+      "refreshButton": "Refresh",
       "filtersTitle": "Filter",
       "fields": {
         "app": "App",
@@ -540,12 +511,26 @@
         "status": "Status",
         "eventType": "Event type",
         "sentAt": "Sent on",
-        "error": "Error"
+        "error": "Error",
+        "actions": "Actions"
       },
       "pageReportTemplate": "{first} to {last} of {totalRecords}",
+      "viewDetailTooltip": "View detail",
       "selectAppMessage": "Select an app to see the email audit.",
       "emptyMessage": "No emails found.",
-      "loadingMessage": "Loading…"
+      "loadingMessage": "Loading…",
+      "detail": {
+        "title": "Email detail",
+        "recipient": "Recipient:",
+        "subject": "Subject:",
+        "template": "Template:",
+        "status": "Status:",
+        "eventType": "Event type:",
+        "sentAt": "Sent on:",
+        "error": "Error:",
+        "bodyUnavailable": "Email body not available for this record.",
+        "close": "Close"
+      }
     }
   },
   "backup": {

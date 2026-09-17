@@ -42,14 +42,10 @@
     },
     "apps": "Apps",
     "email": {
-      "title": "E-mail",
-      "settings": "Configurações de E-mail",
-      "appsSettings": "E-mail dos Apps"
+      "settings": "Configurações de E-mail"
     },
     "audit": {
-      "title": "Auditoria",
-      "email": "Auditoria de E-mail",
-      "appsEmail": "Auditoria dos Apps"
+      "email": "Auditoria de E-mail"
     },
     "backup": "Backup"
   },
@@ -57,9 +53,17 @@
     "list": {
       "title": "Apps",
       "subtitle": "Clients OAuth2 (relying parties) do ecossistema Nimbus",
-      "searchPlaceholder": "Buscar por nome, appKey ou clientId",
-      "searchAria": "Buscar",
+      "refreshButton": "Atualizar",
       "newButton": "Novo App",
+      "filtersTitle": "Filtrar",
+      "fields": {
+        "name": "Nome",
+        "appKey": "appKey",
+        "clientId": "Client ID",
+        "status": "Status",
+        "createdAt": "Criado em",
+        "createdBy": "Criado por"
+      },
       "columns": {
         "name": "Nome",
         "appKey": "appKey",
@@ -68,8 +72,13 @@
         "accessTokenTtl": "TTL access token",
         "refreshTokenTtl": "TTL refresh token",
         "status": "Status",
+        "createdAt": "Criado em",
+        "createdBy": "Criado por",
         "actions": "Ações"
       },
+      "allPlaceholder": "Todos",
+      "periodFilterPlaceholder": "Período",
+      "pageReportTemplate": "{first} a {last} de {totalRecords}",
       "defaultTtlLabel": "Padrão",
       "defaultTtlTooltip": "Usa o padrão global (Configurações de Segurança)",
       "statusActive": "Ativo",
@@ -77,7 +86,8 @@
       "editTooltip": "Editar",
       "regenerateSecretTooltip": "Regenerar secret",
       "deleteTooltip": "Excluir",
-      "empty": "Nenhum App cadastrado ainda.",
+      "emptyMessage": "Nenhum App cadastrado ainda.",
+      "loadingMessage": "Carregando…",
       "confirmRegenerate": {
         "header": "Regenerar secret",
         "message": "Isso invalida o client secret atual de \"{{name}}\" imediatamente. Os apps que ainda usam o valor antigo param de autenticar até você atualizar a env var lá. Continuar?"
@@ -220,9 +230,6 @@
         "userName": "E-mail (login)",
         "document": "CPF/CNPJ",
         "selectedApps": "Apps com acesso *"
-      },
-      "placeholders": {
-        "document": "Só números"
       },
       "groupsPlaceholder": "Selecione o(s) grupo(s)",
       "noGroupsError": "Selecione ao menos 1 grupo em algum app.",
@@ -402,10 +409,6 @@
     }
   },
   "emailSettings": {
-    "page": {
-      "title": "Configurações de E-mail",
-      "subtitle": "Remetente, Brevo (API) e SMTP usados pelo NimbusAuth para convites e reset de senha."
-    },
     "loading": "Carregando…",
     "fieldset": {
       "sender": "Remetente",
@@ -450,15 +453,23 @@
   },
   "appsEmailSettings": {
     "list": {
-      "title": "E-mail dos Apps",
-      "subtitle": "Config de e-mail (SMTP/Brevo/remetente) de cada app satélite - lida e gravada remotamente no próprio app.",
+      "title": "Configurações de E-mail",
+      "subtitle": "Config de e-mail (SMTP/Brevo/remetente) do NimbusAuth e de cada app satélite - lida e gravada remotamente no próprio app.",
+      "refreshButton": "Atualizar",
+      "filtersTitle": "Filtrar",
+      "fields": {
+        "name": "Nome",
+        "appKey": "appKey"
+      },
       "columns": {
         "name": "Nome",
         "appKey": "appKey",
         "actions": "Ações"
       },
+      "pageReportTemplate": "{first} a {last} de {totalRecords}",
       "editTooltip": "Editar config de e-mail",
-      "empty": "Nenhum app satélite cadastrado ainda."
+      "empty": "Nenhum app cadastrado ainda.",
+      "loadingMessage": "Carregando…"
     },
     "dialog": {
       "titlePrefix": "E-mail de {{name}}",
@@ -477,53 +488,13 @@
       "firstAccess": "Primeiro acesso",
       "chargebackDetected": "Chargeback detectado",
       "backupNotification": "Notificação de backup"
-    },
-    "list": {
-      "title": "Auditoria de E-mail",
-      "subtitle": "E-mails de convite e reset de senha disparados pelo NimbusAuth.",
-      "refreshButton": "Atualizar",
-      "filtersTitle": "Filtrar",
-      "fields": {
-        "recipient": "Destinatário",
-        "subject": "Assunto",
-        "template": "Template",
-        "status": "Status",
-        "eventType": "Tipo de evento",
-        "sentAt": "Enviado em"
-      },
-      "columns": {
-        "recipient": "Destinatário",
-        "subject": "Assunto",
-        "template": "Template",
-        "status": "Status",
-        "eventType": "Tipo de evento",
-        "sentAt": "Enviado em",
-        "actions": "Ações"
-      },
-      "allPlaceholder": "Todos",
-      "periodFilterPlaceholder": "Período",
-      "pageReportTemplate": "{first} a {last} de {totalRecords}",
-      "viewDetailTooltip": "Ver detalhe",
-      "emptyMessage": "Nenhum e-mail encontrado.",
-      "loadingMessage": "Carregando…",
-      "detail": {
-        "title": "Detalhe do e-mail",
-        "recipient": "Destinatário:",
-        "subject": "Assunto:",
-        "template": "Template:",
-        "status": "Status:",
-        "eventType": "Tipo de evento:",
-        "sentAt": "Enviado em:",
-        "error": "Erro:",
-        "bodyUnavailable": "Corpo do e-mail não disponível (registros anteriores a 19/08/2026 não guardam o HTML enviado).",
-        "close": "Fechar"
-      }
     }
   },
   "appsEmailLog": {
     "list": {
-      "title": "Auditoria dos Apps",
-      "subtitle": "E-mails enviados por cada app satélite do ecossistema Nimbus.",
+      "title": "Auditoria de E-mail",
+      "subtitle": "E-mails enviados pelo NimbusAuth e por cada app satélite do ecossistema Nimbus.",
+      "refreshButton": "Atualizar",
       "filtersTitle": "Filtrar",
       "fields": {
         "app": "App",
@@ -540,12 +511,26 @@
         "status": "Status",
         "eventType": "Tipo de evento",
         "sentAt": "Enviado em",
-        "error": "Erro"
+        "error": "Erro",
+        "actions": "Ações"
       },
       "pageReportTemplate": "{first} a {last} de {totalRecords}",
+      "viewDetailTooltip": "Ver detalhe",
       "selectAppMessage": "Selecione um app para ver a auditoria de e-mail.",
       "emptyMessage": "Nenhum e-mail encontrado.",
-      "loadingMessage": "Carregando…"
+      "loadingMessage": "Carregando…",
+      "detail": {
+        "title": "Detalhe do e-mail",
+        "recipient": "Destinatário:",
+        "subject": "Assunto:",
+        "template": "Template:",
+        "status": "Status:",
+        "eventType": "Tipo de evento:",
+        "sentAt": "Enviado em:",
+        "error": "Erro:",
+        "bodyUnavailable": "Corpo do e-mail não disponível pra esse registro.",
+        "close": "Fechar"
+      }
     }
   },
   "backup": {

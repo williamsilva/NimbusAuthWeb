@@ -1,97 +1,117 @@
-<h2 class="mb-3">Configurações de E-mail</h2>
+<app-page-header [title]="'emailSettings.page.title' | translate" [subtitle]="'emailSettings.page.subtitle' | translate"></app-page-header>
 
 @if (loading()) {
-  <p>Carregando…</p>
+  <p-card><p class="m-0">{{ 'emailSettings.loading' | translate }}</p></p-card>
 } @else {
+  <p-card class="mt-2 block">
   <form [formGroup]="form" class="settings-form">
-    <p-fieldset legend="Remetente">
+    <p-fieldset [legend]="'emailSettings.fieldset.sender' | translate">
       <div class="settings-grid">
         <div class="field">
-          <label for="impl">Modo de envio</label>
-          <p-select
-            inputId="impl"
-            formControlName="impl"
-            [options]="implOptions()"
-            optionLabel="label"
-            optionValue="value"
-            class="w-full"
-          />
+          <p-floatLabel variant="on" class="w-full">
+            <p-select
+              inputId="impl"
+              formControlName="impl"
+              [options]="implOptions()"
+              optionLabel="label"
+              optionValue="value"
+              class="w-full"
+            />
+            <app-error-msg forId="impl" [label]="'emailSettings.fields.impl' | translate" [control]="form.controls.impl" />
+          </p-floatLabel>
         </div>
         <div class="field">
-          <label for="fromName">Nome do remetente</label>
-          <input id="fromName" pInputText type="text" formControlName="fromName" class="w-full" placeholder="Nimbus Auth" />
+          <p-floatLabel variant="on" class="w-full">
+            <input id="fromName" pInputText type="text" formControlName="fromName" class="w-full" [placeholder]="'emailSettings.placeholders.fromName' | translate" />
+            <app-error-msg forId="fromName" [label]="'emailSettings.fields.fromName' | translate" [control]="form.controls.fromName" />
+          </p-floatLabel>
         </div>
         <div class="field">
-          <label for="fromEmail">E-mail do remetente</label>
-          <input id="fromEmail" pInputText type="email" formControlName="fromEmail" class="w-full" placeholder="contato@exemplo.com.br" />
+          <p-floatLabel variant="on" class="w-full">
+            <input id="fromEmail" pInputText type="email" formControlName="fromEmail" class="w-full" [placeholder]="'emailSettings.placeholders.fromEmail' | translate" />
+            <app-error-msg forId="fromEmail" [label]="'emailSettings.fields.fromEmail' | translate" [control]="form.controls.fromEmail" />
+          </p-floatLabel>
         </div>
       </div>
     </p-fieldset>
 
-    <p-fieldset legend="Brevo (API)">
+    <p-fieldset [legend]="'emailSettings.fieldset.brevo' | translate">
       <div class="settings-grid">
         <div class="field">
-          <label for="brevoApiKey">Chave de API</label>
-          <p-password
-            inputId="brevoApiKey"
-            formControlName="brevoApiKey"
-            [feedback]="false"
-            [toggleMask]="true"
-            styleClass="w-full"
-            inputStyleClass="w-full"
-            placeholder="Deixe em branco pra manter a atual"
-          />
+          <p-floatLabel variant="on" class="w-full">
+            <p-password
+              inputId="brevoApiKey"
+              formControlName="brevoApiKey"
+              [feedback]="false"
+              [toggleMask]="true"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              [placeholder]="'emailSettings.placeholders.secretKeepCurrent' | translate"
+            />
+            <app-error-msg forId="brevoApiKey" [label]="'emailSettings.fields.brevoApiKey' | translate" [required]="false" [control]="form.controls.brevoApiKey" />
+          </p-floatLabel>
         </div>
         <div class="field">
-          <label for="brevoBaseUrl">URL base</label>
-          <input id="brevoBaseUrl" pInputText type="text" formControlName="brevoBaseUrl" class="w-full" placeholder="https://api.brevo.com/v3" />
+          <p-floatLabel variant="on" class="w-full">
+            <input id="brevoBaseUrl" pInputText type="text" formControlName="brevoBaseUrl" class="w-full" [placeholder]="'emailSettings.placeholders.brevoBaseUrl' | translate" />
+            <app-error-msg forId="brevoBaseUrl" [label]="'emailSettings.fields.brevoBaseUrl' | translate" [required]="false" [control]="form.controls.brevoBaseUrl" />
+          </p-floatLabel>
         </div>
       </div>
     </p-fieldset>
 
-    <p-fieldset legend="SMTP">
+    <p-fieldset [legend]="'emailSettings.fieldset.smtp' | translate">
       <div class="settings-grid">
         <div class="field">
-          <label for="smtpHost">Host</label>
-          <input id="smtpHost" pInputText type="text" formControlName="smtpHost" class="w-full" placeholder="smtp.exemplo.com.br" />
+          <p-floatLabel variant="on" class="w-full">
+            <input id="smtpHost" pInputText type="text" formControlName="smtpHost" class="w-full" [placeholder]="'emailSettings.placeholders.smtpHost' | translate" />
+            <app-error-msg forId="smtpHost" [label]="'emailSettings.fields.smtpHost' | translate" [required]="false" [control]="form.controls.smtpHost" />
+          </p-floatLabel>
         </div>
         <div class="field">
-          <label for="smtpPort">Porta</label>
-          <p-inputNumber inputId="smtpPort" formControlName="smtpPort" [useGrouping]="false" class="w-full" />
+          <p-floatLabel variant="on" class="w-full">
+            <p-inputNumber inputId="smtpPort" formControlName="smtpPort" [useGrouping]="false" class="w-full" />
+            <app-error-msg forId="smtpPort" [label]="'emailSettings.fields.smtpPort' | translate" [required]="false" [control]="form.controls.smtpPort" />
+          </p-floatLabel>
         </div>
         <div class="field">
-          <label for="smtpUsername">Usuário</label>
-          <input id="smtpUsername" pInputText type="text" formControlName="smtpUsername" class="w-full" />
+          <p-floatLabel variant="on" class="w-full">
+            <input id="smtpUsername" pInputText type="text" formControlName="smtpUsername" class="w-full" />
+            <app-error-msg forId="smtpUsername" [label]="'emailSettings.fields.smtpUsername' | translate" [required]="false" [control]="form.controls.smtpUsername" />
+          </p-floatLabel>
         </div>
         <div class="field">
-          <label for="smtpPassword">Senha</label>
-          <p-password
-            inputId="smtpPassword"
-            formControlName="smtpPassword"
-            [feedback]="false"
-            [toggleMask]="true"
-            styleClass="w-full"
-            inputStyleClass="w-full"
-            placeholder="Deixe em branco pra manter a atual"
-          />
+          <p-floatLabel variant="on" class="w-full">
+            <p-password
+              inputId="smtpPassword"
+              formControlName="smtpPassword"
+              [feedback]="false"
+              [toggleMask]="true"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              [placeholder]="'emailSettings.placeholders.secretKeepCurrent' | translate"
+            />
+            <app-error-msg forId="smtpPassword" [label]="'emailSettings.fields.smtpPassword' | translate" [required]="false" [control]="form.controls.smtpPassword" />
+          </p-floatLabel>
         </div>
       </div>
 
       <div class="settings-grid mt-3">
         <div class="field-checkbox">
-          <p-checkbox formControlName="smtpAuth" inputId="smtpAuth" [binary]="true" /><label for="smtpAuth" class="ml-2">Autenticação</label>
+          <p-checkbox formControlName="smtpAuth" inputId="smtpAuth" [binary]="true" /><label for="smtpAuth" class="ml-2">{{ 'emailSettings.fields.smtpAuth' | translate }}</label>
         </div>
         <div class="field-checkbox">
-          <p-checkbox formControlName="smtpStarttls" inputId="smtpStarttls" [binary]="true" /><label for="smtpStarttls" class="ml-2">STARTTLS</label>
+          <p-checkbox formControlName="smtpStarttls" inputId="smtpStarttls" [binary]="true" /><label for="smtpStarttls" class="ml-2">{{ 'emailSettings.fields.smtpStarttls' | translate }}</label>
         </div>
         <div class="field-checkbox">
-          <p-checkbox formControlName="smtpSsl" inputId="smtpSsl" [binary]="true" /><label for="smtpSsl" class="ml-2">SSL</label>
+          <p-checkbox formControlName="smtpSsl" inputId="smtpSsl" [binary]="true" /><label for="smtpSsl" class="ml-2">{{ 'emailSettings.fields.smtpSsl' | translate }}</label>
         </div>
       </div>
     </p-fieldset>
 
     <div>
-      <button pButton type="button" icon="pi pi-save" label="Salvar" [loading]="saving()" (click)="save()"></button>
+      <button pButton type="button" icon="pi pi-save" [label]="'emailSettings.save' | translate" [loading]="saving()" (click)="save()"></button>
     </div>
   </form>
+  </p-card>
 }

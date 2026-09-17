@@ -1,0 +1,326 @@
+.cs-card-compact .p-card-body {
+  padding: 0.8rem 0.9rem;
+}
+
+.cs-card-compact .p-card-title {
+  font-size: 0.98rem;
+  margin-bottom: 0.35rem;
+}
+
+.cs-profile-card .p-card-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.cs-avatar {
+  position: relative;
+  width: 4.5rem;
+  height: 4.5rem;
+  min-width: 4.5rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.22), transparent 45%),
+    linear-gradient(135deg, var(--primary-color), color-mix(in srgb, var(--primary-color) 55%, black));
+  border: 1px solid color-mix(in srgb, var(--primary-color) 35%, transparent);
+}
+
+.cs-avatar-lg {
+  width: 6rem;
+  height: 6rem;
+  min-width: 6rem;
+}
+
+.cs-avatar-ring {
+  position: absolute;
+  inset: 4px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.cs-avatar-text {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.cs-avatar-text-lg {
+  font-size: 1.8rem;
+}
+
+.cs-profile-hero {
+  padding: 0.85rem 0.85rem 0.55rem;
+  margin: -0.15rem -0.15rem 0;
+  border-radius: 0.9rem;
+  background:
+    radial-gradient(circle at top, rgba(99, 102, 241, 0.08), transparent 55%),
+    linear-gradient(180deg, rgba(99, 102, 241, 0.03), transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cs-profile-name {
+  margin-top: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.cs-profile-username {
+  margin-top: 0.2rem;
+  font-size: 0.88rem;
+  opacity: 0.75;
+}
+
+.cs-profile-userid {
+  margin-top: 0.15rem;
+  font-size: 0.76rem;
+  opacity: 0.72;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.cs-profile-tags {
+  margin-top: 0.65rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.cs-profile-metrics-list {
+  margin-top: 0.7rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.cs-data-card .p-card-body {
+  height: 100%;
+}
+
+.cs-data-sections {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.cs-data-section {
+  border: 1px solid var(--surface-border);
+  border-radius: 0.9rem;
+  padding: 0.75rem;
+  background: color-mix(in srgb, var(--surface-card) 97%, transparent);
+}
+
+.cs-section-title {
+  margin-bottom: 0.55rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.72;
+}
+
+.cs-permissions-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.7rem;
+}
+
+.cs-permission-chip-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  min-height: 2.9rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--surface-border);
+  border-left-width: 4px;
+  border-radius: 0.8rem;
+  background: var(--surface-card);
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.cs-permission-chip-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+.cs-permission-chip-card--clickable {
+  cursor: pointer;
+}
+
+.cs-permission-chip-card--clickable:hover {
+  border-color: var(--primary-color);
+}
+
+.cs-permission-chip-card--clickable:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.cs-permission-chip-index {
+  width: 1.45rem;
+  height: 1.45rem;
+  min-width: 1.45rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 0.05rem;
+}
+
+.cs-permission-chip-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.cs-permission-chip-text {
+  font-size: 0.81rem;
+  font-weight: 700;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.cs-permission-chip-raw {
+  font-size: 0.7rem;
+  opacity: 0.62;
+  font-family: monospace;
+  word-break: break-word;
+}
+
+.cs-permission-chip-card.is-groups {
+  border-left-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.cs-permission-chip-card.is-groups .cs-permission-chip-index {
+  background: rgba(59, 130, 246, 0.16);
+  color: #1d4ed8;
+}
+
+.cs-permission-chip-card.is-users {
+  border-left-color: #22c55e;
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.cs-permission-chip-card.is-users .cs-permission-chip-index {
+  background: rgba(34, 197, 94, 0.16);
+  color: #15803d;
+}
+
+.cs-permission-chip-card.is-support {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.cs-permission-chip-card.is-support .cs-permission-chip-index {
+  background: rgba(245, 158, 11, 0.18);
+  color: #b45309;
+}
+
+.cs-permission-chip-card.is-default {
+  border-left-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.cs-permission-chip-card.is-default .cs-permission-chip-index {
+  background: rgba(99, 102, 241, 0.14);
+  color: var(--primary-color);
+}
+
+/* Cores por categoria de permissão do catálogo "nimbusauth" (ver PERMISSION_LABELS no .ts) -
+   vermelho pra gestão de usuários/grupos (área sensível), demais áreas com cor própria. */
+.cs-permission-chip-card.is-perm-security {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.cs-permission-chip-card.is-perm-security .cs-permission-chip-index {
+  background: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+}
+
+.cs-permission-chip-card.is-perm-apps {
+  border-left-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.cs-permission-chip-card.is-perm-apps .cs-permission-chip-index {
+  background: rgba(59, 130, 246, 0.16);
+  color: #1d4ed8;
+}
+
+.cs-permission-chip-card.is-perm-settings {
+  border-left-color: #64748b;
+  background: rgba(100, 116, 139, 0.06);
+}
+
+.cs-permission-chip-card.is-perm-settings .cs-permission-chip-index {
+  background: rgba(100, 116, 139, 0.16);
+  color: #334155;
+}
+
+.cs-permission-chip-card.is-perm-email {
+  border-left-color: #14b8a6;
+  background: rgba(20, 184, 166, 0.06);
+}
+
+.cs-permission-chip-card.is-perm-email .cs-permission-chip-index {
+  background: rgba(20, 184, 166, 0.16);
+  color: #0f766e;
+}
+
+.cs-permission-chip-card.is-perm-audit {
+  border-left-color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.06);
+}
+
+.cs-permission-chip-card.is-perm-audit .cs-permission-chip-index {
+  background: rgba(14, 165, 233, 0.16);
+  color: #0369a1;
+}
+
+.cs-permission-chip-card.is-perm-backup {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.cs-permission-chip-card.is-perm-backup .cs-permission-chip-index {
+  background: rgba(245, 158, 11, 0.16);
+  color: #b45309;
+}
+
+@media (max-width: 640px) {
+  .cs-avatar-lg {
+    width: 5rem;
+    height: 5rem;
+    min-width: 5rem;
+  }
+
+  .cs-avatar-text-lg {
+    font-size: 1.45rem;
+  }
+
+  .cs-profile-name {
+    font-size: 1.15rem;
+  }
+
+  .cs-profile-metrics-list,
+  .cs-permissions-chip-grid {
+    grid-template-columns: 1fr;
+  }
+}

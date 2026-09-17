@@ -9,8 +9,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule, TableLazyLoadEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../../core/auth/auth.service';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { AppsApiService } from '../apps.api.service';
 import { AppModel, AppSecretModel } from '../apps.models';
 import { AppsFormDialogComponent } from '../apps-form-dialog/apps-form-dialog.component';
@@ -28,9 +31,11 @@ import { AppsSecretDialogComponent } from '../apps-secret-dialog/apps-secret-dia
     ConfirmDialogModule,
     FormsModule,
     InputTextModule,
+    PageHeaderComponent,
     TableModule,
     TagModule,
     TooltipModule,
+    TranslateModule,
     AppsFormDialogComponent,
     AppsSecretDialogComponent,
   ],
@@ -40,6 +45,7 @@ export class AppsListComponent implements OnInit {
   private readonly toast = inject(MessageService);
   private readonly confirm = inject(ConfirmationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
   readonly auth = inject(AuthService);
 
   readonly apps = signal<AppModel[]>([]);
@@ -110,8 +116,12 @@ export class AppsListComponent implements OnInit {
 
   regenerateSecret(row: AppModel): void {
     this.confirm.confirm({
-      header: 'Regenerar secret',
-      message: `Isso invalida o client secret atual de "${row.name}" imediatamente. Os apps que ainda usam o valor antigo param de autenticar até você atualizar a env var lá. Continuar?`,
+      header: this.i18n.tUi('apps.list.confirmRegenerate.header', 'Regenerar secret'),
+      message: this.i18n.tUi(
+        'apps.list.confirmRegenerate.message',
+        { name: row.name },
+        `Isso invalida o client secret atual de "${row.name}" imediatamente. Os apps que ainda usam o valor antigo param de autenticar até você atualizar a env var lá. Continuar?`,
+      ),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.api.regenerateSecret(row.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -123,13 +133,21 @@ export class AppsListComponent implements OnInit {
 
   confirmDelete(row: AppModel): void {
     this.confirm.confirm({
-      header: 'Excluir App',
-      message: `Excluir "${row.name}"? Isso remove o client OAuth2 imediatamente - ninguém mais consegue logar por ele.`,
+      header: this.i18n.tUi('apps.list.confirmDelete.header', 'Excluir App'),
+      message: this.i18n.tUi(
+        'apps.list.confirmDelete.message',
+        { name: row.name },
+        `Excluir "${row.name}"? Isso remove o client OAuth2 imediatamente - ninguém mais consegue logar por ele.`,
+      ),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.api.delete(row.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: () => {
-            this.toast.add({ severity: 'success', summary: 'Excluído', detail: `"${row.name}" foi excluído.` });
+            this.toast.add({
+              severity: 'success',
+              summary: this.i18n.tUi('apps.list.toastDeleted.summary', 'Excluído'),
+              detail: this.i18n.tUi('apps.list.toastDeleted.detail', { name: row.name }, `"${row.name}" foi excluído.`),
+            });
             this.load(this.lastPage, this.lastSize);
           },
         });

@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -14,12 +15,15 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { environment } from '../../../environments/environment';
+import { I18nService } from '../../core/i18n/i18n.service';
+import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { AppsApiService } from '../apps/apps.api.service';
 import { AppModel } from '../apps/apps.models';
 import { BackupApiService } from './backup.api.service';
-import { formatBytes, statusLabel, statusSeverity } from './backup-status';
+import { formatBytes, statusSeverity } from './backup-status';
 import { BackupExecution, BackupNotificationRecipient, GoogleDriveStatus } from './backup.models';
 
 /** Tela única (não é lista CRUD) - status da conexão com o Google Drive, disparo manual do
@@ -35,15 +39,18 @@ import { BackupExecution, BackupNotificationRecipient, GoogleDriveStatus } from 
   styleUrl: './backup-page.component.scss',
   imports: [
     ButtonModule,
+    CardModule,
     CheckboxModule,
     ConfirmDialogModule,
     DatePipe,
     FieldsetModule,
     FormsModule,
     InputTextModule,
+    PageHeaderComponent,
     SelectModule,
     TableModule,
     TagModule,
+    TranslateModule,
   ],
   providers: [ConfirmationService],
 })
@@ -55,10 +62,27 @@ export class BackupPageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
-  protected readonly statusLabel = statusLabel;
   protected readonly statusSeverity = statusSeverity;
   protected readonly formatBytes = formatBytes;
+
+  protected statusLabel(status: BackupExecution['status'] | null | undefined): string {
+    const key: Record<string, string> = {
+      RUNNING: 'backup.status.running',
+      SUCCESS: 'backup.status.success',
+      PARTIAL: 'backup.status.partial',
+      FAILED: 'backup.status.failed',
+    };
+    const fallback: Record<string, string> = {
+      RUNNING: 'Em execução',
+      SUCCESS: 'Concluído',
+      PARTIAL: 'Concluído com alertas',
+      FAILED: 'Falhou',
+    };
+    if (status && key[status]) return this.i18n.tUi(key[status], fallback[status]);
+    return this.i18n.tUi('backup.status.unknown', 'Desconhecido');
+  }
 
   readonly loadingStatus = signal(true);
   readonly loadingExecutions = signal(true);
@@ -105,11 +129,23 @@ export class BackupPageComponent implements OnInit {
     const error = params.get('google_drive_error');
 
     if (connected === 'true') {
-      this.toast.add({ severity: 'success', summary: 'Google Drive conectado', detail: 'A conta foi conectada com sucesso.' });
+      this.toast.add({
+        severity: 'success',
+        summary: this.i18n.tUi('backup.toastDriveConnected.summary', 'Google Drive conectado'),
+        detail: this.i18n.tUi('backup.toastDriveConnected.detail', 'A conta foi conectada com sucesso.'),
+      });
     } else if (disconnected === 'true') {
-      this.toast.add({ severity: 'success', summary: 'Google Drive desconectado', detail: 'A conta foi desconectada.' });
+      this.toast.add({
+        severity: 'success',
+        summary: this.i18n.tUi('backup.toastDriveDisconnected.summary', 'Google Drive desconectado'),
+        detail: this.i18n.tUi('backup.toastDriveDisconnected.detail', 'A conta foi desconectada.'),
+      });
     } else if (error) {
-      this.toast.add({ severity: 'error', summary: 'Falha na conexão', detail: this.describeGoogleDriveError(error) });
+      this.toast.add({
+        severity: 'error',
+        summary: this.i18n.tUi('backup.toastDriveError.summary', 'Falha na conexão'),
+        detail: this.describeGoogleDriveError(error),
+      });
     }
 
     if (connected || disconnected || error) {
@@ -120,13 +156,13 @@ export class BackupPageComponent implements OnInit {
   private describeGoogleDriveError(code: string): string {
     switch (code) {
       case 'not_configured':
-        return 'O cliente OAuth2 do Google Drive não está configurado neste ambiente.';
+        return this.i18n.tUi('backup.driveErrors.notConfigured', 'O cliente OAuth2 do Google Drive não está configurado neste ambiente.');
       case 'state_mismatch':
-        return 'Estado inválido ou expirado - tente conectar de novo.';
+        return this.i18n.tUi('backup.driveErrors.stateMismatch', 'Estado inválido ou expirado - tente conectar de novo.');
       case 'token_exchange_failed':
-        return 'Falha ao trocar o código de autorização por um token - tente novamente.';
+        return this.i18n.tUi('backup.driveErrors.tokenExchangeFailed', 'Falha ao trocar o código de autorização por um token - tente novamente.');
       default:
-        return `Erro ao conectar: ${code}`;
+        return this.i18n.tUi('backup.driveErrors.generic', { code }, `Erro ao conectar: ${code}`);
     }
   }
 
@@ -176,8 +212,8 @@ export class BackupPageComponent implements OnInit {
 
   protected disconnectGoogleDrive(): void {
     this.confirmationService.confirm({
-      header: 'Desconectar Google Drive',
-      message: 'Os backups automáticos vão parar de ser enviados até reconectar. Continuar?',
+      header: this.i18n.tUi('backup.confirmDisconnect.header', 'Desconectar Google Drive'),
+      message: this.i18n.tUi('backup.confirmDisconnect.message', 'Os backups automáticos vão parar de ser enviados até reconectar. Continuar?'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         window.location.assign(new URL('/backup/google-drive/disconnect', environment.apiBaseUrl).toString());
@@ -195,14 +231,18 @@ export class BackupPageComponent implements OnInit {
           this.executing.set(false);
           this.toast.add({
             severity: 'success',
-            summary: 'Backup iniciado',
-            detail: 'A execução foi disparada em segundo plano - acompanhe o status abaixo.',
+            summary: this.i18n.tUi('backup.toastBackupStarted.summary', 'Backup iniciado'),
+            detail: this.i18n.tUi('backup.toastBackupStarted.detail', 'A execução foi disparada em segundo plano - acompanhe o status abaixo.'),
           });
           this.loadExecutions();
         },
         error: () => {
           this.executing.set(false);
-          this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível disparar o backup.' });
+          this.toast.add({
+            severity: 'error',
+            summary: this.i18n.tUi('backup.toastBackupError.summary', 'Erro'),
+            detail: this.i18n.tUi('backup.toastBackupError.detail', 'Não foi possível disparar o backup.'),
+          });
         },
       });
   }
@@ -213,7 +253,7 @@ export class BackupPageComponent implements OnInit {
 
   protected triggeredByLabel(triggeredBy: string | null): string {
     if (triggeredBy === 'scheduled') {
-      return 'Agendado';
+      return this.i18n.tUi('backup.history.triggeredByScheduled', 'Agendado');
     }
     return triggeredBy || '-';
   }
@@ -246,15 +286,15 @@ export class BackupPageComponent implements OnInit {
         next: () => {
           this.savingRecipient.set(false);
           this.newRecipientEmail.set('');
-          this.toast.add({ severity: 'success', summary: 'Destinatário adicionado', detail: email });
+          this.toast.add({ severity: 'success', summary: this.i18n.tUi('backup.toastRecipientAdded.summary', 'Destinatário adicionado'), detail: email });
           this.loadRecipients();
         },
         error: (err) => {
           this.savingRecipient.set(false);
           this.toast.add({
             severity: 'error',
-            summary: 'Erro',
-            detail: err?.error?.message || 'Não foi possível adicionar o destinatário.',
+            summary: this.i18n.tUi('backup.toastRecipientError.summary', 'Erro'),
+            detail: err?.error?.message || this.i18n.tUi('backup.toastRecipientError.detailFallback', 'Não foi possível adicionar o destinatário.'),
           });
         },
       });
@@ -292,7 +332,11 @@ export class BackupPageComponent implements OnInit {
         },
         error: () => {
           this.generatingSingle.set(false);
-          this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível gerar o backup deste app.' });
+          this.toast.add({
+            severity: 'error',
+            summary: this.i18n.tUi('backup.toastSingleError.summary', 'Erro'),
+            detail: this.i18n.tUi('backup.toastSingleError.detail', 'Não foi possível gerar o backup deste app.'),
+          });
         },
       });
   }
@@ -315,8 +359,12 @@ export class BackupPageComponent implements OnInit {
 
   protected removeRecipient(recipient: BackupNotificationRecipient): void {
     this.confirmationService.confirm({
-      header: 'Remover destinatário',
-      message: `Remover "${recipient.email}" da lista de notificações de backup?`,
+      header: this.i18n.tUi('backup.confirmRemoveRecipient.header', 'Remover destinatário'),
+      message: this.i18n.tUi(
+        'backup.confirmRemoveRecipient.message',
+        { email: recipient.email },
+        `Remover "${recipient.email}" da lista de notificações de backup?`,
+      ),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.api
@@ -324,11 +372,15 @@ export class BackupPageComponent implements OnInit {
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: () => {
-              this.toast.add({ severity: 'success', summary: 'Removido', detail: recipient.email });
+              this.toast.add({ severity: 'success', summary: this.i18n.tUi('backup.toastRemoved.summary', 'Removido'), detail: recipient.email });
               this.loadRecipients();
             },
             error: () => {
-              this.toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível remover o destinatário.' });
+              this.toast.add({
+                severity: 'error',
+                summary: this.i18n.tUi('backup.toastRemoveError.summary', 'Erro'),
+                detail: this.i18n.tUi('backup.toastRemoveError.detail', 'Não foi possível remover o destinatário.'),
+              });
             },
           });
       },

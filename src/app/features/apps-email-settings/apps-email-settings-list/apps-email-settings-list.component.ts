@@ -5,9 +5,11 @@ import { ActivatedRoute } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AppsApiService } from '../../apps/apps.api.service';
 import { AppModel } from '../../apps/apps.models';
+import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { AppsEmailSettingsDialogComponent } from '../apps-email-settings-dialog/apps-email-settings-dialog.component';
 
 /** Painel central de Config de E-mail dos apps satélite (cardsync/nimbusflow/nimbusdesk/
@@ -21,7 +23,7 @@ import { AppsEmailSettingsDialogComponent } from '../apps-email-settings-dialog/
   standalone: true,
   selector: 'app-apps-email-settings-list',
   templateUrl: './apps-email-settings-list.component.html',
-  imports: [ButtonModule, TableModule, TooltipModule, AppsEmailSettingsDialogComponent],
+  imports: [ButtonModule, PageHeaderComponent, TableModule, TooltipModule, TranslateModule, AppsEmailSettingsDialogComponent],
 })
 export class AppsEmailSettingsListComponent implements OnInit {
   private readonly api = inject(AppsApiService);

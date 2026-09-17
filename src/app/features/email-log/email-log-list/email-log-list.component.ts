@@ -13,20 +13,19 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { buildListQuery } from '../../../core/list-base/list-query.builder';
 import { readArrayFilterValues, readDateRangeFilterValue, readSingleFilterValue } from '../../../core/list-base/table-filter-readers';
 import { StatefulListPage } from '../../../core/list-base/stateful-list-page';
 import { STATE_KEY } from '../../../core/state-key.constants';
+import { I18nService } from '../../../core/i18n/i18n.service';
 import { ActiveFilterItem, FiltersPanelComponent } from '../../../shared/filters-panel/filters-panel.component';
+import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import {
-  EMAIL_LOG_EVENT_TYPE_OPTIONS,
-  EMAIL_LOG_STATUS_OPTIONS,
   eventTypeCode,
-  eventTypeLabel,
   eventTypeName,
   statusCode,
-  statusLabel,
   statusName,
   statusSeverity,
 } from '../email-log-status';
@@ -51,9 +50,11 @@ import { EmailLogAdvancedFilters, EmailLogFiltersState, EmailLogModel } from '..
     FormsModule,
     InputTextModule,
     MultiSelectModule,
+    PageHeaderComponent,
     TableModule,
     TagModule,
     TooltipModule,
+    TranslateModule,
   ],
 })
 export class EmailLogListComponent extends StatefulListPage<EmailLogFiltersState, EmailLogAdvancedFilters> implements OnInit {
@@ -62,6 +63,7 @@ export class EmailLogListComponent extends StatefulListPage<EmailLogFiltersState
   private readonly api = inject(EmailLogApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly i18n = inject(I18nService);
 
   override rows = Number(localStorage.getItem(this.tableRowsKey())) || StatefulListPage.DEFAULT_ROWS;
 
@@ -77,8 +79,24 @@ export class EmailLogListComponent extends StatefulListPage<EmailLogFiltersState
   readonly eventType = signal<number[] | null>(null);
   readonly sentAtRange = signal<Date[] | null>(null);
 
-  readonly statusOptions = EMAIL_LOG_STATUS_OPTIONS;
-  readonly eventTypeOptions = EMAIL_LOG_EVENT_TYPE_OPTIONS;
+  /** Só os eventos que o NimbusAuthServer de fato gera (convite de 1º acesso, reset de senha,
+   *  notificação de backup). Computed (não array fixo) - labels reavaliam quando o idioma muda. */
+  readonly statusOptions = computed(() => {
+    this.i18n.appliedLang();
+    return [
+      { label: this.i18n.tUi('emailLog.status.sent', 'Enviado'), value: 1 },
+      { label: this.i18n.tUi('emailLog.status.failed', 'Falhou'), value: 2 },
+    ];
+  });
+
+  readonly eventTypeOptions = computed(() => {
+    this.i18n.appliedLang();
+    return [
+      { label: this.i18n.tUi('emailLog.eventType.passwordReset', 'Reset de senha'), value: 1 },
+      { label: this.i18n.tUi('emailLog.eventType.firstAccess', 'Primeiro acesso'), value: 2 },
+      { label: this.i18n.tUi('emailLog.eventType.backupNotification', 'Notificação de backup'), value: 4 },
+    ];
+  });
 
   readonly detailVisible = signal(false);
   readonly detailLog = signal<EmailLogModel | null>(null);
@@ -97,18 +115,24 @@ export class EmailLogListComponent extends StatefulListPage<EmailLogFiltersState
     const eventType = this.eventType();
     const sentAt = this.sentAtRange();
 
-    if (subject) items.push({ label: 'Assunto', value: subject });
-    if (template) items.push({ label: 'Template', value: template });
-    if (recipient) items.push({ label: 'Destinatário', value: recipient });
+    if (subject) items.push({ label: this.i18n.tUi('emailLog.list.fields.subject', 'Assunto'), value: subject });
+    if (template) items.push({ label: this.i18n.tUi('emailLog.list.fields.template', 'Template'), value: template });
+    if (recipient) items.push({ label: this.i18n.tUi('emailLog.list.fields.recipient', 'Destinatário'), value: recipient });
 
     if (status?.length) {
-      items.push({ label: 'Status', value: status.map((v) => statusLabel(v)).join(', ') });
+      items.push({ label: this.i18n.tUi('emailLog.list.fields.status', 'Status'), value: status.map((v) => this.statusLabelForCode(v)).join(', ') });
     }
     if (eventType?.length) {
-      items.push({ label: 'Tipo de evento', value: eventType.map((v) => eventTypeLabel(v)).join(', ') });
+      items.push({
+        label: this.i18n.tUi('emailLog.list.fields.eventType', 'Tipo de evento'),
+        value: eventType.map((v) => this.eventTypeLabelForCode(v)).join(', '),
+      });
     }
     if (sentAt?.[0] && sentAt?.[1]) {
-      items.push({ label: 'Enviado em', value: `${this.formatDate(sentAt[0])} – ${this.formatDate(sentAt[1])}` });
+      items.push({
+        label: this.i18n.tUi('emailLog.list.fields.sentAt', 'Enviado em'),
+        value: `${this.formatDate(sentAt[0])} – ${this.formatDate(sentAt[1])}`,
+      });
     }
 
     return items;
@@ -133,7 +157,7 @@ export class EmailLogListComponent extends StatefulListPage<EmailLogFiltersState
   }
 
   statusLabel(code: string | null): string {
-    return statusLabel(code != null ? statusCode(code) : null);
+    return this.statusLabelForCode(code != null ? statusCode(code) : null);
   }
 
   statusSeverity(code: string | null) {
@@ -141,7 +165,21 @@ export class EmailLogListComponent extends StatefulListPage<EmailLogFiltersState
   }
 
   eventTypeLabel(code: string | null): string {
-    return eventTypeLabel(code != null ? eventTypeCode(code) : null);
+    return this.eventTypeLabelForCode(code != null ? eventTypeCode(code) : null);
+  }
+
+  private statusLabelForCode(code: number | null): string {
+    if (code === 1) return this.i18n.tUi('emailLog.status.sent', 'Enviado');
+    if (code === 2) return this.i18n.tUi('emailLog.status.failed', 'Falhou');
+    return '—';
+  }
+
+  private eventTypeLabelForCode(code: number | null): string {
+    if (code === 1) return this.i18n.tUi('emailLog.eventType.passwordReset', 'Reset de senha');
+    if (code === 2) return this.i18n.tUi('emailLog.eventType.firstAccess', 'Primeiro acesso');
+    if (code === 3) return this.i18n.tUi('emailLog.eventType.chargebackDetected', 'Chargeback detectado');
+    if (code === 4) return this.i18n.tUi('emailLog.eventType.backupNotification', 'Notificação de backup');
+    return '—';
   }
 
   protected override tableStateKey(): string {
@@ -221,26 +259,29 @@ export class EmailLogListComponent extends StatefulListPage<EmailLogFiltersState
     const items: ActiveFilterItem[] = [];
 
     const subject = readSingleFilterValue(filters, 'subject');
-    if (subject) items.push({ label: 'Assunto', value: subject });
+    if (subject) items.push({ label: this.i18n.tUi('emailLog.list.fields.subject', 'Assunto'), value: subject });
 
     const template = readSingleFilterValue(filters, 'template');
-    if (template) items.push({ label: 'Template', value: template });
+    if (template) items.push({ label: this.i18n.tUi('emailLog.list.fields.template', 'Template'), value: template });
 
     const recipient = readSingleFilterValue(filters, 'recipient');
-    if (recipient) items.push({ label: 'Destinatário', value: recipient });
+    if (recipient) items.push({ label: this.i18n.tUi('emailLog.list.fields.recipient', 'Destinatário'), value: recipient });
 
     const statuses = readArrayFilterValues(filters, 'status');
     if (statuses.length) {
-      items.push({ label: 'Status', value: statuses.map((v) => statusLabel(Number(v))).join(', ') });
+      items.push({ label: this.i18n.tUi('emailLog.list.fields.status', 'Status'), value: statuses.map((v) => this.statusLabelForCode(Number(v))).join(', ') });
     }
 
     const eventTypes = readArrayFilterValues(filters, 'eventType');
     if (eventTypes.length) {
-      items.push({ label: 'Tipo de evento', value: eventTypes.map((v) => eventTypeLabel(Number(v))).join(', ') });
+      items.push({
+        label: this.i18n.tUi('emailLog.list.fields.eventType', 'Tipo de evento'),
+        value: eventTypes.map((v) => this.eventTypeLabelForCode(Number(v))).join(', '),
+      });
     }
 
     const sentAt = readDateRangeFilterValue(filters, 'sentAt', this.formatDate.bind(this));
-    if (sentAt) items.push({ label: 'Enviado em', value: sentAt });
+    if (sentAt) items.push({ label: this.i18n.tUi('emailLog.list.fields.sentAt', 'Enviado em'), value: sentAt });
 
     return items;
   }

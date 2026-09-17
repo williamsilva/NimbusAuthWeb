@@ -1,26 +1,26 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
+import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AppsApiService } from '../../apps/apps.api.service';
 import { AppModel } from '../../apps/apps.models';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { FiltersPanelComponent } from '../../../shared/filters-panel/filters-panel.component';
+import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { AppsEmailLogApiService } from '../apps-email-log.api.service';
 import { AppEmailLogItem } from '../apps-email-log.models';
-
-const STATUS_OPTIONS = [
-  { label: 'Enviado', value: 'SENT' },
-  { label: 'Falhou', value: 'FAILED' },
-];
 
 /** Painel central de Auditoria de E-mail dos apps satélite (cardsync/nimbusflow/nimbusdesk/
  *  nimbusnovax) - mesmo padrão de seletor de apps-email-settings-list, mas com uma tabela paginada
@@ -36,12 +36,16 @@ const STATUS_OPTIONS = [
     ButtonModule,
     DatePickerModule,
     DatePipe,
+    FiltersPanelComponent,
+    FloatLabel,
     FormsModule,
     InputTextModule,
+    PageHeaderComponent,
     SelectModule,
     TableModule,
     TagModule,
     TooltipModule,
+    TranslateModule,
   ],
 })
 export class AppsEmailLogListComponent implements OnInit {
@@ -49,8 +53,15 @@ export class AppsEmailLogListComponent implements OnInit {
   private readonly api = inject(AppsEmailLogApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
 
-  readonly statusOptions = STATUS_OPTIONS;
+  readonly statusOptions = computed(() => {
+    this.i18n.appliedLang();
+    return [
+      { label: this.i18n.tUi('emailLog.status.sent', 'Enviado'), value: 'SENT' },
+      { label: this.i18n.tUi('emailLog.status.failed', 'Falhou'), value: 'FAILED' },
+    ];
+  });
 
   readonly loadingApps = signal(true);
   readonly apps = signal<AppModel[]>([]);

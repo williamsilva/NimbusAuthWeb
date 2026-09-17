@@ -3,13 +3,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
+import { FloatLabel } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TabsModule } from 'primeng/tabs';
 import { TextareaModule } from 'primeng/textarea';
 import { MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
+import { I18nService } from '../../core/i18n/i18n.service';
+import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
+import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { SecuritySettingsApiService } from './security-settings.api.service';
 import { SecuritySettings } from './security-settings.models';
 
@@ -25,13 +31,27 @@ function splitList(value: string): string[] {
   selector: 'app-security-settings-page',
   templateUrl: './security-settings-page.component.html',
   styleUrl: './security-settings-page.component.scss',
-  imports: [ButtonModule, CheckboxModule, InputNumberModule, InputTextModule, TabsModule, TextareaModule, ReactiveFormsModule],
+  imports: [
+    ButtonModule,
+    CardModule,
+    CheckboxModule,
+    ErrorMsgComponent,
+    FloatLabel,
+    InputNumberModule,
+    InputTextModule,
+    PageHeaderComponent,
+    TabsModule,
+    TextareaModule,
+    ReactiveFormsModule,
+    TranslateModule,
+  ],
 })
 export class SecuritySettingsPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(SecuritySettingsApiService);
   private readonly toast = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
 
   readonly loading = signal(true);
   readonly saving = signal(false);
@@ -137,7 +157,11 @@ export class SecuritySettingsPageComponent implements OnInit {
   save(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid || this.lockoutRules.length === 0) {
-      this.toast.add({ severity: 'warn', summary: 'Formulário inválido', detail: 'Verifique os campos destacados - é preciso pelo menos 1 regra de bloqueio.' });
+      this.toast.add({
+        severity: 'warn',
+        summary: this.i18n.tUi('securitySettings.toastInvalid.summary', 'Formulário inválido'),
+        detail: this.i18n.tUi('securitySettings.toastInvalid.detail', 'Verifique os campos destacados - é preciso pelo menos 1 regra de bloqueio.'),
+      });
       return;
     }
 
@@ -160,7 +184,11 @@ export class SecuritySettingsPageComponent implements OnInit {
       next: (settings) => {
         this.applySettings(settings);
         this.saving.set(false);
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Configurações de segurança atualizadas.' });
+        this.toast.add({
+          severity: 'success',
+          summary: this.i18n.tUi('securitySettings.toastUpdated.summary', 'Sucesso'),
+          detail: this.i18n.tUi('securitySettings.toastUpdated.detail', 'Configurações de segurança atualizadas.'),
+        });
       },
       error: () => this.saving.set(false),
     });

@@ -1,9 +1,6 @@
-<div class="flex justify-content-between align-items-center mb-3">
-  <h2 class="m-0">Auditoria de E-mail</h2>
-  <div class="flex gap-2">
-    <button pButton type="button" icon="pi pi-refresh" (click)="refresh()" class="p-button-text p-button-sm" label="Atualizar"></button>
-  </div>
-</div>
+<app-page-header [title]="'emailLog.list.title' | translate" [subtitle]="'emailLog.list.subtitle' | translate">
+  <button pButton type="button" icon="pi pi-refresh" (click)="refresh()" class="p-button-text p-button-sm" [label]="'emailLog.list.refreshButton' | translate"></button>
+</app-page-header>
 
 <p-dialog
   [modal]="true"
@@ -12,22 +9,22 @@
   [resizable]="false"
   [visible]="detailVisible()"
   [style]="{ width: '720px', maxWidth: '95vw' }"
-  header="Detalhe do e-mail"
+  [header]="'emailLog.list.detail.title' | translate"
   (onHide)="onDetailVisibleChange(false)"
 >
   @if (detailLog(); as log) {
     <div class="flex flex-column gap-2 mb-3">
-      <div><strong>Destinatário:</strong> {{ log.recipient }}</div>
-      <div><strong>Assunto:</strong> {{ log.subject }}</div>
-      <div><strong>Template:</strong> {{ log.template }}</div>
+      <div><strong>{{ 'emailLog.list.detail.recipient' | translate }}</strong> {{ log.recipient }}</div>
+      <div><strong>{{ 'emailLog.list.detail.subject' | translate }}</strong> {{ log.subject }}</div>
+      <div><strong>{{ 'emailLog.list.detail.template' | translate }}</strong> {{ log.template }}</div>
       <div>
-        <strong>Status:</strong>
+        <strong>{{ 'emailLog.list.detail.status' | translate }}</strong>
         <p-tag [severity]="statusSeverity(log.status)" [value]="statusLabel(log.status)" />
       </div>
-      <div><strong>Tipo de evento:</strong> {{ eventTypeLabel(log.eventType) }}</div>
-      <div><strong>Enviado em:</strong> {{ log.sentAt | date: 'dd/MM/yyyy HH:mm:ss' }}</div>
+      <div><strong>{{ 'emailLog.list.detail.eventType' | translate }}</strong> {{ eventTypeLabel(log.eventType) }}</div>
+      <div><strong>{{ 'emailLog.list.detail.sentAt' | translate }}</strong> {{ log.sentAt | date: 'dd/MM/yyyy HH:mm:ss' }}</div>
       @if (log.errorMessage) {
-        <div class="text-red-500"><strong>Erro:</strong> {{ log.errorMessage }}</div>
+        <div class="text-red-500"><strong>{{ 'emailLog.list.detail.error' | translate }}</strong> {{ log.errorMessage }}</div>
       }
     </div>
 
@@ -38,16 +35,16 @@
         <div [innerHTML]="body"></div>
       </div>
     } @else {
-      <p class="text-color-secondary">Corpo do e-mail não disponível (registros anteriores a 19/08/2026 não guardam o HTML enviado).</p>
+      <p class="text-color-secondary">{{ 'emailLog.list.detail.bodyUnavailable' | translate }}</p>
     }
   }
 
   <ng-template pTemplate="footer">
-    <button pButton type="button" (click)="onDetailVisibleChange(false)" icon="pi pi-times" class="p-button-text p-button-sm" label="Fechar"></button>
+    <button pButton type="button" (click)="onDetailVisibleChange(false)" icon="pi pi-times" class="p-button-text p-button-sm" [label]="'emailLog.list.detail.close' | translate"></button>
   </ng-template>
 </p-dialog>
 
-<app-filters-panel [collapsed]="true" (clear)="clear()" (searchClick)="search()" [actionsAlign]="'start'" [activeFilterGroups]="activeFilterGroups()" [activeCount]="activeFiltersCount()" title="Filtrar">
+<app-filters-panel [collapsed]="true" (clear)="clear()" (searchClick)="search()" [actionsAlign]="'start'" [activeFilterGroups]="activeFilterGroups()" [activeCount]="activeFiltersCount()" [title]="'emailLog.list.filtersTitle' | translate">
   <div class="grid formgrid gap-0 align-items-end">
     <div class="col-12 md:col-3 p-1">
       <p-floatLabel variant="on" class="w-full">
@@ -58,7 +55,7 @@
           class="w-full p-inputtext-sm"
           (input)="recipient.set(($any($event.target).value ?? '').toString())"
         />
-        <label for="recipient">Destinatário</label>
+        <label for="recipient">{{ 'emailLog.list.fields.recipient' | translate }}</label>
       </p-floatLabel>
     </div>
 
@@ -71,7 +68,7 @@
           class="w-full p-inputtext-sm"
           (input)="subject.set(($any($event.target).value ?? '').toString())"
         />
-        <label for="subject">Assunto</label>
+        <label for="subject">{{ 'emailLog.list.fields.subject' | translate }}</label>
       </p-floatLabel>
     </div>
 
@@ -84,7 +81,7 @@
           class="w-full p-inputtext-sm"
           (input)="template.set(($any($event.target).value ?? '').toString())"
         />
-        <label for="template">Template</label>
+        <label for="template">{{ 'emailLog.list.fields.template' | translate }}</label>
       </p-floatLabel>
     </div>
 
@@ -100,10 +97,10 @@
           optionValue="value"
           [ngModel]="status()"
           [showToggleAll]="false"
-          [options]="statusOptions"
+          [options]="statusOptions()"
           (ngModelChange)="status.set($event?.length ? $event : null)"
         ></p-multiSelect>
-        <label for="status">Status</label>
+        <label for="status">{{ 'emailLog.list.fields.status' | translate }}</label>
       </p-floatLabel>
     </div>
 
@@ -119,10 +116,10 @@
           optionValue="value"
           [ngModel]="eventType()"
           [showToggleAll]="false"
-          [options]="eventTypeOptions"
+          [options]="eventTypeOptions()"
           (ngModelChange)="eventType.set($event?.length ? $event : null)"
         ></p-multiSelect>
-        <label for="eventType">Tipo de evento</label>
+        <label for="eventType">{{ 'emailLog.list.fields.eventType' | translate }}</label>
       </p-floatLabel>
     </div>
   </div>
@@ -142,7 +139,7 @@
           [ngModel]="sentAtRange()"
           (ngModelChange)="sentAtRange.set($event ?? null)"
         ></p-datepicker>
-        <label for="sentAt">Enviado em</label>
+        <label for="sentAt">{{ 'emailLog.list.fields.sentAt' | translate }}</label>
       </p-floatLabel>
     </div>
   </div>
@@ -173,7 +170,7 @@
     (onPage)="onPageChange($event)"
     [rowsPerPageOptions]="rowsPerPageOptions"
     [tableStyle]="{ width: '100%', 'min-width': '58rem' }"
-    currentPageReportTemplate="{first} a {last} de {totalRecords}"
+    [currentPageReportTemplate]="'emailLog.list.pageReportTemplate' | translate"
   >
     <ng-template pTemplate="colgroup">
       <colgroup>
@@ -191,7 +188,7 @@
       <tr>
         <th pSortableColumn="recipient">
           <div class="th-flex text-center">
-            <span class="th-label">Destinatário</span>
+            <span class="th-label">{{ 'emailLog.list.columns.recipient' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="recipient"></p-sortIcon>
               <p-columnFilter field="recipient" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
@@ -201,7 +198,7 @@
 
         <th pSortableColumn="subject">
           <div class="th-flex text-center">
-            <span class="th-label">Assunto</span>
+            <span class="th-label">{{ 'emailLog.list.columns.subject' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="subject"></p-sortIcon>
               <p-columnFilter field="subject" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
@@ -211,7 +208,7 @@
 
         <th pSortableColumn="template">
           <div class="th-flex text-center">
-            <span class="th-label">Template</span>
+            <span class="th-label">{{ 'emailLog.list.columns.template' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="template"></p-sortIcon>
               <p-columnFilter field="template" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
@@ -221,12 +218,12 @@
 
         <th pSortableColumn="status">
           <div class="th-flex text-center">
-            <span class="th-label">Status</span>
+            <span class="th-label">{{ 'emailLog.list.columns.status' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="status"></p-sortIcon>
               <p-columnFilter field="status" display="menu" matchMode="in" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-multiSelect class="w-full" appendTo="body" [ngModel]="value" [showClear]="true" optionLabel="label" optionValue="value" [options]="statusOptions" (onChange)="filter($event.value)" placeholder="Todos"></p-multiSelect>
+                  <p-multiSelect class="w-full" appendTo="body" [ngModel]="value" [showClear]="true" optionLabel="label" optionValue="value" [options]="statusOptions()" (onChange)="filter($event.value)" [placeholder]="'emailLog.list.allPlaceholder' | translate"></p-multiSelect>
                 </ng-template>
               </p-columnFilter>
             </span>
@@ -235,12 +232,12 @@
 
         <th pSortableColumn="eventType">
           <div class="th-flex text-center">
-            <span class="th-label">Tipo de evento</span>
+            <span class="th-label">{{ 'emailLog.list.columns.eventType' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="eventType"></p-sortIcon>
               <p-columnFilter field="eventType" display="menu" matchMode="in" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-multiSelect class="w-full" appendTo="body" [ngModel]="value" [showClear]="true" optionLabel="label" optionValue="value" [options]="eventTypeOptions" (onChange)="filter($event.value)" placeholder="Todos"></p-multiSelect>
+                  <p-multiSelect class="w-full" appendTo="body" [ngModel]="value" [showClear]="true" optionLabel="label" optionValue="value" [options]="eventTypeOptions()" (onChange)="filter($event.value)" [placeholder]="'emailLog.list.allPlaceholder' | translate"></p-multiSelect>
                 </ng-template>
               </p-columnFilter>
             </span>
@@ -249,12 +246,12 @@
 
         <th pSortableColumn="sentAt">
           <div class="th-flex text-center">
-            <span class="th-label">Enviado em</span>
+            <span class="th-label">{{ 'emailLog.list.columns.sentAt' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="sentAt"></p-sortIcon>
               <p-columnFilter display="menu" field="sentAt" matchMode="between" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-datepicker class="w-full" appendTo="body" [showIcon]="true" [ngModel]="value" selectionMode="range" dateFormat="dd/mm/yy" [readonlyInput]="true" (ngModelChange)="filter($event)" placeholder="Período"></p-datepicker>
+                  <p-datepicker class="w-full" appendTo="body" [showIcon]="true" [ngModel]="value" selectionMode="range" dateFormat="dd/mm/yy" [readonlyInput]="true" (ngModelChange)="filter($event)" [placeholder]="'emailLog.list.periodFilterPlaceholder' | translate"></p-datepicker>
                 </ng-template>
               </p-columnFilter>
             </span>
@@ -262,7 +259,7 @@
         </th>
 
         <th class="text-center">
-          <div class="th-flex text-center justify-content-center"><span class="th-label">Ações</span></div>
+          <div class="th-flex text-center justify-content-center"><span class="th-label">{{ 'emailLog.list.columns.actions' | translate }}</span></div>
         </th>
       </tr>
     </ng-template>
@@ -279,7 +276,7 @@
         <td class="text-center">{{ row.sentAt | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td class="text-center">
           <div class="table-actions">
-            <button pButton type="button" icon="pi pi-eye" (click)="viewDetail(row)" class="p-button-text p-button-sm" pTooltip="Ver detalhe" aria-label="Ver detalhe" tooltipPosition="top"></button>
+            <button pButton type="button" icon="pi pi-eye" (click)="viewDetail(row)" class="p-button-text p-button-sm" [pTooltip]="'emailLog.list.viewDetailTooltip' | translate" [attr.aria-label]="'emailLog.list.viewDetailTooltip' | translate" tooltipPosition="top"></button>
           </div>
         </td>
       </tr>
@@ -288,7 +285,7 @@
     <ng-template pTemplate="emptymessage">
       <tr>
         <td colspan="7" class="text-center py-5 opacity-70">
-          {{ loadedOnce() ? 'Nenhum e-mail encontrado.' : 'Carregando…' }}
+          {{ (loadedOnce() ? 'emailLog.list.emptyMessage' : 'emailLog.list.loadingMessage') | translate }}
         </td>
       </tr>
     </ng-template>

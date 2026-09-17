@@ -1,12 +1,9 @@
 <p-confirmDialog />
 
-<div class="flex justify-content-between align-items-center mb-3">
-  <h2 class="m-0">Grupos</h2>
-  <div class="flex gap-2">
-    <button pButton type="button" icon="pi pi-refresh" (click)="refresh()" class="p-button-text p-button-sm" label="Atualizar"></button>
-    <button pButton type="button" icon="pi pi-plus" (click)="goNew()" label="Novo grupo"></button>
-  </div>
-</div>
+<app-page-header [title]="'groups.list.title' | translate" [subtitle]="'groups.list.subtitle' | translate">
+  <button pButton type="button" icon="pi pi-refresh" (click)="refresh()" class="p-button-text p-button-sm" [label]="'groups.list.refreshButton' | translate"></button>
+  <button pButton type="button" icon="pi pi-plus" (click)="goNew()" [label]="'groups.list.newButton' | translate"></button>
+</app-page-header>
 
 <app-groups-form-dialog [visible]="dialogVisible()" [group]="editingGroup()" (visibleChange)="onDialogVisibleChange($event)" (saved)="onSaved()" />
 
@@ -24,13 +21,13 @@
   [actionsAlign]="'start'"
   [activeFilterGroups]="activeFilterGroups()"
   [activeCount]="activeFiltersCount()"
-  title="Filtrar"
+  [title]="'groups.list.filtersTitle' | translate"
 >
   <div class="grid formgrid gap-0 align-items-end">
     <div class="col-12 md:col-3 p-1">
       <p-floatLabel variant="on" class="w-full">
         <input id="name" pInputText [value]="name()" class="w-full p-inputtext-sm" (input)="name.set(($any($event.target).value ?? '').toString())" />
-        <label for="name">Nome</label>
+        <label for="name">{{ 'groups.list.fields.name' | translate }}</label>
       </p-floatLabel>
     </div>
 
@@ -43,7 +40,7 @@
           class="w-full p-inputtext-sm"
           (input)="description.set(($any($event.target).value ?? '').toString())"
         />
-        <label for="description">Descrição</label>
+        <label for="description">{{ 'groups.list.fields.description' | translate }}</label>
       </p-floatLabel>
     </div>
 
@@ -61,7 +58,7 @@
           [options]="appOptions()"
           (ngModelChange)="appKey.set($event ?? null)"
         ></p-select>
-        <label for="appKey">App</label>
+        <label for="appKey">{{ 'groups.list.fields.app' | translate }}</label>
       </p-floatLabel>
     </div>
 
@@ -79,7 +76,7 @@
           [ngModel]="createdAtRange()"
           (ngModelChange)="createdAtRange.set($event ?? null)"
         ></p-datepicker>
-        <label for="createdAt">Criado em</label>
+        <label for="createdAt">{{ 'groups.list.fields.createdAt' | translate }}</label>
       </p-floatLabel>
     </div>
 
@@ -99,7 +96,7 @@
           [options]="usersOptions()"
           (ngModelChange)="createdBy.set($event?.length ? $event : null)"
         ></p-multiSelect>
-        <label for="createdBy">Criado por</label>
+        <label for="createdBy">{{ 'groups.list.fields.createdBy' | translate }}</label>
       </p-floatLabel>
     </div>
   </div>
@@ -130,7 +127,7 @@
     (onPage)="onPageChange($event)"
     [rowsPerPageOptions]="rowsPerPageOptions"
     [tableStyle]="{ width: '100%', 'min-width': '54rem' }"
-    currentPageReportTemplate="{first} a {last} de {totalRecords}"
+    [currentPageReportTemplate]="'groups.list.pageReportTemplate' | translate"
   >
     <ng-template pTemplate="colgroup">
       <colgroup>
@@ -149,7 +146,7 @@
       <tr>
         <th pSortableColumn="name">
           <div class="th-flex text-center">
-            <span class="th-label">Nome</span>
+            <span class="th-label">{{ 'groups.list.columns.name' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="name"></p-sortIcon>
               <p-columnFilter field="name" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
@@ -158,12 +155,12 @@
         </th>
 
         <th class="text-center">
-          <div class="th-flex text-center justify-content-center"><span class="th-label">App</span></div>
+          <div class="th-flex text-center justify-content-center"><span class="th-label">{{ 'groups.list.columns.app' | translate }}</span></div>
         </th>
 
         <th pSortableColumn="description">
           <div class="th-flex text-center">
-            <span class="th-label">Descrição</span>
+            <span class="th-label">{{ 'groups.list.columns.description' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="description"></p-sortIcon>
               <p-columnFilter type="text" display="menu" class="ml-auto" field="description" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
@@ -173,12 +170,12 @@
 
         <th pSortableColumn="createdAt">
           <div class="th-flex text-center">
-            <span class="th-label">Criado em</span>
+            <span class="th-label">{{ 'groups.list.columns.createdAt' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="createdAt"></p-sortIcon>
               <p-columnFilter display="menu" field="createdAt" matchMode="between" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-datepicker class="w-full" appendTo="body" [showIcon]="true" [ngModel]="value" selectionMode="range" dateFormat="dd/mm/yy" [readonlyInput]="true" (ngModelChange)="filter($event)" placeholder="Período"></p-datepicker>
+                  <p-datepicker class="w-full" appendTo="body" [showIcon]="true" [ngModel]="value" selectionMode="range" dateFormat="dd/mm/yy" [readonlyInput]="true" (ngModelChange)="filter($event)" [placeholder]="'groups.list.periodFilterPlaceholder' | translate"></p-datepicker>
                 </ng-template>
               </p-columnFilter>
             </span>
@@ -187,12 +184,12 @@
 
         <th pSortableColumn="createdBy">
           <div class="th-flex text-center">
-            <span class="th-label">Criado por</span>
+            <span class="th-label">{{ 'groups.list.columns.createdBy' | translate }}</span>
             <span class="th-icons">
               <p-sortIcon field="createdBy"></p-sortIcon>
               <p-columnFilter display="menu" matchMode="in" field="createdBy" [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" styleClass="app-colfilter">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-multiSelect class="w-full" appendTo="body" [filter]="true" [ngModel]="value" [showClear]="true" optionLabel="name" optionValue="id" [options]="usersOptions()" (onChange)="filter($event.value)" placeholder="Todos"></p-multiSelect>
+                  <p-multiSelect class="w-full" appendTo="body" [filter]="true" [ngModel]="value" [showClear]="true" optionLabel="name" optionValue="id" [options]="usersOptions()" (onChange)="filter($event.value)" [placeholder]="'groups.list.allPlaceholder' | translate"></p-multiSelect>
                 </ng-template>
               </p-columnFilter>
             </span>
@@ -200,14 +197,14 @@
         </th>
 
         <th>
-          <div class="th-flex text-center justify-content-center"><span class="th-label">Usuários</span></div>
+          <div class="th-flex text-center justify-content-center"><span class="th-label">{{ 'groups.list.columns.users' | translate }}</span></div>
         </th>
         <th>
-          <div class="th-flex text-center justify-content-center"><span class="th-label">Permissões</span></div>
+          <div class="th-flex text-center justify-content-center"><span class="th-label">{{ 'groups.list.columns.permissions' | translate }}</span></div>
         </th>
 
         <th class="text-center">
-          <div class="th-flex text-center justify-content-center"><span class="th-label">Ações</span></div>
+          <div class="th-flex text-center justify-content-center"><span class="th-label">{{ 'groups.list.columns.actions' | translate }}</span></div>
         </th>
       </tr>
     </ng-template>
@@ -223,12 +220,12 @@
         <td class="text-center">{{ row.permissionsCount ?? '-' }}</td>
         <td class="text-center">
           <div class="table-actions">
-            <button pButton type="button" icon="pi pi-pencil" (click)="edit(row)" class="p-button-text p-button-sm" pTooltip="Editar"
-            aria-label="Editar" tooltipPosition="top"></button>
-            <button pButton type="button" icon="pi pi-shield" (click)="manage(row)" class="p-button-text p-button-sm" pTooltip="Gerenciar permissões/usuários"
-            aria-label="Gerenciar permissões/usuários" tooltipPosition="top"></button>
-            <button pButton type="button" icon="pi pi-trash" (click)="confirmDelete(row)" class="p-button-text p-button-sm p-button-danger" pTooltip="Excluir"
-            aria-label="Excluir" tooltipPosition="top"></button>
+            <button pButton type="button" icon="pi pi-pencil" (click)="edit(row)" class="p-button-text p-button-sm" [pTooltip]="'groups.list.editTooltip' | translate"
+            [attr.aria-label]="'groups.list.editTooltip' | translate" tooltipPosition="top"></button>
+            <button pButton type="button" icon="pi pi-shield" (click)="manage(row)" class="p-button-text p-button-sm" [pTooltip]="'groups.list.manageTooltip' | translate"
+            [attr.aria-label]="'groups.list.manageTooltip' | translate" tooltipPosition="top"></button>
+            <button pButton type="button" icon="pi pi-trash" (click)="confirmDelete(row)" class="p-button-text p-button-sm p-button-danger" [pTooltip]="'groups.list.deleteTooltip' | translate"
+            [attr.aria-label]="'groups.list.deleteTooltip' | translate" tooltipPosition="top"></button>
           </div>
         </td>
       </tr>
@@ -237,7 +234,7 @@
     <ng-template pTemplate="emptymessage">
       <tr>
         <td colspan="8" class="text-center py-5 opacity-70">
-          {{ loadedOnce() ? 'Nenhum grupo encontrado.' : 'Carregando…' }}
+          {{ (loadedOnce() ? 'groups.list.emptyMessage' : 'groups.list.loadingMessage') | translate }}
         </td>
       </tr>
     </ng-template>

@@ -17,8 +17,10 @@ import { SelectModule } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { buildListQuery } from '../../../core/list-base/list-query.builder';
+import { I18nService } from '../../../core/i18n/i18n.service';
 import {
   readArrayFilterValues,
   readDateRangeFilterValue,
@@ -32,14 +34,9 @@ import {
   FiltersPanelComponent,
 } from '../../../shared/filters-panel/filters-panel.component';
 import { CpfCnpjMaskDirective } from '../../../shared/directives/cpf-cnpj-mask.directive';
+import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { AppsApiService } from '../../apps/apps.api.service';
-import {
-  statusCode,
-  statusLabel,
-  statusName,
-  statusSeverity,
-  USER_STATUS_OPTIONS,
-} from '../user-status';
+import { statusCode, statusName, statusSeverity } from '../user-status';
 import { BulkUserActionMode, UsersSelectionPolicy } from '../users-selection.policy';
 import { UsersApiService } from '../users.api.service';
 import { UserModel, UserOption, UsersAdvancedFilters, UsersFiltersState } from '../users.models';
@@ -67,10 +64,12 @@ import { UsersFormDialogComponent } from '../users-form-dialog/users-form-dialog
     FormsModule,
     InputTextModule,
     MultiSelectModule,
+    PageHeaderComponent,
     SelectModule,
     TableModule,
     TagModule,
     TooltipModule,
+    TranslateModule,
     UsersFormDialogComponent,
   ],
 })
@@ -81,6 +80,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   private readonly appsApi = inject(AppsApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
   protected readonly toast = inject(MessageService);
   protected readonly confirm = inject(ConfirmationService);
   protected readonly selectionPolicy = inject(UsersSelectionPolicy);
@@ -121,7 +121,10 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   readonly blockedUntilRange = signal<Date[] | null>(null);
   readonly passwordExpiresAtRange = signal<Date[] | null>(null);
 
-  readonly statusOptions = USER_STATUS_OPTIONS;
+  readonly statusOptions = computed(() => {
+    this.i18n.appliedLang();
+    return [1, 2, 3, 4, 5].map((code) => ({ label: this.statusLabelForCode(code), value: code }));
+  });
 
   readonly dialogVisible = signal(false);
   readonly editingUser = signal<UserModel | null>(null);
@@ -168,9 +171,14 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
 
   readonly selectionModeLabel = computed(() => {
     const mode = this.selectionMode();
-    if (mode === 'activate') return 'Ativar selecionados';
-    if (mode === 'deactivate') return 'Inativar selecionados';
-    return 'Nenhuma ação em lote selecionada';
+    if (mode === 'activate') return this.i18n.tUi('users.list.activateSelectedButton', 'Ativar selecionados');
+    if (mode === 'deactivate') return this.i18n.tUi('users.list.deactivateSelectedButton', 'Inativar selecionados');
+    return this.i18n.tUi('users.list.noBulkAction', 'Nenhuma ação em lote selecionada');
+  });
+
+  readonly selectedCountLabel = computed(() => {
+    const count = this.selectedRows().length;
+    return this.i18n.tUi('users.list.selectedCountLabel', { count, userWord: this.wordUser(count), selectedWord: this.wordSelected(count) });
   });
 
   protected readonly advancedActiveFilters = computed<ActiveFilterItem[]>(() => {
@@ -187,15 +195,15 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     const blocked = this.blockedUntilRange();
     const expires = this.passwordExpiresAtRange();
 
-    if (name) items.push({ label: 'Nome', value: name });
-    if (userName) items.push({ label: 'E-mail', value: userName });
-    if (document) items.push({ label: 'Documento', value: document });
+    if (name) items.push({ label: this.i18n.tUi('users.list.chips.name', 'Nome'), value: name });
+    if (userName) items.push({ label: this.i18n.tUi('users.list.chips.email', 'E-mail'), value: userName });
+    if (document) items.push({ label: this.i18n.tUi('users.list.chips.document', 'Documento'), value: document });
 
     const appKey = this.groupAppKey();
-    if (appKey) items.push({ label: 'App', value: this.appName(appKey) });
+    if (appKey) items.push({ label: this.i18n.tUi('users.list.chips.app', 'App'), value: this.appName(appKey) });
 
     if (statuses?.length) {
-      items.push({ label: 'Status', value: statuses.map((v) => statusLabel(v)).join(', ') });
+      items.push({ label: this.i18n.tUi('users.list.chips.status', 'Status'), value: statuses.map((v) => this.statusLabelForCode(v)).join(', ') });
     }
 
     if (createdBy?.length) {
@@ -203,30 +211,30 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
         .filter((opt) => createdBy.includes(opt.id))
         .map((opt) => opt.name)
         .join(', ');
-      items.push({ label: 'Criado por', value: labels });
+      items.push({ label: this.i18n.tUi('users.list.chips.createdBy', 'Criado por'), value: labels });
     }
 
     if (create?.[0] && create?.[1]) {
       items.push({
-        label: 'Criado em',
+        label: this.i18n.tUi('users.list.chips.createdAt', 'Criado em'),
         value: `${this.formatDate(create[0])} – ${this.formatDate(create[1])}`,
       });
     }
     if (last?.[0] && last?.[1]) {
       items.push({
-        label: 'Último login',
+        label: this.i18n.tUi('users.list.chips.lastLoginAt', 'Último login'),
         value: `${this.formatDate(last[0])} – ${this.formatDate(last[1])}`,
       });
     }
     if (blocked?.[0] && blocked?.[1]) {
       items.push({
-        label: 'Bloqueado até',
+        label: this.i18n.tUi('users.list.chips.blockedUntil', 'Bloqueado até'),
         value: `${this.formatDate(blocked[0])} – ${this.formatDate(blocked[1])}`,
       });
     }
     if (expires?.[0] && expires?.[1]) {
       items.push({
-        label: 'Senha expira em',
+        label: this.i18n.tUi('users.list.chips.passwordExpiresAt', 'Senha expira em'),
         value: `${this.formatDate(expires[0])} – ${this.formatDate(expires[1])}`,
       });
     }
@@ -308,8 +316,8 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
         next: () =>
           this.toast.add({
             severity: 'success',
-            summary: 'Convite reenviado',
-            detail: `E-mail reenviado para ${row.userName}.`,
+            summary: this.i18n.tUi('users.list.toastInviteResent.summary', 'Convite reenviado'),
+            detail: this.i18n.tUi('users.list.toastInviteResent.detail', { email: row.userName }, `E-mail reenviado para ${row.userName}.`),
           }),
       });
   }
@@ -365,21 +373,21 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   activate(row: UserModel): void {
     this.bulk.executeAction(
       this.api.activate(row.id).pipe(tap(() => this.reloadAfterAction())),
-      `"${row.name}" foi ativado.`,
+      this.i18n.tUi('users.list.toastActivated', { name: row.name }, `"${row.name}" foi ativado.`),
     );
   }
 
   deactivate(row: UserModel): void {
     this.bulk.executeAction(
       this.api.deactivate(row.id).pipe(tap(() => this.reloadAfterAction())),
-      `"${row.name}" foi inativado.`,
+      this.i18n.tUi('users.list.toastDeactivated', { name: row.name }, `"${row.name}" foi inativado.`),
     );
   }
 
   confirmActivate(row: UserModel): void {
     this.bulk.confirmAction({
-      header: 'Ativar usuário',
-      message: `Ativar "${row.name}"?`,
+      header: this.i18n.tUi('users.list.confirmActivate.header', 'Ativar usuário'),
+      message: this.i18n.tUi('users.list.confirmActivate.message', { name: row.name }, `Ativar "${row.name}"?`),
       icon: 'pi pi-check-circle',
       accept: () => this.activate(row),
     });
@@ -387,8 +395,12 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
 
   confirmDeactivate(row: UserModel): void {
     this.bulk.confirmAction({
-      header: 'Inativar usuário',
-      message: `Inativar "${row.name}"? A pessoa não consegue mais logar em nenhum app até ser reativada.`,
+      header: this.i18n.tUi('users.list.confirmDeactivate.header', 'Inativar usuário'),
+      message: this.i18n.tUi(
+        'users.list.confirmDeactivate.message',
+        { name: row.name },
+        `Inativar "${row.name}"? A pessoa não consegue mais logar em nenhum app até ser reativada.`,
+      ),
       icon: 'pi pi-exclamation-triangle',
       accept: () => this.deactivate(row),
     });
@@ -397,27 +409,34 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   activateSelected(): void {
     const rows = this.selectedActivatableRows();
     if (!rows.length) return;
+    const count = rows.length;
     this.bulk.executeAction(
       this.api.activateBulk(rows.map((row) => row.id)).pipe(tap(() => this.reloadAfterAction())),
-      `${rows.length} ${this.plural(rows.length, 'usuário')} ${this.plural(rows.length, 'ativado')}.`,
+      this.i18n.tUi('users.list.toastActivatedBulk', { count, userWord: this.wordUser(count), actionWord: this.wordActivated(count) }),
     );
   }
 
   deactivateSelected(): void {
     const rows = this.selectedDeactivatableRows();
     if (!rows.length) return;
+    const count = rows.length;
     this.bulk.executeAction(
       this.api.deactivateBulk(rows.map((row) => row.id)).pipe(tap(() => this.reloadAfterAction())),
-      `${rows.length} ${this.plural(rows.length, 'usuário')} ${this.plural(rows.length, 'inativado')}.`,
+      this.i18n.tUi('users.list.toastDeactivatedBulk', { count, userWord: this.wordUser(count), actionWord: this.wordDeactivated(count) }),
     );
   }
 
   confirmActivateSelected(): void {
     const rows = this.selectedActivatableRows();
     if (!rows.length) return;
+    const count = rows.length;
     this.bulk.confirmAction({
-      header: 'Ativar selecionados',
-      message: `Ativar ${rows.length} ${this.plural(rows.length, 'usuário')} ${this.plural(rows.length, 'selecionado')}?`,
+      header: this.i18n.tUi('users.list.confirmActivateSelected.header', 'Ativar selecionados'),
+      message: this.i18n.tUi('users.list.confirmActivateSelected.message', {
+        count,
+        userWord: this.wordUser(count),
+        selectedWord: this.wordSelected(count),
+      }),
       icon: 'pi pi-check-circle',
       accept: () => this.activateSelected(),
     });
@@ -426,26 +445,72 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
   confirmDeactivateSelected(): void {
     const rows = this.selectedDeactivatableRows();
     if (!rows.length) return;
+    const count = rows.length;
     this.bulk.confirmAction({
-      header: 'Inativar selecionados',
-      message: `Inativar ${rows.length} ${this.plural(rows.length, 'usuário')} ${this.plural(rows.length, 'selecionado')}?`,
+      header: this.i18n.tUi('users.list.confirmDeactivateSelected.header', 'Inativar selecionados'),
+      message: this.i18n.tUi('users.list.confirmDeactivateSelected.message', {
+        count,
+        userWord: this.wordUser(count),
+        selectedWord: this.wordSelected(count),
+      }),
       icon: 'pi pi-exclamation-triangle',
       accept: () => this.deactivateSelected(),
     });
   }
 
-  /** Pluraliza uma palavra masculina regular (usuário/ativado/inativado/selecionado - todas só
-   *  ganham "s") em função da contagem, evitando o "(s)" genérico. */
-  private plural(count: number, word: string): string {
-    return count === 1 ? word : `${word}s`;
+  /** Palavras que variam com o idioma E com a contagem (singular/plural) - sem a dependência
+   *  ICU MessageFormat (fora de escopo, ver plano de i18n), resolve na mão com chave .one/.other,
+   *  igual a um mini plural rule por palavra. */
+  private wordUser(count: number): string {
+    return this.i18n.tUi(count === 1 ? 'users.list.words.user.one' : 'users.list.words.user.other', count === 1 ? 'usuário' : 'usuários');
+  }
+
+  private wordActivated(count: number): string {
+    return this.i18n.tUi(
+      count === 1 ? 'users.list.words.activated.one' : 'users.list.words.activated.other',
+      count === 1 ? 'ativado' : 'ativados',
+    );
+  }
+
+  private wordDeactivated(count: number): string {
+    return this.i18n.tUi(
+      count === 1 ? 'users.list.words.deactivated.one' : 'users.list.words.deactivated.other',
+      count === 1 ? 'inativado' : 'inativados',
+    );
+  }
+
+  private wordSelected(count: number): string {
+    return this.i18n.tUi(
+      count === 1 ? 'users.list.words.selected.one' : 'users.list.words.selected.other',
+      count === 1 ? 'selecionado' : 'selecionados',
+    );
   }
 
   statusLabel(status: number | null): string {
-    return statusLabel(status);
+    return this.statusLabelForCode(status);
   }
 
   statusSeverity(status: number | null) {
     return statusSeverity(status);
+  }
+
+  private statusLabelForCode(code: number | null): string {
+    const key: Record<number, string> = {
+      1: 'users.status.active',
+      2: 'users.status.inactive',
+      3: 'users.status.blocked',
+      4: 'users.status.disabled',
+      5: 'users.status.pendingPassword',
+    };
+    const fallback: Record<number, string> = {
+      1: 'Ativo',
+      2: 'Inativo',
+      3: 'Bloqueado',
+      4: 'Desabilitado',
+      5: 'Pendente (1º acesso)',
+    };
+    if (code != null && key[code]) return this.i18n.tUi(key[code], fallback[code]);
+    return '—';
   }
 
   formatDocument(document: string): string {
@@ -602,19 +667,19 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
     const items: ActiveFilterItem[] = [];
 
     const userName = readSingleFilterValue(filters, 'userName');
-    if (userName) items.push({ label: 'E-mail', value: userName });
+    if (userName) items.push({ label: this.i18n.tUi('users.list.chips.email', 'E-mail'), value: userName });
 
     const name = readSingleFilterValue(filters, 'name');
-    if (name) items.push({ label: 'Nome', value: name });
+    if (name) items.push({ label: this.i18n.tUi('users.list.chips.name', 'Nome'), value: name });
 
     const document = readSingleFilterValue(filters, 'document');
-    if (document) items.push({ label: 'Documento', value: document });
+    if (document) items.push({ label: this.i18n.tUi('users.list.chips.document', 'Documento'), value: document });
 
     const statuses = readArrayFilterValues(filters, 'status');
     if (statuses.length) {
       items.push({
-        label: 'Status',
-        value: statuses.map((v) => statusLabel(Number(v))).join(', '),
+        label: this.i18n.tUi('users.list.chips.status', 'Status'),
+        value: statuses.map((v) => this.statusLabelForCode(Number(v))).join(', '),
       });
     }
 
@@ -623,24 +688,26 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
       'lastLoginAt',
       this.formatDate.bind(this),
     );
-    if (lastLoginAt) items.push({ label: 'Último login', value: lastLoginAt });
+    if (lastLoginAt) items.push({ label: this.i18n.tUi('users.list.chips.lastLoginAt', 'Último login'), value: lastLoginAt });
 
     const blockedUntil = readDateRangeFilterValue(
       filters,
       'blockedUntil',
       this.formatDate.bind(this),
     );
-    if (blockedUntil) items.push({ label: 'Bloqueado até', value: blockedUntil });
+    if (blockedUntil) items.push({ label: this.i18n.tUi('users.list.chips.blockedUntil', 'Bloqueado até'), value: blockedUntil });
 
     const passwordExpiresAt = readDateRangeFilterValue(
       filters,
       'passwordExpiresAt',
       this.formatDate.bind(this),
     );
-    if (passwordExpiresAt) items.push({ label: 'Senha expira em', value: passwordExpiresAt });
+    if (passwordExpiresAt) {
+      items.push({ label: this.i18n.tUi('users.list.chips.passwordExpiresAt', 'Senha expira em'), value: passwordExpiresAt });
+    }
 
     const createdAt = readDateRangeFilterValue(filters, 'createdAt', this.formatDate.bind(this));
-    if (createdAt) items.push({ label: 'Criado em', value: createdAt });
+    if (createdAt) items.push({ label: this.i18n.tUi('users.list.chips.createdAt', 'Criado em'), value: createdAt });
 
     const createdByValues = readArrayFilterValues(filters, 'createdBy');
     if (createdByValues.length) {
@@ -648,7 +715,7 @@ export class UsersListComponent extends StatefulListPage<UsersFiltersState, User
         .filter((option) => createdByValues.includes(option.id))
         .map((option) => option.name);
       items.push({
-        label: 'Criado por',
+        label: this.i18n.tUi('users.list.chips.createdBy', 'Criado por'),
         value: (labels.length ? labels : createdByValues).join(', '),
       });
     }

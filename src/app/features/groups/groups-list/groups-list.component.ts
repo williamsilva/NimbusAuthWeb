@@ -16,13 +16,16 @@ import { SelectModule } from 'primeng/select';
 import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { buildListQuery } from '../../../core/list-base/list-query.builder';
+import { I18nService } from '../../../core/i18n/i18n.service';
 import { readArrayFilterValues, readDateRangeFilterValue, readSingleFilterValue } from '../../../core/list-base/table-filter-readers';
 import { StatefulListPage } from '../../../core/list-base/stateful-list-page';
 import { BulkActionListPage } from '../../../core/list-base/bulk-action-list-page';
 import { STATE_KEY } from '../../../core/state-key.constants';
 import { ActiveFilterItem, FiltersPanelComponent } from '../../../shared/filters-panel/filters-panel.component';
+import { PageHeaderComponent } from '../../../shared/page-header/page-header.component';
 import { AppsApiService } from '../../apps/apps.api.service';
 import { UsersApiService } from '../../users/users.api.service';
 import { UserOption } from '../../users/users.models';
@@ -50,10 +53,12 @@ import { GroupManageDialogComponent } from '../group-manage-dialog/group-manage-
     FormsModule,
     InputTextModule,
     MultiSelectModule,
+    PageHeaderComponent,
     SelectModule,
     TableModule,
     TagModule,
     TooltipModule,
+    TranslateModule,
     GroupsFormDialogComponent,
     GroupManageDialogComponent,
   ],
@@ -66,6 +71,7 @@ export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, Gr
   private readonly appsApi = inject(AppsApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
   protected readonly toast = inject(MessageService);
   protected readonly confirm = inject(ConfirmationService);
 
@@ -83,11 +89,18 @@ export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, Gr
 
     confirmDelete(row: GroupModel): void {
       this.confirmAction({
-        header: 'Excluir grupo',
-        message: `Excluir "${row.name}"? Só é possível se não houver nenhum usuário vinculado a ele.`,
+        header: this.host.i18n.tUi('groups.list.confirmDelete.header', 'Excluir grupo'),
+        message: this.host.i18n.tUi(
+          'groups.list.confirmDelete.message',
+          { name: row.name },
+          `Excluir "${row.name}"? Só é possível se não houver nenhum usuário vinculado a ele.`,
+        ),
         icon: 'pi pi-exclamation-triangle',
         accept: () =>
-          this.executeAction(this.host.api.delete(row.id).pipe(tap(() => this.host.refresh())), `"${row.name}" foi excluído.`),
+          this.executeAction(
+            this.host.api.delete(row.id).pipe(tap(() => this.host.refresh())),
+            this.host.i18n.tUi('groups.list.toastDeleted', { name: row.name }, `"${row.name}" foi excluído.`),
+          ),
       });
     }
   })(this);
@@ -123,20 +136,23 @@ export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, Gr
     const createdBy = this.createdBy();
     const createdAtRange = this.createdAtRange();
 
-    if (name) items.push({ label: 'Nome', value: name });
-    if (description) items.push({ label: 'Descrição', value: description });
-    if (appKey) items.push({ label: 'App', value: this.appName(appKey) });
+    if (name) items.push({ label: this.i18n.tUi('groups.list.fields.name', 'Nome'), value: name });
+    if (description) items.push({ label: this.i18n.tUi('groups.list.fields.description', 'Descrição'), value: description });
+    if (appKey) items.push({ label: this.i18n.tUi('groups.list.fields.app', 'App'), value: this.appName(appKey) });
 
     if (createdBy?.length) {
       const labels = this.usersOptions()
         .filter((opt) => createdBy.includes(opt.id))
         .map((opt) => opt.name)
         .join(', ');
-      items.push({ label: 'Criado por', value: labels });
+      items.push({ label: this.i18n.tUi('groups.list.fields.createdBy', 'Criado por'), value: labels });
     }
 
     if (createdAtRange?.[0] && createdAtRange?.[1]) {
-      items.push({ label: 'Criado em', value: `${this.formatDate(createdAtRange[0])} – ${this.formatDate(createdAtRange[1])}` });
+      items.push({
+        label: this.i18n.tUi('groups.list.fields.createdAt', 'Criado em'),
+        value: `${this.formatDate(createdAtRange[0])} – ${this.formatDate(createdAtRange[1])}`,
+      });
     }
 
     return items;
@@ -284,20 +300,23 @@ export class GroupsListComponent extends StatefulListPage<GroupsFiltersState, Gr
     const items: ActiveFilterItem[] = [];
 
     const name = readSingleFilterValue(filters, 'name');
-    if (name) items.push({ label: 'Nome', value: name });
+    if (name) items.push({ label: this.i18n.tUi('groups.list.fields.name', 'Nome'), value: name });
 
     const description = readSingleFilterValue(filters, 'description');
-    if (description) items.push({ label: 'Descrição', value: description });
+    if (description) items.push({ label: this.i18n.tUi('groups.list.fields.description', 'Descrição'), value: description });
 
     const createdAt = readDateRangeFilterValue(filters, 'createdAt', this.formatDate.bind(this));
-    if (createdAt) items.push({ label: 'Criado em', value: createdAt });
+    if (createdAt) items.push({ label: this.i18n.tUi('groups.list.fields.createdAt', 'Criado em'), value: createdAt });
 
     const createdByValues = readArrayFilterValues(filters, 'createdBy');
     if (createdByValues.length) {
       const labels = this.usersOptions()
         .filter((option) => createdByValues.includes(option.id))
         .map((option) => option.name);
-      items.push({ label: 'Criado por', value: (labels.length ? labels : createdByValues).join(', ') });
+      items.push({
+        label: this.i18n.tUi('groups.list.fields.createdBy', 'Criado por'),
+        value: (labels.length ? labels : createdByValues).join(', '),
+      });
     }
 
     return items;

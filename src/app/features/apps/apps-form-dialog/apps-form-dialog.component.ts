@@ -5,12 +5,16 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
+import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 import { TextareaModule } from 'primeng/textarea';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AppsApiService } from '../apps.api.service';
 import { AppModel, AppSecretModel } from '../apps.models';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { ErrorMsgComponent } from '../../../shared/error-msg/error-msg.component';
 
 function splitList(value: string): string[] {
   return value
@@ -26,7 +30,17 @@ function splitList(value: string): string[] {
   standalone: true,
   selector: 'app-apps-form-dialog',
   templateUrl: './apps-form-dialog.component.html',
-  imports: [ButtonModule, CheckboxModule, DialogModule, InputTextModule, ReactiveFormsModule, TextareaModule],
+  imports: [
+    ButtonModule,
+    CheckboxModule,
+    DialogModule,
+    ErrorMsgComponent,
+    FloatLabel,
+    InputTextModule,
+    ReactiveFormsModule,
+    TextareaModule,
+    TranslateModule,
+  ],
 })
 export class AppsFormDialogComponent {
   visible = input.required<boolean>();
@@ -40,6 +54,7 @@ export class AppsFormDialogComponent {
   private readonly api = inject(AppsApiService);
   private readonly toast = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
 
   readonly isEditMode = computed(() => !!this.app());
   readonly saving = signal(false);
@@ -131,7 +146,11 @@ export class AppsFormDialogComponent {
       }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
           this.saving.set(false);
-          this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'App atualizado.' });
+          this.toast.add({
+            severity: 'success',
+            summary: this.i18n.tUi('common.success', 'Sucesso'),
+            detail: this.i18n.tUi('apps.dialog.toastUpdated', 'App atualizado.'),
+          });
           this.saved.emit();
           this.close();
         },
@@ -154,7 +173,11 @@ export class AppsFormDialogComponent {
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {
         this.saving.set(false);
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'App criado.' });
+        this.toast.add({
+          severity: 'success',
+          summary: this.i18n.tUi('common.success', 'Sucesso'),
+          detail: this.i18n.tUi('apps.dialog.toastCreated', 'App criado.'),
+        });
         this.saved.emit();
         this.createdWithSecret.emit(result);
         this.close();

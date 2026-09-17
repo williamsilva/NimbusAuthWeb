@@ -1,27 +1,24 @@
 <p-confirmDialog [style]="{ width: '480px' }" [breakpoints]="{ '640px': '95vw' }" />
 
-<div class="flex justify-content-between align-items-center mb-3">
-  <h2 class="m-0">Apps</h2>
-  <div class="flex gap-2">
-    <input
-      pInputText
-      type="text"
-      placeholder="Buscar por nome/appKey/clientId"
-      [(ngModel)]="globalFilter"
-      (keyup.enter)="search()"
-      class="w-20rem"
-    />
-    <button
-      pButton
-      type="button"
-      icon="pi pi-search"
-      (click)="search()"
-      class="p-button-outlined"
-      aria-label="Buscar"
-    ></button>
-    <button pButton type="button" icon="pi pi-plus" label="Novo App" (click)="goNew()"></button>
-  </div>
-</div>
+<app-page-header [title]="'apps.list.title' | translate" [subtitle]="'apps.list.subtitle' | translate">
+  <input
+    pInputText
+    type="text"
+    [placeholder]="'apps.list.searchPlaceholder' | translate"
+    [(ngModel)]="globalFilter"
+    (keyup.enter)="search()"
+    class="w-20rem"
+  />
+  <button
+    pButton
+    type="button"
+    icon="pi pi-search"
+    (click)="search()"
+    class="p-button-outlined"
+    [attr.aria-label]="'apps.list.searchAria' | translate"
+  ></button>
+  <button pButton type="button" icon="pi pi-plus" [label]="'apps.list.newButton' | translate" (click)="goNew()"></button>
+</app-page-header>
 
 <p-table
   [value]="apps()"
@@ -33,17 +30,18 @@
   (onLazyLoad)="onLazyLoad($event)"
   [rowsPerPageOptions]="[10, 20, 50]"
   dataKey="id"
+  class="app-admin-table"
 >
   <ng-template pTemplate="header">
     <tr>
-      <th>Nome</th>
-      <th>appKey</th>
-      <th>Client ID</th>
-      <th>Origem CORS</th>
-      <th>TTL access token</th>
-      <th>TTL refresh token</th>
-      <th>Status</th>
-      <th style="width: 12rem">Ações</th>
+      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.name' | translate }}</span></div></th>
+      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.appKey' | translate }}</span></div></th>
+      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.clientId' | translate }}</span></div></th>
+      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.allowedOrigin' | translate }}</span></div></th>
+      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.accessTokenTtl' | translate }}</span></div></th>
+      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.refreshTokenTtl' | translate }}</span></div></th>
+      <th class="text-center"><div class="th-flex justify-content-center"><span class="th-label">{{ 'apps.list.columns.status' | translate }}</span></div></th>
+      <th class="text-center" style="width: 12rem"><div class="th-flex justify-content-center"><span class="th-label">{{ 'apps.list.columns.actions' | translate }}</span></div></th>
     </tr>
   </ng-template>
 
@@ -57,33 +55,35 @@
         @if (row.accessTokenTtl) {
           {{ row.accessTokenTtl }}
         } @else {
-          <span class="text-color-secondary" pTooltip="Usa o padrão global (Configurações de Segurança)">Padrão</span>
+          <span class="text-color-secondary" [pTooltip]="'apps.list.defaultTtlTooltip' | translate">{{ 'apps.list.defaultTtlLabel' | translate }}</span>
         }
       </td>
       <td>
         @if (row.refreshTokenTtl) {
           {{ row.refreshTokenTtl }}
         } @else {
-          <span class="text-color-secondary" pTooltip="Usa o padrão global (Configurações de Segurança)">Padrão</span>
+          <span class="text-color-secondary" [pTooltip]="'apps.list.defaultTtlTooltip' | translate">{{ 'apps.list.defaultTtlLabel' | translate }}</span>
         }
       </td>
-      <td>
-        <p-tag [severity]="row.active ? 'success' : 'danger'" [value]="row.active ? 'Ativo' : 'Inativo'" />
+      <td class="text-center">
+        <p-tag [severity]="row.active ? 'success' : 'danger'" [value]="(row.active ? 'apps.list.statusActive' : 'apps.list.statusInactive') | translate" />
       </td>
-      <td>
-        <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" pTooltip="Editar"
-        aria-label="Editar" (click)="edit(row)"></button>
-        <button pButton type="button" icon="pi pi-key" class="p-button-text p-button-sm p-button-warning" pTooltip="Regenerar secret"
-        aria-label="Regenerar secret" (click)="regenerateSecret(row)"></button>
-        <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" pTooltip="Excluir"
-        aria-label="Excluir" (click)="confirmDelete(row)"></button>
+      <td class="text-center">
+        <div class="table-actions">
+          <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" [pTooltip]="'apps.list.editTooltip' | translate"
+          [attr.aria-label]="'apps.list.editTooltip' | translate" (click)="edit(row)"></button>
+          <button pButton type="button" icon="pi pi-key" class="p-button-text p-button-sm p-button-warning" [pTooltip]="'apps.list.regenerateSecretTooltip' | translate"
+          [attr.aria-label]="'apps.list.regenerateSecretTooltip' | translate" (click)="regenerateSecret(row)"></button>
+          <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" [pTooltip]="'apps.list.deleteTooltip' | translate"
+          [attr.aria-label]="'apps.list.deleteTooltip' | translate" (click)="confirmDelete(row)"></button>
+        </div>
       </td>
     </tr>
   </ng-template>
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="8" class="text-center">Nenhum App cadastrado ainda.</td>
+      <td colspan="8" class="text-center py-5 opacity-70">{{ 'apps.list.empty' | translate }}</td>
     </tr>
   </ng-template>
 </p-table>

@@ -6,86 +6,91 @@
   [resizable]="false"
   [visible]="visible()"
   [style]="{ width: '640px', maxWidth: '95vw' }"
-  [header]="isEditMode() ? 'Editar App' : 'Novo App'"
+  [header]="(isEditMode() ? 'apps.dialog.editTitle' : 'apps.dialog.newTitle') | translate"
 >
   <form [formGroup]="form" class="flex flex-column gap-3">
     <div class="grid formgrid">
       @if (!isEditMode()) {
         <div class="col-12 md:col-6 field">
-          <label for="appKey">Chave do app (appKey) *</label>
-          <input id="appKey" pInputText type="text" formControlName="appKey" class="w-full" placeholder="ex: nimbusflow" />
-          @if (submitted() && form.controls.appKey.invalid) {
-            <small class="p-error">Obrigatório - só letras/números minúsculos, começando com letra.</small>
-          }
+          <p-floatLabel variant="on" class="w-full">
+            <input id="appKey" pInputText type="text" formControlName="appKey" class="w-full" [placeholder]="'apps.dialog.placeholders.appKey' | translate" />
+            <app-error-msg forId="appKey" [label]="'apps.dialog.fields.appKey' | translate" [control]="form.controls.appKey" />
+          </p-floatLabel>
         </div>
 
         <div class="col-12 md:col-6 field">
-          <label for="clientId">Client ID *</label>
-          <input id="clientId" pInputText type="text" formControlName="clientId" class="w-full" placeholder="ex: nimbusflow-bff" />
-          @if (submitted() && form.controls.clientId.invalid) {
-            <small class="p-error">Obrigatório - letras/números/hífen minúsculos.</small>
-          }
+          <p-floatLabel variant="on" class="w-full">
+            <input id="clientId" pInputText type="text" formControlName="clientId" class="w-full" [placeholder]="'apps.dialog.placeholders.clientId' | translate" />
+            <app-error-msg forId="clientId" [label]="'apps.dialog.fields.clientId' | translate" [control]="form.controls.clientId" />
+          </p-floatLabel>
         </div>
       }
 
       <div class="col-12 field">
-        <label for="name">Nome *</label>
-        <input id="name" pInputText type="text" formControlName="name" class="w-full" />
-        @if (submitted() && form.controls.name.invalid) {
-          <small class="p-error">Obrigatório.</small>
-        }
+        <p-floatLabel variant="on" class="w-full">
+          <input id="name" pInputText type="text" formControlName="name" class="w-full" />
+          <app-error-msg forId="name" [label]="'apps.dialog.fields.name' | translate" [control]="form.controls.name" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 field">
-        <label for="description">Descrição</label>
-        <textarea id="description" pTextarea rows="2" formControlName="description" class="w-full"></textarea>
+        <p-floatLabel variant="on" class="w-full">
+          <textarea id="description" pTextarea rows="2" formControlName="description" class="w-full"></textarea>
+          <app-error-msg forId="description" [label]="'apps.dialog.fields.description' | translate" [required]="false" [control]="form.controls.description" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 field">
-        <label for="redirectUri">Redirect URI (login) *</label>
-        <input id="redirectUri" pInputText type="text" formControlName="redirectUri" class="w-full"
-               placeholder="https://api.exemplo.com.br/login/oauth2/code/{client-id}" />
-        @if (submitted() && form.controls.redirectUri.invalid) {
-          <small class="p-error">Obrigatório.</small>
-        }
+        <p-floatLabel variant="on" class="w-full">
+          <input id="redirectUri" pInputText type="text" formControlName="redirectUri" class="w-full"
+                 [placeholder]="'apps.dialog.placeholders.redirectUri' | translate" />
+          <app-error-msg forId="redirectUri" [label]="'apps.dialog.fields.redirectUri' | translate" [control]="form.controls.redirectUri" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 field">
-        <label for="postLogoutRedirectUris">URL(s) pós-logout</label>
-        <input id="postLogoutRedirectUris" pInputText type="text" formControlName="postLogoutRedirectUris" class="w-full"
-               placeholder="https://exemplo.com.br (separar por vírgula se mais de uma)" />
+        <p-floatLabel variant="on" class="w-full">
+          <input id="postLogoutRedirectUris" pInputText type="text" formControlName="postLogoutRedirectUris" class="w-full"
+                 [placeholder]="'apps.dialog.placeholders.postLogoutRedirectUris' | translate" />
+          <app-error-msg forId="postLogoutRedirectUris" [label]="'apps.dialog.fields.postLogoutRedirectUris' | translate" [required]="false" [control]="form.controls.postLogoutRedirectUris" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 md:col-6 field">
-        <label for="allowedOrigin">Origem CORS</label>
-        <input id="allowedOrigin" pInputText type="text" formControlName="allowedOrigin" class="w-full"
-               placeholder="https://exemplo.com.br" />
+        <p-floatLabel variant="on" class="w-full">
+          <input id="allowedOrigin" pInputText type="text" formControlName="allowedOrigin" class="w-full"
+                 [placeholder]="'apps.dialog.placeholders.allowedOrigin' | translate" />
+          <app-error-msg forId="allowedOrigin" [label]="'apps.dialog.fields.allowedOrigin' | translate" [required]="false" [control]="form.controls.allowedOrigin" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 md:col-6 field">
-        <label for="scopes">Scopes *</label>
-        <input id="scopes" pInputText type="text" formControlName="scopes" class="w-full" placeholder="openid,profile" />
-        @if (submitted() && form.controls.scopes.invalid) {
-          <small class="p-error">Obrigatório.</small>
-        }
+        <p-floatLabel variant="on" class="w-full">
+          <input id="scopes" pInputText type="text" formControlName="scopes" class="w-full" [placeholder]="'apps.dialog.placeholders.scopes' | translate" />
+          <app-error-msg forId="scopes" [label]="'apps.dialog.fields.scopes' | translate" [control]="form.controls.scopes" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 md:col-6 field">
-        <label for="accessTokenTtl">TTL do access token</label>
-        <input id="accessTokenTtl" pInputText type="text" formControlName="accessTokenTtl" class="w-full"
-               placeholder="PT10M (padrão global)" />
+        <p-floatLabel variant="on" class="w-full">
+          <input id="accessTokenTtl" pInputText type="text" formControlName="accessTokenTtl" class="w-full"
+                 [placeholder]="'apps.dialog.placeholders.accessTokenTtl' | translate" />
+          <app-error-msg forId="accessTokenTtl" [label]="'apps.dialog.fields.accessTokenTtl' | translate" [required]="false" [control]="form.controls.accessTokenTtl" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 md:col-6 field">
-        <label for="refreshTokenTtl">TTL do refresh token</label>
-        <input id="refreshTokenTtl" pInputText type="text" formControlName="refreshTokenTtl" class="w-full"
-               placeholder="P30D (padrão global)" />
+        <p-floatLabel variant="on" class="w-full">
+          <input id="refreshTokenTtl" pInputText type="text" formControlName="refreshTokenTtl" class="w-full"
+                 [placeholder]="'apps.dialog.placeholders.refreshTokenTtl' | translate" />
+          <app-error-msg forId="refreshTokenTtl" [label]="'apps.dialog.fields.refreshTokenTtl' | translate" [required]="false" [control]="form.controls.refreshTokenTtl" />
+        </p-floatLabel>
       </div>
 
       @if (isEditMode()) {
         <div class="col-12 field-checkbox">
           <p-checkbox formControlName="active" inputId="active" [binary]="true" />
-          <label for="active" class="ml-2">Ativo</label>
+          <label for="active" class="ml-2">{{ 'apps.dialog.fields.active' | translate }}</label>
         </div>
       }
     </div>
@@ -93,8 +98,8 @@
 
   <ng-template pTemplate="footer">
     <button pButton type="button" (click)="close()" icon="pi pi-times" class="p-button-text p-button-sm"
-            label="Cancelar" [disabled]="saving()"></button>
+            [label]="'apps.dialog.cancel' | translate" [disabled]="saving()"></button>
     <button pButton type="button" (click)="save()" icon="pi pi-save" class="p-button-sm"
-            [loading]="saving()" label="Salvar" [disabled]="saving()"></button>
+            [loading]="saving()" [label]="'apps.dialog.save' | translate" [disabled]="saving()"></button>
   </ng-template>
 </p-dialog>

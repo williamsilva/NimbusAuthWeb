@@ -1,60 +1,69 @@
-<h2 class="mb-3">Configurações de Segurança</h2>
+<app-page-header [title]="'securitySettings.title' | translate" [subtitle]="'securitySettings.subtitle' | translate"></app-page-header>
 
 @if (loading()) {
-  <p>Carregando…</p>
+  <p-card><p class="m-0">{{ 'securitySettings.loading' | translate }}</p></p-card>
 } @else {
+  <p-card class="mt-2 block">
   <form [formGroup]="form" class="settings-form">
     <p-tabs value="0">
       <p-tablist>
-        <p-tab value="0">Senha</p-tab>
-        <p-tab value="1">Bloqueio (lockout)</p-tab>
-        <p-tab value="2">Rate-limit por IP</p-tab>
-        <p-tab value="3">Tokens</p-tab>
-        <p-tab value="4">Outros</p-tab>
+        <p-tab value="0">{{ 'securitySettings.tabs.password' | translate }}</p-tab>
+        <p-tab value="1">{{ 'securitySettings.tabs.lockout' | translate }}</p-tab>
+        <p-tab value="2">{{ 'securitySettings.tabs.ipRateLimit' | translate }}</p-tab>
+        <p-tab value="3">{{ 'securitySettings.tabs.tokens' | translate }}</p-tab>
+        <p-tab value="4">{{ 'securitySettings.tabs.other' | translate }}</p-tab>
       </p-tablist>
       <p-tabpanels>
         <p-tabpanel value="0">
       <div formGroupName="password">
         <div class="settings-grid">
           <div class="field">
-            <label for="minLength">Tamanho mínimo</label>
-            <p-inputNumber
-              inputId="minLength"
-              formControlName="minLength"
-              [showButtons]="true"
-              [min]="4"
-              class="w-full"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <p-inputNumber
+                inputId="minLength"
+                formControlName="minLength"
+                [showButtons]="true"
+                [min]="4"
+                class="w-full"
+              />
+              <app-error-msg forId="minLength" [label]="'securitySettings.password.minLength' | translate" [control]="form.controls.password.controls.minLength" />
+            </p-floatLabel>
           </div>
           <div class="field">
-            <label for="historySize">Histórico (não repetir)</label>
-            <p-inputNumber
-              inputId="historySize"
-              formControlName="historySize"
-              [showButtons]="true"
-              [min]="0"
-              class="w-full"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <p-inputNumber
+                inputId="historySize"
+                formControlName="historySize"
+                [showButtons]="true"
+                [min]="0"
+                class="w-full"
+              />
+              <app-error-msg forId="historySize" [label]="'securitySettings.password.historySize' | translate" [control]="form.controls.password.controls.historySize" />
+            </p-floatLabel>
           </div>
           <div class="field">
-            <label for="sequenceLen">Tamanho da sequência bloqueada</label>
-            <p-inputNumber
-              inputId="sequenceLen"
-              formControlName="sequenceLen"
-              [showButtons]="true"
-              [min]="0"
-              class="w-full"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <p-inputNumber
+                inputId="sequenceLen"
+                formControlName="sequenceLen"
+                [showButtons]="true"
+                [min]="0"
+                class="w-full"
+              />
+              <app-error-msg forId="sequenceLen" [label]="'securitySettings.password.sequenceLen' | translate" [control]="form.controls.password.controls.sequenceLen" />
+            </p-floatLabel>
           </div>
           <div class="field">
-            <label for="maxSameInRow">Máx. caracteres repetidos</label>
-            <p-inputNumber
-              inputId="maxSameInRow"
-              formControlName="maxSameInRow"
-              [showButtons]="true"
-              [min]="0"
-              class="w-full"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <p-inputNumber
+                inputId="maxSameInRow"
+                formControlName="maxSameInRow"
+                [showButtons]="true"
+                [min]="0"
+                class="w-full"
+              />
+              <app-error-msg forId="maxSameInRow" [label]="'securitySettings.password.maxSameInRow' | translate" [control]="form.controls.password.controls.maxSameInRow" />
+            </p-floatLabel>
           </div>
         </div>
 
@@ -63,28 +72,28 @@
             <p-checkbox formControlName="ruleDigit" inputId="ruleDigit" [binary]="true" /><label
               for="ruleDigit"
               class="ml-2"
-              >Exigir número</label
+              >{{ 'securitySettings.password.ruleDigit' | translate }}</label
             >
           </div>
           <div class="field-checkbox">
             <p-checkbox formControlName="ruleUpper" inputId="ruleUpper" [binary]="true" /><label
               for="ruleUpper"
               class="ml-2"
-              >Exigir maiúscula</label
+              >{{ 'securitySettings.password.ruleUpper' | translate }}</label
             >
           </div>
           <div class="field-checkbox">
             <p-checkbox formControlName="ruleLower" inputId="ruleLower" [binary]="true" /><label
               for="ruleLower"
               class="ml-2"
-              >Exigir minúscula</label
+              >{{ 'securitySettings.password.ruleLower' | translate }}</label
             >
           </div>
           <div class="field-checkbox">
             <p-checkbox formControlName="ruleSymbol" inputId="ruleSymbol" [binary]="true" /><label
               for="ruleSymbol"
               class="ml-2"
-              >Exigir símbolo</label
+              >{{ 'securitySettings.password.ruleSymbol' | translate }}</label
             >
           </div>
           <div class="field-checkbox">
@@ -92,13 +101,13 @@
               formControlName="ruleNoWhitespace"
               inputId="ruleNoWhitespace"
               [binary]="true"
-            /><label for="ruleNoWhitespace" class="ml-2">Bloquear espaço</label>
+            /><label for="ruleNoWhitespace" class="ml-2">{{ 'securitySettings.password.ruleNoWhitespace' | translate }}</label>
           </div>
           <div class="field-checkbox">
             <p-checkbox formControlName="ruleCommon" inputId="ruleCommon" [binary]="true" /><label
               for="ruleCommon"
               class="ml-2"
-              >Bloquear senha comum</label
+              >{{ 'securitySettings.password.ruleCommon' | translate }}</label
             >
           </div>
           <div class="field-checkbox">
@@ -106,21 +115,21 @@
               formControlName="ruleNoUsername"
               inputId="ruleNoUsername"
               [binary]="true"
-            /><label for="ruleNoUsername" class="ml-2">Bloquear conter usuário</label>
+            /><label for="ruleNoUsername" class="ml-2">{{ 'securitySettings.password.ruleNoUsername' | translate }}</label>
           </div>
           <div class="field-checkbox">
             <p-checkbox
               formControlName="ruleNoSequence"
               inputId="ruleNoSequence"
               [binary]="true"
-            /><label for="ruleNoSequence" class="ml-2">Bloquear sequência</label>
+            /><label for="ruleNoSequence" class="ml-2">{{ 'securitySettings.password.ruleNoSequence' | translate }}</label>
           </div>
           <div class="field-checkbox">
             <p-checkbox
               formControlName="ruleNoRepetition"
               inputId="ruleNoRepetition"
               [binary]="true"
-            /><label for="ruleNoRepetition" class="ml-2">Bloquear repetição</label>
+            /><label for="ruleNoRepetition" class="ml-2">{{ 'securitySettings.password.ruleNoRepetition' | translate }}</label>
           </div>
           <div class="field-checkbox">
             <p-checkbox
@@ -128,22 +137,24 @@
               inputId="failIfNoExpirationData"
               [binary]="true"
             /><label for="failIfNoExpirationData" class="ml-2"
-              >Bloquear se sem dado de expiração</label
+              >{{ 'securitySettings.password.failIfNoExpirationData' | translate }}</label
             >
           </div>
         </div>
 
         <div class="settings-grid settings-grid--wide mt-3">
           <div class="field field--full">
-            <label for="commonPasswords">Senhas comuns bloqueadas (separar por vírgula)</label>
-            <textarea
-              rows="3"
-              pTextarea
-              class="w-full"
-              id="commonPasswords"
-              formControlName="commonPasswords"
-              placeholder="123456,qwerty,password"
-            ></textarea>
+            <p-floatLabel variant="on" class="w-full">
+              <textarea
+                rows="3"
+                pTextarea
+                class="w-full"
+                id="commonPasswords"
+                formControlName="commonPasswords"
+                [placeholder]="'securitySettings.password.commonPasswordsPlaceholder' | translate"
+              ></textarea>
+              <app-error-msg forId="commonPasswords" [label]="'securitySettings.password.commonPasswords' | translate" [required]="false" [control]="form.controls.password.controls.commonPasswords" />
+            </p-floatLabel>
           </div>
         </div>
 
@@ -155,80 +166,92 @@
               [binary]="true"
               inputId="expirationEnabled"
               formControlName="expirationEnabled"
-            /><label for="expirationEnabled" class="ml-2">Expiração ativa</label>
+            /><label for="expirationEnabled" class="ml-2">{{ 'securitySettings.password.expirationEnabled' | translate }}</label>
           </div>
           <div class="field">
-            <label for="expirationWarnDays">Avisar (dias antes)</label>
-            <p-inputNumber
-              [min]="0"
-              class="w-full"
-              [showButtons]="true"
-              inputId="expirationWarnDays"
-              formControlName="expirationWarnDays"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <p-inputNumber
+                [min]="0"
+                class="w-full"
+                [showButtons]="true"
+                inputId="expirationWarnDays"
+                formControlName="expirationWarnDays"
+              />
+              <app-error-msg forId="expirationWarnDays" [label]="'securitySettings.password.expirationWarnDays' | translate" [control]="form.controls.password.controls.expirationWarnDays" />
+            </p-floatLabel>
           </div>
           <div class="field">
-            <label for="expirationExpireDays">Expira em (dias)</label>
-            <p-inputNumber
-              inputId="expirationExpireDays"
-              formControlName="expirationExpireDays"
-              [showButtons]="true"
-              [min]="0"
-              class="w-full"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <p-inputNumber
+                inputId="expirationExpireDays"
+                formControlName="expirationExpireDays"
+                [showButtons]="true"
+                [min]="0"
+                class="w-full"
+              />
+              <app-error-msg forId="expirationExpireDays" [label]="'securitySettings.password.expirationExpireDays' | translate" [control]="form.controls.password.controls.expirationExpireDays" />
+            </p-floatLabel>
           </div>
         </div>
 
         <div class="settings-grid mt-3">
           <div class="field">
-            <label for="inviteTtl">Validade do convite</label>
-            <input
-              id="inviteTtl"
-              pInputText
-              type="text"
-              formControlName="inviteTtl"
-              class="w-full"
-              placeholder="PT24H"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <input
+                id="inviteTtl"
+                pInputText
+                type="text"
+                formControlName="inviteTtl"
+                class="w-full"
+                [placeholder]="'securitySettings.password.ttlPlaceholder24h' | translate"
+              />
+              <app-error-msg forId="inviteTtl" [label]="'securitySettings.password.inviteTtl' | translate" [control]="form.controls.password.controls.inviteTtl" />
+            </p-floatLabel>
           </div>
           <div class="field">
-            <label for="resetTtl">Validade do reset</label>
-            <input
-              id="resetTtl"
-              pInputText
-              type="text"
-              formControlName="resetTtl"
-              class="w-full"
-              placeholder="PT15M"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <input
+                id="resetTtl"
+                pInputText
+                type="text"
+                formControlName="resetTtl"
+                class="w-full"
+                [placeholder]="'securitySettings.password.ttlPlaceholder15m' | translate"
+              />
+              <app-error-msg forId="resetTtl" [label]="'securitySettings.password.resetTtl' | translate" [control]="form.controls.password.controls.resetTtl" />
+            </p-floatLabel>
           </div>
           <div class="field-checkbox">
             <p-checkbox
               formControlName="resetRateLimitEnabled"
               inputId="resetRateLimitEnabled"
               [binary]="true"
-            /><label for="resetRateLimitEnabled" class="ml-2">Rate-limit de reset ativo</label>
+            /><label for="resetRateLimitEnabled" class="ml-2">{{ 'securitySettings.password.resetRateLimitEnabled' | translate }}</label>
           </div>
           <div class="field">
-            <label for="resetRateLimitMaxRequests">Máx. pedidos de reset</label>
-            <p-inputNumber
-              inputId="resetRateLimitMaxRequests"
-              formControlName="resetRateLimitMaxRequests"
-              [showButtons]="true"
-              [min]="1"
-              class="w-full"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <p-inputNumber
+                inputId="resetRateLimitMaxRequests"
+                formControlName="resetRateLimitMaxRequests"
+                [showButtons]="true"
+                [min]="1"
+                class="w-full"
+              />
+              <app-error-msg forId="resetRateLimitMaxRequests" [label]="'securitySettings.password.resetRateLimitMaxRequests' | translate" [control]="form.controls.password.controls.resetRateLimitMaxRequests" />
+            </p-floatLabel>
           </div>
           <div class="field">
-            <label for="resetRateLimitWindow">Janela do rate-limit</label>
-            <input
-              id="resetRateLimitWindow"
-              pInputText
-              type="text"
-              formControlName="resetRateLimitWindow"
-              class="w-full"
-              placeholder="PT15M"
-            />
+            <p-floatLabel variant="on" class="w-full">
+              <input
+                id="resetRateLimitWindow"
+                pInputText
+                type="text"
+                formControlName="resetRateLimitWindow"
+                class="w-full"
+                [placeholder]="'securitySettings.password.ttlPlaceholder15m' | translate"
+              />
+              <app-error-msg forId="resetRateLimitWindow" [label]="'securitySettings.password.resetRateLimitWindow' | translate" [control]="form.controls.password.controls.resetRateLimitWindow" />
+            </p-floatLabel>
           </div>
         </div>
       </div>
@@ -241,7 +264,7 @@
             <p-checkbox formControlName="enabled" inputId="lockoutEnabled" [binary]="true" /><label
               for="lockoutEnabled"
               class="ml-2"
-              >Ativo</label
+              >{{ 'securitySettings.lockout.enabled' | translate }}</label
             >
           </div>
           <div class="field-checkbox">
@@ -250,7 +273,7 @@
               inputId="extendWhenLocked"
               [binary]="true"
             /><label for="extendWhenLocked" class="ml-2"
-              >Estender bloqueio se tentar de novo enquanto bloqueado</label
+              >{{ 'securitySettings.lockout.extendWhenLocked' | translate }}</label
             >
           </div>
         </div>
@@ -258,8 +281,8 @@
         <table class="w-full mb-2" formArrayName="rules">
           <thead>
             <tr>
-              <th class="text-left">Tentativas</th>
-              <th class="text-left">Duração do bloqueio</th>
+              <th class="text-left">{{ 'securitySettings.lockout.columns.attempts' | translate }}</th>
+              <th class="text-left">{{ 'securitySettings.lockout.columns.duration' | translate }}</th>
               <th></th>
             </tr>
           </thead>
@@ -274,7 +297,7 @@
                     pInputText
                     type="text"
                     formControlName="duration"
-                    placeholder="PT15M"
+                    [placeholder]="'securitySettings.lockout.durationPlaceholder' | translate"
                     class="w-full"
                   />
                 </td>
@@ -285,7 +308,7 @@
                     icon="pi pi-trash"
                     class="p-button-text p-button-danger p-button-sm"
                     (click)="removeRule(i)"
-                    aria-label="Remover"
+                    [attr.aria-label]="'securitySettings.lockout.removeTooltip' | translate"
                   ></button>
                 </td>
               </tr>
@@ -296,7 +319,7 @@
           pButton
           type="button"
           icon="pi pi-plus"
-          label="Nova regra"
+          [label]="'securitySettings.lockout.newRuleButton' | translate"
           class="p-button-outlined p-button-sm"
           (click)="addRule()"
         ></button>
@@ -310,28 +333,32 @@
             formControlName="enabled"
             inputId="ipRateLimitEnabled"
             [binary]="true"
-          /><label for="ipRateLimitEnabled" class="ml-2">Ativo</label>
+          /><label for="ipRateLimitEnabled" class="ml-2">{{ 'securitySettings.ipRateLimit.enabled' | translate }}</label>
         </div>
         <div class="field">
-          <label for="maxAttempts">Máx. tentativas por IP</label>
-          <p-inputNumber
-            inputId="maxAttempts"
-            formControlName="maxAttempts"
-            [showButtons]="true"
-            [min]="1"
-            class="w-full"
-          />
+          <p-floatLabel variant="on" class="w-full">
+            <p-inputNumber
+              inputId="maxAttempts"
+              formControlName="maxAttempts"
+              [showButtons]="true"
+              [min]="1"
+              class="w-full"
+            />
+            <app-error-msg forId="maxAttempts" [label]="'securitySettings.ipRateLimit.maxAttempts' | translate" [control]="form.controls.ipRateLimit.controls.maxAttempts" />
+          </p-floatLabel>
         </div>
         <div class="field">
-          <label for="window">Janela</label>
-          <input
-            id="window"
-            pInputText
-            type="text"
-            formControlName="window"
-            class="w-full"
-            placeholder="PT15M"
-          />
+          <p-floatLabel variant="on" class="w-full">
+            <input
+              id="window"
+              pInputText
+              type="text"
+              formControlName="window"
+              class="w-full"
+              [placeholder]="'securitySettings.ipRateLimit.windowPlaceholder' | translate"
+            />
+            <app-error-msg forId="window" [label]="'securitySettings.ipRateLimit.window' | translate" [control]="form.controls.ipRateLimit.controls.window" />
+          </p-floatLabel>
         </div>
       </div>
         </p-tabpanel>
@@ -339,39 +366,45 @@
         <p-tabpanel value="3">
       <div class="settings-grid" formGroupName="token">
         <div class="field">
-          <label for="sessionTimeout">Timeout de sessão (login)</label>
-          <input
-            id="sessionTimeout"
-            pInputText
-            type="text"
-            formControlName="sessionTimeout"
-            class="w-full"
-            placeholder="PT2H"
-          />
-          <small>Aplicado na hora, sem restart - sessões já ativas mantêm o timeout antigo até expirar.</small>
+          <p-floatLabel variant="on" class="w-full">
+            <input
+              id="sessionTimeout"
+              pInputText
+              type="text"
+              formControlName="sessionTimeout"
+              class="w-full"
+              [placeholder]="'securitySettings.token.sessionTimeoutPlaceholder' | translate"
+            />
+            <app-error-msg forId="sessionTimeout" [label]="'securitySettings.token.sessionTimeout' | translate" [control]="form.controls.token.controls.sessionTimeout" />
+          </p-floatLabel>
+          <small>{{ 'securitySettings.token.sessionTimeoutHint' | translate }}</small>
         </div>
         <div class="field">
-          <label for="accessTokenTtl">TTL padrão do access token</label>
-          <input
-            id="accessTokenTtl"
-            pInputText
-            type="text"
-            formControlName="accessTokenTtl"
-            class="w-full"
-            placeholder="PT10M"
-          />
-          <small>Default pra Apps sem TTL próprio (ver tela Apps) - só afeta Apps criados/editados depois.</small>
+          <p-floatLabel variant="on" class="w-full">
+            <input
+              id="accessTokenTtl"
+              pInputText
+              type="text"
+              formControlName="accessTokenTtl"
+              class="w-full"
+              [placeholder]="'securitySettings.token.accessTokenTtlPlaceholder' | translate"
+            />
+            <app-error-msg forId="accessTokenTtl" [label]="'securitySettings.token.accessTokenTtl' | translate" [control]="form.controls.token.controls.accessTokenTtl" />
+          </p-floatLabel>
+          <small>{{ 'securitySettings.token.accessTokenTtlHint' | translate }}</small>
         </div>
         <div class="field">
-          <label for="refreshTokenTtl">TTL padrão do refresh token</label>
-          <input
-            id="refreshTokenTtl"
-            pInputText
-            type="text"
-            formControlName="refreshTokenTtl"
-            class="w-full"
-            placeholder="P30D"
-          />
+          <p-floatLabel variant="on" class="w-full">
+            <input
+              id="refreshTokenTtl"
+              pInputText
+              type="text"
+              formControlName="refreshTokenTtl"
+              class="w-full"
+              [placeholder]="'securitySettings.token.refreshTokenTtlPlaceholder' | translate"
+            />
+            <app-error-msg forId="refreshTokenTtl" [label]="'securitySettings.token.refreshTokenTtl' | translate" [control]="form.controls.token.controls.refreshTokenTtl" />
+          </p-floatLabel>
         </div>
       </div>
         </p-tabpanel>
@@ -379,26 +412,30 @@
         <p-tabpanel value="4">
       <div class="settings-grid settings-grid--wide">
         <div class="field field--full">
-          <label for="loginDefaultTarget">URL padrão pós-login (fallback)</label>
-          <input
-            id="loginDefaultTarget"
-            pInputText
-            type="text"
-            formControlName="loginDefaultTarget"
-            class="w-full"
-            placeholder="https://cardsync.com.br/"
-          />
+          <p-floatLabel variant="on" class="w-full">
+            <input
+              id="loginDefaultTarget"
+              pInputText
+              type="text"
+              formControlName="loginDefaultTarget"
+              class="w-full"
+              [placeholder]="'securitySettings.other.loginDefaultTargetPlaceholder' | translate"
+            />
+            <app-error-msg forId="loginDefaultTarget" [label]="'securitySettings.other.loginDefaultTarget' | translate" [required]="false" [control]="form.controls.loginDefaultTarget" />
+          </p-floatLabel>
         </div>
         <div class="field field--full">
-          <label for="protectedUsernames">Usernames protegidos (separar por vírgula)</label>
-          <input
-            id="protectedUsernames"
-            pInputText
-            type="text"
-            formControlName="protectedUsernames"
-            class="w-full"
-            placeholder="owner,system"
-          />
+          <p-floatLabel variant="on" class="w-full">
+            <input
+              id="protectedUsernames"
+              pInputText
+              type="text"
+              formControlName="protectedUsernames"
+              class="w-full"
+              [placeholder]="'securitySettings.other.protectedUsernamesPlaceholder' | translate"
+            />
+            <app-error-msg forId="protectedUsernames" [label]="'securitySettings.other.protectedUsernames' | translate" [required]="false" [control]="form.controls.protectedUsernames" />
+          </p-floatLabel>
         </div>
       </div>
         </p-tabpanel>
@@ -410,10 +447,11 @@
         pButton
         type="button"
         icon="pi pi-save"
-        label="Salvar"
+        [label]="'securitySettings.save' | translate"
         [loading]="saving()"
         (click)="save()"
       ></button>
     </div>
   </form>
+  </p-card>
 }

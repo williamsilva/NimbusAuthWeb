@@ -6,14 +6,18 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
 import { FieldsetModule } from 'primeng/fieldset';
+import { FloatLabel } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
 import { MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AppsEmailSettingsApiService } from '../apps-email-settings.api.service';
 import { EmailSettings } from '../../email-settings/email-settings.models';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { ErrorMsgComponent } from '../../../shared/error-msg/error-msg.component';
 
 /** Mesmos campos/lógica de EmailSettingsPageComponent (config do PRÓPRIO NimbusAuth), só
  *  parametrizado por appKey e num dialog (não uma página) - edita a config de e-mail de UM app
@@ -30,12 +34,15 @@ import { EmailSettings } from '../../email-settings/email-settings.models';
     ButtonModule,
     CheckboxModule,
     DialogModule,
+    ErrorMsgComponent,
     FieldsetModule,
+    FloatLabel,
     InputNumberModule,
     InputTextModule,
     PasswordModule,
     SelectModule,
     ReactiveFormsModule,
+    TranslateModule,
   ],
 })
 export class AppsEmailSettingsDialogComponent {
@@ -49,6 +56,7 @@ export class AppsEmailSettingsDialogComponent {
   private readonly api = inject(AppsEmailSettingsApiService);
   private readonly toast = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
 
   readonly loading = signal(false);
   readonly saving = signal(false);
@@ -57,10 +65,11 @@ export class AppsEmailSettingsDialogComponent {
   private lastLoadedAppKey: string | null = null;
 
   readonly implOptions = computed(() => {
+    this.i18n.appliedLang(); // dependência de leitura - reavalia as labels quando o idioma mudar
     const all = [
-      { label: 'Simulado (não envia de verdade)', value: 'fake' },
-      { label: 'API (Brevo)', value: 'api_key' },
-      { label: 'SMTP', value: 'smtp' },
+      { label: this.i18n.tUi('emailSettings.implOptions.fake', 'Simulado (não envia de verdade)'), value: 'fake' },
+      { label: this.i18n.tUi('emailSettings.implOptions.apiKey', 'API (Brevo)'), value: 'api_key' },
+      { label: this.i18n.tUi('emailSettings.implOptions.smtp', 'SMTP'), value: 'smtp' },
     ];
     return this.allowFakeImpl() ? all : all.filter((o) => o.value !== 'fake');
   });
@@ -128,7 +137,11 @@ export class AppsEmailSettingsDialogComponent {
   save(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) {
-      this.toast.add({ severity: 'warn', summary: 'Formulário inválido', detail: 'Verifique os campos destacados.' });
+      this.toast.add({
+        severity: 'warn',
+        summary: this.i18n.tUi('emailSettings.toastInvalid.summary', 'Formulário inválido'),
+        detail: this.i18n.tUi('emailSettings.toastInvalid.detail', 'Verifique os campos destacados.'),
+      });
       return;
     }
 
@@ -158,7 +171,15 @@ export class AppsEmailSettingsDialogComponent {
       next: (settings) => {
         this.applySettings(settings);
         this.saving.set(false);
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: `Configurações de e-mail de "${this.appName()}" atualizadas.` });
+        this.toast.add({
+          severity: 'success',
+          summary: this.i18n.tUi('common.success', 'Sucesso'),
+          detail: this.i18n.tUi(
+            'appsEmailSettings.dialog.toastUpdated',
+            { name: this.appName() },
+            `Configurações de e-mail de "${this.appName()}" atualizadas.`,
+          ),
+        });
       },
       error: () => this.saving.set(false),
     });

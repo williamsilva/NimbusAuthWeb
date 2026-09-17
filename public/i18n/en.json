@@ -13,7 +13,22 @@
   "common": {
     "logout": "Sign out",
     "cancel": "Cancel",
-    "success": "Success"
+    "success": "Success",
+    "notNow": "Not now",
+    "renewSession": "Renew session",
+    "goToLogin": "Go to login"
+  },
+  "session": {
+    "expiring": {
+      "title": "Session about to expire",
+      "body": "Your session will expire in",
+      "hint": "Click \"Renew session\" to continue - you'll be quickly redirected to confirm your login."
+    },
+    "expired": {
+      "title": "Session expired",
+      "body": "Your session has expired.",
+      "hint": "To continue, please sign in again."
+    }
   },
   "footer": {
     "copyright": "NimbusAuth",

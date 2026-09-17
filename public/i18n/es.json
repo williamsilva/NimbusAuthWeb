@@ -13,7 +13,22 @@
   "common": {
     "logout": "Salir",
     "cancel": "Cancelar",
-    "success": "Éxito"
+    "success": "Éxito",
+    "notNow": "Ahora no",
+    "renewSession": "Renovar sesión",
+    "goToLogin": "Ir a iniciar sesión"
+  },
+  "session": {
+    "expiring": {
+      "title": "La sesión va a expirar",
+      "body": "Tu sesión va a expirar en",
+      "hint": "Haz clic en \"Renovar sesión\" para continuar - serás redirigido rápidamente para confirmar el inicio de sesión."
+    },
+    "expired": {
+      "title": "Sesión expirada",
+      "body": "Tu sesión ha expirado.",
+      "hint": "Para continuar, inicia sesión de nuevo."
+    }
   },
   "footer": {
     "copyright": "NimbusAuth",

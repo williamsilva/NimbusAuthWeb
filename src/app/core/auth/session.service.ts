@@ -13,7 +13,17 @@ export class SessionService {
 
   readonly remainingSeconds = signal<number | null>(null);
 
+  readonly warnAtSeconds = signal<number>(300);
+
   readonly isExpired = computed(() => this.remainingSeconds() === 0);
+
+  /** Dispara o modal de renovação (ver SessionExpiryModalComponent) quando faltar pouco tempo -
+   *  mesmo limiar (5min) usado pelo estado visual "warning" do contador no topbar. */
+  readonly isExpiringSoon = computed(() => {
+    const s = this.remainingSeconds();
+    const warn = this.warnAtSeconds();
+    return s !== null && s > 0 && s <= warn;
+  });
 
   readonly sessionState = computed<'normal' | 'warning' | 'danger'>(() => {
     const s = this.remainingSeconds();

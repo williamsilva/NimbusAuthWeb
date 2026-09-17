@@ -1,0 +1,65 @@
+<p-dialog
+  tabindex="0"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [(visible)]="visible"
+  styleClass="na-session-expiry-dialog"
+  [header]="(expired() ? 'session.expired.title' : 'session.expiring.title') | translate"
+  (wheel)="touchInteraction()"
+  (keydown)="touchInteraction()"
+  (mousemove)="touchInteraction()"
+  (touchstart)="touchInteraction()"
+  (pointerdown)="touchInteraction()"
+>
+  <div class="na-session-expiry-body">
+    @if (!expired()) {
+      <p>
+        {{ 'session.expiring.body' | translate }}
+        <b
+          class="time"
+          [class.blink]="timeBlink()"
+          [class.warning]="state() === 'warning'"
+          [class.danger]="state() === 'danger' || state() === 'expired'"
+        >
+          <i class="pi pi-clock"></i>
+          {{ mmss() }}
+        </b>
+      </p>
+      <p class="muted">{{ 'session.expiring.hint' | translate }}</p>
+    } @else {
+      <p>{{ 'session.expired.body' | translate }}</p>
+      <p class="muted">{{ 'session.expired.hint' | translate }}</p>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    @if (!expired()) {
+      <button
+        pButton
+        type="button"
+        class="p-button-text"
+        [label]="'common.notNow' | translate"
+        (click)="dismiss()"
+      ></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-refresh"
+        [loading]="renewing()"
+        [label]="'common.renewSession' | translate"
+        (click)="renew()"
+      ></button>
+    } @else {
+      <button
+        pButton
+        type="button"
+        icon="pi pi-sign-in"
+        [loading]="renewing()"
+        [label]="'common.goToLogin' | translate"
+        (click)="renew()"
+      ></button>
+    }
+  </ng-template>
+</p-dialog>

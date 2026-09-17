@@ -1,0 +1,44 @@
+.na-session-expiry-body {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.muted {
+  opacity: 0.75;
+  margin: 0;
+}
+
+.time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 900;
+}
+
+.time i {
+  font-size: 0.8rem;
+}
+
+.time.warning {
+  color: #f59e0b;
+}
+
+.time.danger {
+  color: #ef4444;
+}
+
+@keyframes naSoftBlink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.time.blink {
+  animation: naSoftBlink 1.25s ease-in-out infinite;
+}

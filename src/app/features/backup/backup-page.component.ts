@@ -10,10 +10,10 @@ import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { TabsModule } from 'primeng/tabs';
 import { TagModule } from 'primeng/tag';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -43,12 +43,12 @@ import { BackupExecution, BackupNotificationRecipient, GoogleDriveStatus } from 
     CheckboxModule,
     ConfirmDialogModule,
     DatePipe,
-    FieldsetModule,
     FormsModule,
     InputTextModule,
     PageHeaderComponent,
     SelectModule,
     TableModule,
+    TabsModule,
     TagModule,
     TranslateModule,
   ],

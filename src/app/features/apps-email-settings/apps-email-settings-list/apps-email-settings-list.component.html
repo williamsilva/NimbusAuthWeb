@@ -2,7 +2,14 @@
   [title]="'appsEmailSettings.list.title' | translate"
   [subtitle]="'appsEmailSettings.list.subtitle' | translate"
 >
-  <button pButton type="button" icon="pi pi-refresh" (click)="refresh()" class="p-button-text p-button-sm" [label]="'appsEmailSettings.list.refreshButton' | translate"></button>
+  <button
+    pButton
+    type="button"
+    (click)="refresh()"
+    icon="pi pi-refresh"
+    class="p-button-text p-button-sm"
+    [label]="'appsEmailSettings.list.refreshButton' | translate"
+  ></button>
 </app-page-header>
 
 <app-filters-panel
@@ -10,21 +17,33 @@
   (clear)="clear()"
   (searchClick)="search()"
   [actionsAlign]="'start'"
-  [activeFilterGroups]="activeFilterGroups()"
   [activeCount]="activeFiltersCount()"
+  [activeFilterGroups]="activeFilterGroups()"
   [title]="'appsEmailSettings.list.filtersTitle' | translate"
 >
   <div class="grid formgrid gap-0 align-items-end">
     <div class="col-12 md:col-4 p-1">
       <p-floatLabel variant="on" class="w-full">
-        <input id="name" pInputText [value]="name()" class="w-full p-inputtext-sm" (input)="name.set(($any($event.target).value ?? '').toString())" />
+        <input
+          id="name"
+          pInputText
+          [value]="name()"
+          class="w-full p-inputtext-sm"
+          (input)="name.set(($any($event.target).value ?? '').toString())"
+        />
         <label for="name">{{ 'appsEmailSettings.list.fields.name' | translate }}</label>
       </p-floatLabel>
     </div>
 
     <div class="col-12 md:col-4 p-1">
       <p-floatLabel variant="on" class="w-full">
-        <input id="appKey" pInputText [value]="appKey()" class="w-full p-inputtext-sm" (input)="appKey.set(($any($event.target).value ?? '').toString())" />
+        <input
+          id="appKey"
+          pInputText
+          [value]="appKey()"
+          class="w-full p-inputtext-sm"
+          (input)="appKey.set(($any($event.target).value ?? '').toString())"
+        />
         <label for="appKey">{{ 'appsEmailSettings.list.fields.appKey' | translate }}</label>
       </p-floatLabel>
     </div>
@@ -32,91 +51,151 @@
 </app-filters-panel>
 
 <div class="surface-card border-round px-3 pt-2 pb-3 mt-2">
-<p-table
-  #dt
-  stripedRows
-  dataKey="id"
-  size="small"
-  [rows]="rows"
-  [lazy]="true"
-  showGridlines
-  [value]="apps()"
-  [rowHover]="true"
-  [paginator]="true"
-  sortMode="multiple"
-  filterDisplay="menu"
-  stateStorage="local"
-  class="app-admin-table"
-  [loading]="loading()"
-  [stateKey]="tableStateKey()"
-  [showCurrentPageReport]="true"
-  [totalRecords]="totalRecords()"
-  (onLazyLoad)="onLazyLoad($event)"
-  [paginatorDropdownAppendTo]="'body'"
-  (onPage)="onPageChange($event)"
-  [rowsPerPageOptions]="rowsPerPageOptions"
-  [tableStyle]="{ width: '100%', 'min-width': '40rem' }"
-  [currentPageReportTemplate]="'appsEmailSettings.list.pageReportTemplate' | translate"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <th pSortableColumn="name">
-        <div class="th-flex text-center">
-          <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailSettings.list.columns.name' | translate">{{ 'appsEmailSettings.list.columns.name' | translate }}</span>
-          <span class="th-icons">
-            <p-sortIcon field="name"></p-sortIcon>
-            <p-columnFilter field="name" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
-          </span>
-        </div>
-      </th>
+  <p-table
+    #dt
+    stripedRows
+    dataKey="id"
+    size="small"
+    [rows]="rows"
+    [lazy]="true"
+    showGridlines
+    [value]="apps()"
+    [rowHover]="true"
+    [paginator]="true"
+    sortMode="multiple"
+    filterDisplay="menu"
+    stateStorage="local"
+    [loading]="loading()"
+    class="app-admin-table"
+    [stateKey]="tableStateKey()"
+    [showCurrentPageReport]="true"
+    [totalRecords]="totalRecords()"
+    [paginatorDropdownAppendTo]="'body'"
+    (onPage)="onPageChange($event)"
+    (onLazyLoad)="onLazyLoad($event)"
+    [rowsPerPageOptions]="rowsPerPageOptions"
+    [tableStyle]="{ width: '100%', 'min-width': '40rem' }"
+    [currentPageReportTemplate]="'appsEmailSettings.list.pageReportTemplate' | translate"
+  >
+    <ng-template pTemplate="colgroup">
+      <colgroup>
+        <col style="width: auto" />
+        <col style="width: auto" />
+        <col style="width: 50px" />
+      </colgroup>
+    </ng-template>
 
-      <th pSortableColumn="appKey">
-        <div class="th-flex text-center">
-          <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailSettings.list.columns.appKey' | translate">{{ 'appsEmailSettings.list.columns.appKey' | translate }}</span>
-          <span class="th-icons">
-            <p-sortIcon field="appKey"></p-sortIcon>
-            <p-columnFilter field="appKey" type="text" display="menu" class="ml-auto" matchMode="contains" [useGrouping]="false" [showOperator]="false" [showAddButton]="false" styleClass="app-colfilter"></p-columnFilter>
-          </span>
-        </div>
-      </th>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="name">
+          <div class="th-flex text-center">
+            <span
+              class="th-label"
+              tooltipPosition="top"
+              [pTooltip]="'appsEmailSettings.list.columns.name' | translate"
+              >{{ 'appsEmailSettings.list.columns.name' | translate }}</span
+            >
+            <span class="th-icons">
+              <p-sortIcon field="name"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="name"
+                display="menu"
+                class="ml-auto"
+                matchMode="contains"
+                [useGrouping]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                styleClass="app-colfilter"
+              ></p-columnFilter>
+            </span>
+          </div>
+        </th>
 
-      <th class="text-center" style="width: 8rem"><span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailSettings.list.columns.actions' | translate">{{ 'appsEmailSettings.list.columns.actions' | translate }}</span></th>
-    </tr>
-  </ng-template>
+        <th pSortableColumn="appKey">
+          <div class="th-flex text-center">
+            <span
+              class="th-label"
+              tooltipPosition="top"
+              [pTooltip]="'appsEmailSettings.list.columns.appKey' | translate"
+              >{{ 'appsEmailSettings.list.columns.appKey' | translate }}</span
+            >
+            <span class="th-icons">
+              <p-sortIcon field="appKey"></p-sortIcon>
+              <p-columnFilter
+                field="appKey"
+                type="text"
+                display="menu"
+                class="ml-auto"
+                matchMode="contains"
+                [useGrouping]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                styleClass="app-colfilter"
+              ></p-columnFilter>
+            </span>
+          </div>
+        </th>
 
-  <ng-template pTemplate="body" let-row>
-    <tr>
-      <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.name">{{ row.name }}</span></td>
-      <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.appKey">{{ row.appKey }}</span></td>
-      <td class="text-center">
-        <div class="table-actions">
-          <button
-            pButton
-            type="button"
-            icon="pi pi-pencil"
-            class="p-button-text p-button-sm"
-            [pTooltip]="'appsEmailSettings.list.editTooltip' | translate"
-            [attr.aria-label]="'appsEmailSettings.list.editTooltip' | translate"
-            (click)="edit(row)"
-          ></button>
-        </div>
-      </td>
-    </tr>
-  </ng-template>
+        <th class="text-center" style="width: 8rem">
+          <span
+            class="th-label"
+            tooltipPosition="top"
+            [pTooltip]="'appsEmailSettings.list.columns.actions' | translate"
+            >{{ 'appsEmailSettings.list.columns.actions' | translate }}</span
+          >
+        </th>
+      </tr>
+    </ng-template>
 
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="3" class="text-center py-5 opacity-70">
-        {{ (loadedOnce() ? 'appsEmailSettings.list.empty' : 'appsEmailSettings.list.loadingMessage') | translate }}
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+    <ng-template pTemplate="body" let-row>
+      <tr>
+        <td>
+          <span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.name">{{
+            row.name
+          }}</span>
+        </td>
+
+        <td>
+          <span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="row.appKey">{{
+            row.appKey
+          }}</span>
+        </td>
+
+        <td class="text-center">
+          <div class="table-actions">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-pencil"
+              class="p-button-text p-button-sm"
+              [pTooltip]="'appsEmailSettings.list.editTooltip' | translate"
+              [attr.aria-label]="'appsEmailSettings.list.editTooltip' | translate"
+              (click)="edit(row)"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="3" class="text-center py-5 opacity-70">
+          {{
+            (loadedOnce()
+              ? 'appsEmailSettings.list.empty'
+              : 'appsEmailSettings.list.loadingMessage'
+            ) | translate
+          }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
 
 <app-apps-email-settings-dialog
   [visible]="dialogVisible()"
-  [appKey]="editingApp()?.appKey ?? null"
   [appName]="editingApp()?.name ?? null"
+  [appKey]="editingApp()?.appKey ?? null"
   (visibleChange)="onDialogVisibleChange($event)"
 />

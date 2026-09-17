@@ -4,12 +4,16 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AppsApiService } from '../../apps/apps.api.service';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { ErrorMsgComponent } from '../../../shared/error-msg/error-msg.component';
 import { GroupsApiService } from '../groups.api.service';
 import { GroupInput, GroupModel } from '../groups.models';
 
@@ -21,7 +25,17 @@ import { GroupInput, GroupModel } from '../groups.models';
   standalone: true,
   selector: 'app-groups-form-dialog',
   templateUrl: './groups-form-dialog.component.html',
-  imports: [ButtonModule, DialogModule, InputTextModule, ReactiveFormsModule, SelectModule, TextareaModule],
+  imports: [
+    ButtonModule,
+    DialogModule,
+    ErrorMsgComponent,
+    FloatLabel,
+    InputTextModule,
+    ReactiveFormsModule,
+    SelectModule,
+    TextareaModule,
+    TranslateModule,
+  ],
 })
 export class GroupsFormDialogComponent {
   visible = input.required<boolean>();
@@ -35,6 +49,7 @@ export class GroupsFormDialogComponent {
   private readonly appsApi = inject(AppsApiService);
   private readonly toast = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
 
   readonly isEditMode = computed(() => !!this.group());
   readonly saving = signal(false);
@@ -109,7 +124,11 @@ export class GroupsFormDialogComponent {
     req$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.saving.set(false);
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: group ? 'Grupo atualizado.' : 'Grupo criado.' });
+        this.toast.add({
+          severity: 'success',
+          summary: this.i18n.tUi('common.success', 'Sucesso'),
+          detail: group ? this.i18n.tUi('groups.dialog.toastUpdated', 'Grupo atualizado.') : this.i18n.tUi('groups.dialog.toastCreated', 'Grupo criado.'),
+        });
         this.saved.emit();
         this.close();
       },

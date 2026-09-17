@@ -5,49 +5,77 @@
   [draggable]="false"
   [resizable]="false"
   [visible]="visible()"
-  [style]="{ width: '520px', maxWidth: '95vw' }"
-  [header]="isEditMode() ? 'Editar usuário' : 'Novo usuário'"
+  (onShow)="onDialogShow()"
+  [style]="{ width: '640px', maxWidth: '95vw' }"
+  [header]="(isEditMode() ? 'users.dialog.editTitle' : 'users.dialog.newTitle') | translate"
 >
   <form [formGroup]="form" class="flex flex-column gap-3">
     <div class="grid formgrid">
       <div class="col-12 field">
-        <label for="name">Nome *</label>
-        <input id="name" pInputText type="text" formControlName="name" class="w-full" />
-        @if (submitted() && form.controls.name.invalid) {
-          <small class="p-error">Obrigatório.</small>
-        }
+        <p-floatLabel variant="on" class="w-full">
+          <input id="name" pInputText type="text" formControlName="name" class="w-full" />
+          <app-error-msg forId="name" [label]="'users.dialog.fields.name' | translate" [control]="form.controls.name" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 field">
-        <label for="userName">E-mail (login) *</label>
-        <input id="userName" pInputText type="text" formControlName="userName" class="w-full" placeholder="usuario@exemplo.com.br" />
-        @if (submitted() && form.controls.userName.invalid) {
-          <small class="p-error">Informe um e-mail válido.</small>
-        }
+        <p-floatLabel variant="on" class="w-full">
+          <input id="userName" pInputText type="text" formControlName="userName" class="w-full" />
+          <app-error-msg forId="userName" [label]="'users.dialog.fields.userName' | translate" [control]="form.controls.userName" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 field">
-        <label for="document">CPF/CNPJ *</label>
-        <input id="document" pInputText type="text" formControlName="document" class="w-full" placeholder="Só números" />
-        @if (submitted() && form.controls.document.invalid) {
-          <small class="p-error">Informe um CPF ou CNPJ válido.</small>
-        }
+        <p-floatLabel variant="on" class="w-full">
+          <input id="document" pInputText type="text" formControlName="document" class="w-full" [placeholder]="'users.dialog.placeholders.document' | translate" />
+          <app-error-msg forId="document" [label]="'users.dialog.fields.document' | translate" [control]="form.controls.document" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 field">
-        <label for="groupIds">Grupos *</label>
-        <p-multiSelect
-          inputId="groupIds"
-          formControlName="groupIds"
-          [options]="groupOptions()"
-          optionLabel="name"
-          optionValue="id"
-          display="chip"
-          placeholder="Selecione ao menos 1 grupo"
-          class="w-full"
-        />
-        @if (submitted() && form.controls.groupIds.invalid) {
-          <small class="p-error">Selecione ao menos 1 grupo.</small>
+        <p-floatLabel variant="on" class="w-full">
+          <p-multiSelect
+            inputId="selectedApps"
+            appendTo="body"
+            display="chip"
+            optionLabel="name"
+            optionValue="appKey"
+            class="w-full"
+            [loading]="loadingCatalog()"
+            [invalid]="submitted() && selectedAppKeys().length === 0"
+            [options]="apps()"
+            [ngModel]="selectedAppKeys()"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onSelectedAppsChange($event)"
+          />
+          <label for="selectedApps">{{ 'users.dialog.fields.selectedApps' | translate }}</label>
+        </p-floatLabel>
+
+        @if (selectedAppKeys().length) {
+          <div class="flex flex-column gap-2 mt-2">
+            @for (appKey of selectedAppKeys(); track appKey) {
+              <div class="flex align-items-center gap-2">
+                <label [for]="'groupIds-' + appKey" class="w-8rem flex-shrink-0 text-sm">{{ appName(appKey) }}</label>
+                <p-multiSelect
+                  [inputId]="'groupIds-' + appKey"
+                  appendTo="body"
+                  display="chip"
+                  optionLabel="name"
+                  optionValue="id"
+                  class="flex-1"
+                  [placeholder]="'users.dialog.groupsPlaceholder' | translate"
+                  [options]="groupOptionsFor(appKey)"
+                  [ngModel]="selectedGroupsFor(appKey)"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="onGroupsChange(appKey, $event)"
+                />
+              </div>
+            }
+          </div>
+        }
+
+        @if (submitted() && totalSelectedGroups() === 0) {
+          <small class="p-error block mt-2">{{ 'users.dialog.noGroupsError' | translate }}</small>
         }
       </div>
     </div>
@@ -61,14 +89,14 @@
         (click)="onResendInvite()"
         icon="pi pi-send"
         class="p-button-text p-button-sm"
-        label="Reenviar convite"
+        [label]="'users.dialog.resendInvite' | translate"
         [loading]="sendingInvite()"
         [disabled]="saving()"
       ></button>
     }
     <button pButton type="button" (click)="close()" icon="pi pi-times" class="p-button-text p-button-sm"
-            label="Cancelar" [disabled]="saving()"></button>
+            [label]="'users.dialog.cancel' | translate" [disabled]="saving()"></button>
     <button pButton type="button" (click)="save()" icon="pi pi-save" class="p-button-sm"
-            [loading]="saving()" label="Salvar" [disabled]="saving()"></button>
+            [loading]="saving()" [label]="'users.dialog.save' | translate" [disabled]="saving()"></button>
   </ng-template>
 </p-dialog>

@@ -6,56 +6,52 @@
   [resizable]="false"
   [visible]="visible()"
   [style]="{ width: '520px', maxWidth: '95vw' }"
-  [header]="isEditMode() ? 'Editar grupo' : 'Novo grupo'"
+  [header]="(isEditMode() ? 'groups.dialog.editTitle' : 'groups.dialog.newTitle') | translate"
 >
   <form [formGroup]="form" class="flex flex-column gap-3">
     <div class="grid formgrid">
       @if (isEditMode()) {
         <div class="col-12 field">
-          <span class="block">App</span>
+          <span class="block">{{ 'groups.dialog.fields.app' | translate }}</span>
           <div><span class="p-tag">{{ group()!.appKey }}</span></div>
-          <small>Não pode ser alterado depois de criado.</small>
+          <small>{{ 'groups.dialog.appImmutableHint' | translate }}</small>
         </div>
       } @else {
         <div class="col-12 field">
-          <label for="appKey">App *</label>
-          <p-select
-            inputId="appKey"
-            formControlName="appKey"
-            [options]="appOptions()"
-            optionLabel="name"
-            optionValue="appKey"
-            placeholder="Selecione o app"
-            class="w-full"
-          />
-          @if (submitted() && form.controls.appKey.invalid) {
-            <small class="p-error">Obrigatório.</small>
-          }
+          <p-floatLabel variant="on" class="w-full">
+            <p-select
+              inputId="appKey"
+              formControlName="appKey"
+              [options]="appOptions()"
+              optionLabel="name"
+              optionValue="appKey"
+              class="w-full"
+            />
+            <app-error-msg forId="appKey" [label]="'groups.dialog.fields.app' | translate" [control]="form.controls.appKey" />
+          </p-floatLabel>
         </div>
       }
 
       <div class="col-12 field">
-        <label for="name">Nome *</label>
-        <input id="name" pInputText type="text" formControlName="name" class="w-full" />
-        @if (submitted() && form.controls.name.invalid) {
-          <small class="p-error">Obrigatório (3 a 120 caracteres).</small>
-        }
+        <p-floatLabel variant="on" class="w-full">
+          <input id="name" pInputText type="text" formControlName="name" class="w-full" />
+          <app-error-msg forId="name" [label]="'groups.dialog.fields.name' | translate" [control]="form.controls.name" />
+        </p-floatLabel>
       </div>
 
       <div class="col-12 field">
-        <label for="description">Descrição *</label>
-        <textarea id="description" pTextarea rows="3" formControlName="description" class="w-full"></textarea>
-        @if (submitted() && form.controls.description.invalid) {
-          <small class="p-error">Obrigatório.</small>
-        }
+        <p-floatLabel variant="on" class="w-full">
+          <textarea id="description" pTextarea rows="3" formControlName="description" class="w-full"></textarea>
+          <app-error-msg forId="description" [label]="'groups.dialog.fields.description' | translate" [control]="form.controls.description" />
+        </p-floatLabel>
       </div>
     </div>
   </form>
 
   <ng-template pTemplate="footer">
     <button pButton type="button" (click)="close()" icon="pi pi-times" class="p-button-text p-button-sm"
-            label="Cancelar" [disabled]="saving()"></button>
+            [label]="'groups.dialog.cancel' | translate" [disabled]="saving()"></button>
     <button pButton type="button" (click)="save()" icon="pi pi-save" class="p-button-sm"
-            [loading]="saving()" label="Salvar" [disabled]="saving()"></button>
+            [loading]="saving()" [label]="'groups.dialog.save' | translate" [disabled]="saving()"></button>
   </ng-template>
 </p-dialog>

@@ -6,12 +6,12 @@
   [resizable]="false"
   [visible]="visible()"
   [style]="{ width: '640px', maxWidth: '95vw' }"
-  [header]="group() ? 'Gerenciar grupo: ' + group()!.name : 'Gerenciar grupo'"
+  [header]="group() ? ('groups.manage.titleWithName' | translate: { name: group()!.name }) : ('groups.manage.title' | translate)"
 >
   <p-tabs value="0">
     <p-tablist>
-      <p-tab value="0">Permissões</p-tab>
-      <p-tab value="1">Usuários</p-tab>
+      <p-tab value="0">{{ 'groups.manage.tabs.permissions' | translate }}</p-tab>
+      <p-tab value="1">{{ 'groups.manage.tabs.users' | translate }}</p-tab>
     </p-tablist>
     <p-tabpanels>
       <p-tabpanel value="0">
@@ -22,7 +22,7 @@
           optionValue="id"
           display="chip"
           [filter]="true"
-          placeholder="Selecione as permissões"
+          [placeholder]="'groups.manage.permissionsPlaceholder' | translate"
           class="w-full"
         />
         <div class="flex justify-content-end mt-3">
@@ -30,7 +30,7 @@
             pButton
             type="button"
             icon="pi pi-save"
-            label="Salvar permissões"
+            [label]="'groups.manage.savePermissionsButton' | translate"
             class="p-button-sm"
             [loading]="savingPermissions()"
             (click)="savePermissions()"
@@ -46,18 +46,18 @@
           optionValue="id"
           display="chip"
           [filter]="true"
-          placeholder="Selecione os usuários"
+          [placeholder]="'groups.manage.usersPlaceholder' | translate"
           class="w-full"
         />
         <small class="block mt-2 text-color-secondary">
-          Remover um usuário daqui só é permitido se ele continuar em outro grupo do nimbusauth.
+          {{ 'groups.manage.usersRemoveHint' | translate }}
         </small>
         <div class="flex justify-content-end mt-3">
           <button
             pButton
             type="button"
             icon="pi pi-save"
-            label="Salvar usuários"
+            [label]="'groups.manage.saveUsersButton' | translate"
             class="p-button-sm"
             [loading]="savingUsers()"
             (click)="saveUsers()"
@@ -68,6 +68,6 @@
   </p-tabs>
 
   <ng-template pTemplate="footer">
-    <button pButton type="button" (click)="close()" icon="pi pi-times" class="p-button-text p-button-sm" label="Fechar"></button>
+    <button pButton type="button" (click)="close()" icon="pi pi-times" class="p-button-text p-button-sm" [label]="'groups.manage.close' | translate"></button>
   </ng-template>
 </p-dialog>

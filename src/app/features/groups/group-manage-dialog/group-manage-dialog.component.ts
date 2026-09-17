@@ -7,7 +7,9 @@ import { DialogModule } from 'primeng/dialog';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TabsModule } from 'primeng/tabs';
 import { MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
+import { I18nService } from '../../../core/i18n/i18n.service';
 import { GroupsApiService } from '../groups.api.service';
 import { GroupModel, PermissionOption, UserOption } from '../groups.models';
 
@@ -20,7 +22,7 @@ import { GroupModel, PermissionOption, UserOption } from '../groups.models';
   standalone: true,
   selector: 'app-group-manage-dialog',
   templateUrl: './group-manage-dialog.component.html',
-  imports: [ButtonModule, DialogModule, FormsModule, MultiSelectModule, TabsModule],
+  imports: [ButtonModule, DialogModule, FormsModule, MultiSelectModule, TabsModule, TranslateModule],
 })
 export class GroupManageDialogComponent {
   visible = input.required<boolean>();
@@ -32,6 +34,7 @@ export class GroupManageDialogComponent {
   private readonly api = inject(GroupsApiService);
   private readonly toast = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(I18nService);
 
   readonly savingPermissions = signal(false);
   readonly savingUsers = signal(false);
@@ -82,7 +85,11 @@ export class GroupManageDialogComponent {
     this.api.updatePermissions(group.id, this.selectedPermissionIds()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.savingPermissions.set(false);
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Permissões do grupo atualizadas.' });
+        this.toast.add({
+          severity: 'success',
+          summary: this.i18n.tUi('groups.manage.toastPermissionsUpdated.summary', 'Sucesso'),
+          detail: this.i18n.tUi('groups.manage.toastPermissionsUpdated.detail', 'Permissões do grupo atualizadas.'),
+        });
         this.saved.emit();
       },
       error: () => this.savingPermissions.set(false),
@@ -99,7 +106,11 @@ export class GroupManageDialogComponent {
     this.api.updateUsers(group.id, this.selectedUserIds()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.savingUsers.set(false);
-        this.toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Usuários do grupo atualizados.' });
+        this.toast.add({
+          severity: 'success',
+          summary: this.i18n.tUi('groups.manage.toastUsersUpdated.summary', 'Sucesso'),
+          detail: this.i18n.tUi('groups.manage.toastUsersUpdated.detail', 'Usuários do grupo atualizados.'),
+        });
         this.saved.emit();
       },
       error: () => this.savingUsers.set(false),

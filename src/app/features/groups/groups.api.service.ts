@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { API, APP_KEY } from '../../core/api/api.config';
+import { API } from '../../core/api/api.config';
 import { HalPagedResponse, ListQueryBody } from '../../core/api/list-query.models';
 import { GroupInput, GroupModel, GroupOption, GroupsAdvancedFilters, PermissionOption, UserOption } from './groups.models';
 
@@ -43,9 +43,11 @@ export class GroupsApiService {
     return this.http.put<GroupModel>(`${this.baseUrl}/${id}/users`, { userIds });
   }
 
-  /** Grupos do app nimbusauth, para o multiselect do formulário de Usuário. */
-  options(): Observable<GroupOption[]> {
-    const params = new HttpParams().set('appKey', APP_KEY);
+  /** Grupos selecionáveis - appKey omitido/vazio devolve os de TODOS os apps de uma vez só (ver
+   *  GroupService#listSelectableGroups no backend), usado pelo seletor "Acesso por app" do
+   *  formulário de Usuário (1 chamada só, agrupada por appKey no cliente, em vez de 1 por app). */
+  options(appKey?: string): Observable<GroupOption[]> {
+    const params = appKey ? new HttpParams().set('appKey', appKey) : undefined;
     return this.http.get<GroupOption[]>(`${this.baseUrl}/options`, { params });
   }
 

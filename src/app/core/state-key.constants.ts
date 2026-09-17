@@ -23,4 +23,24 @@ export const STATE_KEY = {
       ROWS: { V1: 'nimbusauth.email-log.table.rows.v1' },
     },
   },
+  APPS: {
+    FILTERS: { V1: 'nimbusauth.apps.filters.v1' },
+    TABLE: {
+      STATE: { V1: 'nimbusauth.apps.table.state.v1' },
+      ROWS: { V1: 'nimbusauth.apps.table.rows.v1' },
+    },
+  },
+  APPS_EMAIL_SETTINGS: {
+    FILTERS: { V1: 'nimbusauth.apps-email-settings.filters.v1' },
+    TABLE: {
+      STATE: { V1: 'nimbusauth.apps-email-settings.table.state.v1' },
+      ROWS: { V1: 'nimbusauth.apps-email-settings.table.rows.v1' },
+    },
+  },
+  APPS_EMAIL_LOG: {
+    TABLE: {
+      STATE: { V1: 'nimbusauth.apps-email-log.table.state.v1' },
+      ROWS: { V1: 'nimbusauth.apps-email-log.table.rows.v1' },
+    },
+  },
 } as const;

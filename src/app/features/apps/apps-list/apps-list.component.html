@@ -1,92 +1,423 @@
 <p-confirmDialog [style]="{ width: '480px' }" [breakpoints]="{ '640px': '95vw' }" />
 
-<app-page-header [title]="'apps.list.title' | translate" [subtitle]="'apps.list.subtitle' | translate">
-  <input
-    pInputText
-    type="text"
-    [placeholder]="'apps.list.searchPlaceholder' | translate"
-    [(ngModel)]="globalFilter"
-    (keyup.enter)="search()"
-    class="w-20rem"
-  />
+<app-page-header
+  [title]="'apps.list.title' | translate"
+  [subtitle]="'apps.list.subtitle' | translate"
+>
   <button
     pButton
     type="button"
-    icon="pi pi-search"
-    (click)="search()"
-    class="p-button-outlined"
-    [attr.aria-label]="'apps.list.searchAria' | translate"
+    (click)="refresh()"
+    icon="pi pi-refresh"
+    class="p-button-text p-button-sm"
+    [label]="'apps.list.refreshButton' | translate"
   ></button>
-  <button pButton type="button" icon="pi pi-plus" [label]="'apps.list.newButton' | translate" (click)="goNew()"></button>
+  <button
+    pButton
+    type="button"
+    icon="pi pi-plus"
+    (click)="goNew()"
+    [label]="'apps.list.newButton' | translate"
+  ></button>
 </app-page-header>
 
-<p-table
-  [value]="apps()"
-  [lazy]="true"
-  [paginator]="true"
-  [rows]="20"
-  [totalRecords]="totalRecords()"
-  [loading]="loading()"
-  (onLazyLoad)="onLazyLoad($event)"
-  [rowsPerPageOptions]="[10, 20, 50]"
-  dataKey="id"
-  class="app-admin-table"
+<app-filters-panel
+  (clear)="clear()"
+  [collapsed]="true"
+  (searchClick)="search()"
+  [actionsAlign]="'start'"
+  [activeCount]="activeFiltersCount()"
+  [activeFilterGroups]="activeFilterGroups()"
+  [title]="'apps.list.filtersTitle' | translate"
 >
-  <ng-template pTemplate="header">
-    <tr>
-      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.name' | translate }}</span></div></th>
-      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.appKey' | translate }}</span></div></th>
-      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.clientId' | translate }}</span></div></th>
-      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.allowedOrigin' | translate }}</span></div></th>
-      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.accessTokenTtl' | translate }}</span></div></th>
-      <th><div class="th-flex"><span class="th-label">{{ 'apps.list.columns.refreshTokenTtl' | translate }}</span></div></th>
-      <th class="text-center"><div class="th-flex justify-content-center"><span class="th-label">{{ 'apps.list.columns.status' | translate }}</span></div></th>
-      <th class="text-center" style="width: 12rem"><div class="th-flex justify-content-center"><span class="th-label">{{ 'apps.list.columns.actions' | translate }}</span></div></th>
-    </tr>
-  </ng-template>
+  <div class="grid formgrid gap-0 align-items-end">
+    <div class="col-12 md:col-3 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <input
+          id="name"
+          pInputText
+          [value]="name()"
+          class="w-full p-inputtext-sm"
+          (input)="name.set(($any($event.target).value ?? '').toString())"
+        />
+        <label for="name">{{ 'apps.list.fields.name' | translate }}</label>
+      </p-floatLabel>
+    </div>
 
-  <ng-template pTemplate="body" let-row>
-    <tr>
-      <td>{{ row.name }}</td>
-      <td>{{ row.appKey }}</td>
-      <td><code>{{ row.clientId }}</code></td>
-      <td>{{ row.allowedOrigin || '—' }}</td>
-      <td>
-        @if (row.accessTokenTtl) {
-          {{ row.accessTokenTtl }}
-        } @else {
-          <span class="text-color-secondary" [pTooltip]="'apps.list.defaultTtlTooltip' | translate">{{ 'apps.list.defaultTtlLabel' | translate }}</span>
-        }
-      </td>
-      <td>
-        @if (row.refreshTokenTtl) {
-          {{ row.refreshTokenTtl }}
-        } @else {
-          <span class="text-color-secondary" [pTooltip]="'apps.list.defaultTtlTooltip' | translate">{{ 'apps.list.defaultTtlLabel' | translate }}</span>
-        }
-      </td>
-      <td class="text-center">
-        <p-tag [severity]="row.active ? 'success' : 'danger'" [value]="(row.active ? 'apps.list.statusActive' : 'apps.list.statusInactive') | translate" />
-      </td>
-      <td class="text-center">
-        <div class="table-actions">
-          <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm" [pTooltip]="'apps.list.editTooltip' | translate"
-          [attr.aria-label]="'apps.list.editTooltip' | translate" (click)="edit(row)"></button>
-          <button pButton type="button" icon="pi pi-key" class="p-button-text p-button-sm p-button-warning" [pTooltip]="'apps.list.regenerateSecretTooltip' | translate"
-          [attr.aria-label]="'apps.list.regenerateSecretTooltip' | translate" (click)="regenerateSecret(row)"></button>
-          <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" [pTooltip]="'apps.list.deleteTooltip' | translate"
-          [attr.aria-label]="'apps.list.deleteTooltip' | translate" (click)="confirmDelete(row)"></button>
-        </div>
-      </td>
-    </tr>
-  </ng-template>
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <input
+          pInputText
+          id="appKey"
+          [value]="appKey()"
+          class="w-full p-inputtext-sm"
+          (input)="appKey.set(($any($event.target).value ?? '').toString())"
+        />
+        <label for="appKey">{{ 'apps.list.fields.appKey' | translate }}</label>
+      </p-floatLabel>
+    </div>
 
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="8" class="text-center py-5 opacity-70">{{ 'apps.list.empty' | translate }}</td>
-    </tr>
-  </ng-template>
-</p-table>
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-select
+          size="small"
+          class="w-full"
+          appendTo="body"
+          inputId="active"
+          [showClear]="true"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="active()"
+          [options]="statusOptions()"
+          (ngModelChange)="active.set($event ?? null)"
+        ></p-select>
+        <label for="active">{{ 'apps.list.fields.status' | translate }}</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-2 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-datepicker
+          size="small"
+          class="w-full"
+          appendTo="body"
+          [showIcon]="true"
+          inputId="createdAt"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          [readonlyInput]="true"
+          [ngModel]="createdAtRange()"
+          (ngModelChange)="createdAtRange.set($event ?? null)"
+        ></p-datepicker>
+        <label for="createdAt">{{ 'apps.list.fields.createdAt' | translate }}</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-12 md:col-3 p-1">
+      <p-floatLabel variant="on" class="w-full">
+        <p-multiSelect
+          size="small"
+          class="w-full"
+          [filter]="true"
+          appendTo="body"
+          optionValue="id"
+          [showClear]="true"
+          optionLabel="name"
+          inputId="createdBy"
+          [ngModel]="createdBy()"
+          [showToggleAll]="false"
+          [options]="usersOptions()"
+          (ngModelChange)="createdBy.set($event?.length ? $event : null)"
+        ></p-multiSelect>
+        <label for="createdBy">{{ 'apps.list.fields.createdBy' | translate }}</label>
+      </p-floatLabel>
+    </div>
+  </div>
+</app-filters-panel>
+
+<div class="surface-card border-round px-3 pt-2 pb-3 mt-2">
+  <p-table
+    #dt
+    stripedRows
+    dataKey="id"
+    size="small"
+    [rows]="rows"
+    [lazy]="true"
+    showGridlines
+    [value]="apps()"
+    [rowHover]="true"
+    [paginator]="true"
+    sortMode="multiple"
+    filterDisplay="menu"
+    stateStorage="local"
+    class="app-admin-table"
+    [loading]="loading()"
+    [stateKey]="tableStateKey()"
+    [showCurrentPageReport]="true"
+    [totalRecords]="totalRecords()"
+    [paginatorDropdownAppendTo]="'body'"
+    (onPage)="onPageChange($event)"
+    (onLazyLoad)="onLazyLoad($event)"
+    [rowsPerPageOptions]="rowsPerPageOptions"
+    [tableStyle]="{ width: '100%', 'min-width': '78rem' }"
+    [currentPageReportTemplate]="'apps.list.pageReportTemplate' | translate"
+  >
+    <ng-template pTemplate="colgroup">
+      <colgroup>
+        <col style="width: auto" />
+        <col style="width: 140px" />
+        <col style="width: 160px" />
+        <col style="width: 150px" />
+        <col style="width: 130px" />
+        <col style="width: 130px" />
+        <col style="width: 100px" />
+        <col style="width: 150px" />
+        <col style="width: 150px" />
+        <col style="width: 80px" />
+      </colgroup>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="name">
+          <div class="th-flex text-center">
+            <span class="th-label">{{ 'apps.list.columns.name' | translate }}</span>
+            <span class="th-icons">
+              <p-sortIcon field="name"></p-sortIcon>
+              <p-columnFilter
+                field="name"
+                type="text"
+                display="menu"
+                class="ml-auto"
+                matchMode="contains"
+                [useGrouping]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                styleClass="app-colfilter"
+              ></p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th pSortableColumn="appKey">
+          <div class="th-flex text-center">
+            <span class="th-label">{{ 'apps.list.columns.appKey' | translate }}</span>
+            <span class="th-icons">
+              <p-sortIcon field="appKey"></p-sortIcon>
+              <p-columnFilter
+                field="appKey"
+                type="text"
+                display="menu"
+                class="ml-auto"
+                matchMode="contains"
+                [useGrouping]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                styleClass="app-colfilter"
+              ></p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th pSortableColumn="clientId">
+          <div class="th-flex text-center">
+            <span class="th-label">{{ 'apps.list.columns.clientId' | translate }}</span>
+            <span class="th-icons">
+              <p-sortIcon field="clientId"></p-sortIcon>
+              <p-columnFilter
+                field="clientId"
+                type="text"
+                display="menu"
+                class="ml-auto"
+                matchMode="contains"
+                [useGrouping]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                styleClass="app-colfilter"
+              ></p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th>
+          <span class="th-label">{{ 'apps.list.columns.allowedOrigin' | translate }}</span>
+        </th>
+        <th>
+          <span class="th-label">{{ 'apps.list.columns.accessTokenTtl' | translate }}</span>
+        </th>
+        <th>
+          <span class="th-label">{{ 'apps.list.columns.refreshTokenTtl' | translate }}</span>
+        </th>
+
+        <th pSortableColumn="active" class="text-center">
+          <div class="th-flex text-center justify-content-center">
+            <span class="th-label">{{ 'apps.list.columns.status' | translate }}</span>
+            <span class="th-icons">
+              <p-sortIcon field="active"></p-sortIcon>
+              <p-columnFilter
+                field="active"
+                display="menu"
+                matchMode="equals"
+                [showOperator]="false"
+                [showAddButton]="false"
+                [showMatchModes]="false"
+                styleClass="app-colfilter"
+              >
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-select
+                    class="w-full"
+                    appendTo="body"
+                    [ngModel]="value"
+                    [showClear]="true"
+                    optionLabel="label"
+                    optionValue="value"
+                    [options]="statusOptions()"
+                    (ngModelChange)="filter($event)"
+                    [placeholder]="'apps.list.allPlaceholder' | translate"
+                  ></p-select>
+                </ng-template>
+              </p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th pSortableColumn="createdAt">
+          <div class="th-flex text-center">
+            <span class="th-label">{{ 'apps.list.columns.createdAt' | translate }}</span>
+            <span class="th-icons">
+              <p-sortIcon field="createdAt"></p-sortIcon>
+              <p-columnFilter
+                display="menu"
+                field="createdAt"
+                matchMode="between"
+                [showOperator]="false"
+                [showAddButton]="false"
+                [showMatchModes]="false"
+                styleClass="app-colfilter"
+              >
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-datepicker
+                    class="w-full"
+                    appendTo="body"
+                    [showIcon]="true"
+                    [ngModel]="value"
+                    selectionMode="range"
+                    dateFormat="dd/mm/yy"
+                    [readonlyInput]="true"
+                    (ngModelChange)="filter($event)"
+                    [placeholder]="'apps.list.periodFilterPlaceholder' | translate"
+                  ></p-datepicker>
+                </ng-template>
+              </p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th pSortableColumn="createdBy">
+          <div class="th-flex text-center">
+            <span class="th-label">{{ 'apps.list.columns.createdBy' | translate }}</span>
+            <span class="th-icons">
+              <p-sortIcon field="createdBy"></p-sortIcon>
+              <p-columnFilter
+                display="menu"
+                matchMode="in"
+                field="createdBy"
+                [showOperator]="false"
+                [showAddButton]="false"
+                [showMatchModes]="false"
+                styleClass="app-colfilter"
+              >
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-multiSelect
+                    class="w-full"
+                    appendTo="body"
+                    [filter]="true"
+                    [ngModel]="value"
+                    [showClear]="true"
+                    optionLabel="name"
+                    optionValue="id"
+                    [options]="usersOptions()"
+                    (onChange)="filter($event.value)"
+                    [placeholder]="'apps.list.allPlaceholder' | translate"
+                  ></p-multiSelect>
+                </ng-template>
+              </p-columnFilter>
+            </span>
+          </div>
+        </th>
+
+        <th class="text-center">
+          <span class="th-label">{{ 'apps.list.columns.actions' | translate }}</span>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-row>
+      <tr>
+        <td>{{ row.name }}</td>
+        <td>{{ row.appKey }}</td>
+        <td>
+          <code>{{ row.clientId }}</code>
+        </td>
+        <td>{{ row.allowedOrigin || '—' }}</td>
+        <td>
+          @if (row.accessTokenTtl) {
+            {{ row.accessTokenTtl }}
+          } @else {
+            <span
+              class="text-color-secondary"
+              [pTooltip]="'apps.list.defaultTtlTooltip' | translate"
+              >{{ 'apps.list.defaultTtlLabel' | translate }}</span
+            >
+          }
+        </td>
+        <td>
+          @if (row.refreshTokenTtl) {
+            {{ row.refreshTokenTtl }}
+          } @else {
+            <span
+              class="text-color-secondary"
+              [pTooltip]="'apps.list.defaultTtlTooltip' | translate"
+              >{{ 'apps.list.defaultTtlLabel' | translate }}</span
+            >
+          }
+        </td>
+        <td class="text-center">
+          <p-tag
+            [severity]="row.active ? 'success' : 'danger'"
+            [value]="
+              (row.active ? 'apps.list.statusActive' : 'apps.list.statusInactive') | translate
+            "
+          />
+        </td>
+        <td class="text-center">
+          {{ row.createdAt ? (row.createdAt | date: 'dd/MM/yyyy') : '-' }}
+        </td>
+        <td class="text-center">{{ row.createdBy?.name ?? '-' }}</td>
+
+        <td class="text-center">
+          <div class="table-actions">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-pencil"
+              class="p-button-text p-button-sm"
+              [pTooltip]="'apps.list.editTooltip' | translate"
+              [attr.aria-label]="'apps.list.editTooltip' | translate"
+              (click)="edit(row)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-key"
+              class="p-button-text p-button-sm p-button-warning"
+              [pTooltip]="'apps.list.regenerateSecretTooltip' | translate"
+              [attr.aria-label]="'apps.list.regenerateSecretTooltip' | translate"
+              (click)="regenerateSecret(row)"
+            ></button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-trash"
+              class="p-button-text p-button-sm p-button-danger"
+              [pTooltip]="'apps.list.deleteTooltip' | translate"
+              [attr.aria-label]="'apps.list.deleteTooltip' | translate"
+              (click)="confirmDelete(row)"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="10" class="text-center py-5 opacity-70">
+          {{ (loadedOnce() ? 'apps.list.emptyMessage' : 'apps.list.loadingMessage') | translate }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
 
 <app-apps-form-dialog
   [visible]="dialogVisible()"

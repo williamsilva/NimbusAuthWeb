@@ -23,6 +23,15 @@ code {
   font-size: 0.9em;
 }
 
+// PrimeNG (tema Lara) define o padding do p-dialog-content só nos lados/embaixo (padding-top: 0 -
+// ver @primeuix/themes/dist/lara/dialog). Combinado com o margin-top:-0.5rem do .grid do PrimeFlex
+// (usado em quase todo formulário de dialog daqui), o PRIMEIRO campo de um p-floatLabel variant="on"
+// fica sem espaço suficiente acima pra "flutuar" o label sem cortar o topo do texto - only o 1º
+// campo do dialog é afetado (os campos seguintes têm a margem do campo anterior como respiro).
+.p-dialog .p-dialog-content {
+  padding-top: 1.25rem;
+}
+
 /* ===== Glassmorphism (mesmo padrão visual dos outros 4 apps - CardSyncWeb/etc.) =====
  * .cs-glass é aplicada direto pelos componentes de layout compartilhados
  * (@williamsilva/nimbus-web-commons: sidebar/topbar/footer) e por layout.component.html - a lib

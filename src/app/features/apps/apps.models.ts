@@ -46,17 +46,21 @@ export interface AppUpdateInput {
   refreshTokenTtl: string | null;
 }
 
-/** Espelha o PagedModel (HATEOAS) devolvido por POST /api/v1/apps/search. */
-export interface HalPagedResponse<T> {
-  _embedded?: { content: T[] };
-  page: { size: number; totalElements: number; totalPages: number; number: number };
+/** Estado persistido do painel de filtros avançados (localStorage). */
+export interface AppsFiltersState {
+  name: string;
+  appKey: string;
+  active: boolean | null;
+  createdBy: string[] | null;
+  createdAtRange: [string, string] | null;
 }
 
-export interface ListQueryBody {
-  page: number;
-  size: number;
-  sort: { field: string; order: number }[];
-  tableFilters: Record<string, unknown>;
-  globalFilter: string | null;
-  advanced: Record<string, unknown> | null;
+/** Espelha AppsFilter (domain/filter/AppsFilter.java) - enviado em `advanced`. */
+export interface AppsAdvancedFilters {
+  name?: string;
+  appKey?: string;
+  active?: boolean;
+  createdBy?: string[];
+  createdAtFrom?: string;
+  createdAtTo?: string;
 }

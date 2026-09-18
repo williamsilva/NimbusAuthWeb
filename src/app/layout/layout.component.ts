@@ -15,4 +15,5 @@ import { LayoutStateService } from './layout-state.service';
 export class LayoutComponent {
   private readonly layout = inject(LayoutStateService);
   readonly sidebarVisible = this.layout.sidebarVisible;
+  readonly layoutMode = this.layout.layoutMode;
 }

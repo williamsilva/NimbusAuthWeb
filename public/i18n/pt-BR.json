@@ -45,7 +45,14 @@
     "online": "Online",
     "sessionExpireTooltip": "Tempo restante da sessão",
     "themeToggleAria": "Alternar tema claro/escuro",
-    "langAria": "Selecionar idioma"
+    "langAria": "Selecionar idioma",
+    "layoutMode": {
+      "label": "Modo de layout",
+      "static": "Padrão",
+      "slim": "Compacto",
+      "horizontal": "Horizontal",
+      "drawer": "Sobreposto"
+    }
   },
   "menu": {
     "me": "Meu perfil",

@@ -1,7 +1,11 @@
-<app-topbar class="topbar-wrapper"></app-topbar>
+<app-topbar class="topbar-wrapper" [attr.data-mode]="layoutMode()"></app-topbar>
 
-<div class="shell" [class.sidebar-collapsed]="!sidebarVisible()">
-  @if (sidebarVisible()) {
+<div
+  class="shell"
+  [class.sidebar-collapsed]="!sidebarVisible()"
+  [attr.data-mode]="layoutMode()"
+  >
+  @if (sidebarVisible() && layoutMode() !== 'horizontal') {
     <app-sidebar class="sidebar-host"></app-sidebar>
   }
 
@@ -12,4 +16,8 @@
   </main>
 </div>
 
-<app-footer class="footer-fixed" [class.sidebar-collapsed]="!sidebarVisible()"></app-footer>
+<app-footer
+  class="footer-fixed"
+  [class.sidebar-collapsed]="!sidebarVisible() || layoutMode() === 'horizontal' || layoutMode() === 'drawer'"
+  [attr.data-mode]="layoutMode()"
+  ></app-footer>

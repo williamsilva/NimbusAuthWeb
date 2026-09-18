@@ -5,10 +5,15 @@
   padding-top: 8px; /* pequeno espaço superior no topbar */
 }
 
-/* Topbar wrapper (altura fixa real) */
+/* Topbar wrapper (altura fixa real) - no modo horizontal ganha uma 2ª linha (menu) abaixo do
+   topbar em si, então a altura reservada cresce. */
 .topbar-wrapper {
   height: 56px;
   display: block;
+}
+
+.topbar-wrapper[data-mode='horizontal'] {
+  height: 104px;
 }
 
 /* Área principal */
@@ -27,6 +32,24 @@
 
 /* Sidebar colapsada (desktop) */
 .shell.sidebar-collapsed {
+  grid-template-columns: 0 1fr;
+}
+
+/* Modo Slim: coluna estreita (mesma largura do .sidebar[data-mode="slim"] na lib) */
+.shell[data-mode='slim'] {
+  grid-template-columns: 76px 1fr;
+}
+
+/* Modo Horizontal: sem sidebar nenhuma - conteúdo ocupa a largura toda; topbar-wrapper mais alto
+   (ver acima) reflete aqui também. Mantém 2 colunas (0 1fr, igual .sidebar-collapsed) - `.content`
+   usa `grid-column: 2`, uma só coluna quebraria esse posicionamento. */
+.shell[data-mode='horizontal'] {
+  grid-template-columns: 0 1fr;
+  height: calc(100% - 104px);
+}
+
+/* Modo Drawer: sidebar vira overlay (position: fixed, ver lib) - não reserva coluna no grid. */
+.shell[data-mode='drawer'] {
   grid-template-columns: 0 1fr;
 }
 
@@ -95,6 +118,12 @@
 .footer-fixed.sidebar-collapsed {
   left: 8px;
   right: 8px;
+}
+
+/* Modo Slim: mesmo raciocínio do alinhamento padrão acima, só que com a coluna estreita
+   (8 + 76 + 8 = 92px) em vez dos 272px da sidebar Static. */
+.footer-fixed[data-mode='slim']:not(.sidebar-collapsed) {
+  left: calc(8px + 76px + 8px);
 }
 
 /* Quando sidebar some no mobile, o footer volta a ocupar a tela toda */

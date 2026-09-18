@@ -45,7 +45,14 @@
     "online": "Online",
     "sessionExpireTooltip": "Time left in session",
     "themeToggleAria": "Toggle light/dark theme",
-    "langAria": "Select language"
+    "langAria": "Select language",
+    "layoutMode": {
+      "label": "Layout mode",
+      "static": "Static",
+      "slim": "Slim",
+      "horizontal": "Horizontal",
+      "drawer": "Drawer"
+    }
   },
   "menu": {
     "me": "My profile",

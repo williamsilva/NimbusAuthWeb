@@ -26,12 +26,16 @@ export function provideNimbusLayoutHosts(): Provider[] {
         const meStore = inject(MeStore);
         const auth = inject(AuthService);
         const perms = inject(PermissionService);
+        const layout = inject(LayoutStateService);
 
         return {
           me: meStore.me,
           menu: APP_MENU,
           brandMarkUrl: BRAND.markUrl,
+          layoutMode: layout.layoutMode,
           canAccess: (required, requireAll) => perms.canAccess(required, requireAll),
+          setLayoutMode: (mode) => layout.setLayoutMode(mode),
+          toggleSidebar: () => layout.toggleSidebar(),
           logout: () => auth.logout(),
         };
       },
@@ -41,18 +45,23 @@ export function provideNimbusLayoutHosts(): Provider[] {
       useFactory: (): NimbusTopbarHost => {
         const meStore = inject(MeStore);
         const auth = inject(AuthService);
+        const perms = inject(PermissionService);
         const i18n = inject(I18nService);
         const session = inject(SessionService);
         const layout = inject(LayoutStateService);
 
         return {
           me: meStore.me,
+          menu: APP_MENU,
           brandMarkUrl: BRAND.markUrl,
           i18n,
           sidebarVisible: layout.sidebarVisible,
           remainingSeconds: session.remainingSeconds,
+          layoutMode: layout.layoutMode,
+          canAccess: (required, requireAll) => perms.canAccess(required, requireAll),
           isSessionExpired: () => session.isExpired(),
           toggleSidebar: () => layout.toggleSidebar(),
+          setLayoutMode: (mode) => layout.setLayoutMode(mode),
           startLogin: () => auth.startLogin(window.location.pathname + window.location.search),
           logout: () => auth.logout(),
         };

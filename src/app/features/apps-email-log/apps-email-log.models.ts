@@ -14,6 +14,11 @@ export interface AppEmailLogItem {
   /** Corpo HTML completo - ausente/null em CardSync (única origem que não guarda essa coluna
    *  hoje, ver cs_email_log) e em registros antigos das demais origens. */
   body?: string | null;
+  /** Nomes dos arquivos anexados ao e-mail, separados por ", " - null quando o e-mail não teve
+   *  anexo. Só o NimbusFlow preenche esta coluna hoje (nimbus-commons-server 0.6.1, ver
+   *  EmailLogEntity#attachmentFilenames); ausente (undefined) nos demais satélites, que ainda não
+   *  atualizaram a biblioteca. */
+  attachmentFilenames?: string | null;
 }
 
 export interface AppEmailLogPage {

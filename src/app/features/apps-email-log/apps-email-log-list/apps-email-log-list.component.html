@@ -45,6 +45,12 @@
         <strong>{{ 'appsEmailLog.list.detail.sentAt' | translate }}</strong>
         {{ log.sentAt ? (log.sentAt | date: 'dd/MM/yyyy HH:mm:ss') : '-' }}
       </div>
+      @if (log.attachmentFilenames) {
+        <div>
+          <strong>{{ 'appsEmailLog.list.detail.attachments' | translate }}</strong>
+          {{ log.attachmentFilenames }}
+        </div>
+      }
       @if (log.errorMessage) {
         <div class="text-red-500">
           <strong>{{ 'appsEmailLog.list.detail.error' | translate }}</strong> {{ log.errorMessage }}
@@ -213,6 +219,7 @@
         <col style="width: 140px" />
         <col style="width: 160px" />
         <col style="width: 130px" />
+        <col style="width: 160px" />
         <col style="width: 200px" />
         <col style="width: 50px" />
       </colgroup>
@@ -366,6 +373,9 @@
         </th>
 
         <th class="text-center">
+          <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.attachments' | translate">{{ 'appsEmailLog.list.columns.attachments' | translate }}</span>
+        </th>
+        <th class="text-center">
           <span class="th-label" tooltipPosition="top" [pTooltip]="'appsEmailLog.list.columns.error' | translate">{{ 'appsEmailLog.list.columns.error' | translate }}</span>
         </th>
         <th class="text-center">
@@ -385,6 +395,13 @@
         <td><span class="app-table-cell-ellipsis" tooltipPosition="top" [pTooltip]="eventTypeLabel(row)">{{ eventTypeLabel(row) }}</span></td>
         <td class="text-center">
           {{ row.sentAt ? (row.sentAt | date: 'dd/MM/yyyy HH:mm') : '-' }}
+        </td>
+        <td class="text-center">
+          @if (row.attachmentFilenames) {
+            <i class="pi pi-paperclip" [pTooltip]="row.attachmentFilenames" tooltipPosition="top"></i>
+          } @else {
+            -
+          }
         </td>
         <td class="text-center">
           @if (row.errorMessage) {
@@ -416,7 +433,7 @@
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="8" class="text-center py-5 opacity-70">
+        <td colspan="9" class="text-center py-5 opacity-70">
           @if (!selectedAppKey()) {
             {{ 'appsEmailLog.list.selectAppMessage' | translate }}
           } @else {

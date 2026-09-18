@@ -527,6 +527,7 @@
         "status": "Status",
         "eventType": "Event type",
         "sentAt": "Sent on",
+        "attachments": "Attachments",
         "error": "Error",
         "actions": "Actions"
       },
@@ -543,6 +544,7 @@
         "status": "Status:",
         "eventType": "Event type:",
         "sentAt": "Sent on:",
+        "attachments": "Attachments:",
         "error": "Error:",
         "bodyUnavailable": "Email body not available for this record.",
         "close": "Close"

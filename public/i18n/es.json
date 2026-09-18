@@ -527,6 +527,7 @@
         "status": "Estado",
         "eventType": "Tipo de evento",
         "sentAt": "Enviado el",
+        "attachments": "Adjuntos",
         "error": "Error",
         "actions": "Acciones"
       },
@@ -543,6 +544,7 @@
         "status": "Estado:",
         "eventType": "Tipo de evento:",
         "sentAt": "Enviado el:",
+        "attachments": "Adjuntos:",
         "error": "Error:",
         "bodyUnavailable": "Cuerpo del correo no disponible para este registro.",
         "close": "Cerrar"

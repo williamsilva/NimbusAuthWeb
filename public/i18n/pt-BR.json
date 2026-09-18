@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "NimbusAuth"
+    "name": "NimbusCore"
   },
   "sidebar": {
     "userFallback": "Admin",
@@ -32,7 +32,7 @@
     }
   },
   "footer": {
-    "copyright": "NimbusAuth",
+    "copyright": "NimbusCore",
     "madeWith": "Identidade & Acesso"
   },
   "topbar": {
@@ -329,7 +329,7 @@
       "permissionsPlaceholder": "Selecione as permissões",
       "savePermissionsButton": "Salvar permissões",
       "usersPlaceholder": "Selecione os usuários",
-      "usersRemoveHint": "Remover um usuário daqui só é permitido se ele continuar em outro grupo do nimbusauth.",
+      "usersRemoveHint": "Remover um usuário daqui só é permitido se ele continuar em outro grupo do nimbuscore.",
       "saveUsersButton": "Salvar usuários",
       "close": "Fechar",
       "toastPermissionsUpdated": {
@@ -470,7 +470,7 @@
   "appsEmailSettings": {
     "list": {
       "title": "Configurações de E-mail",
-      "subtitle": "Config de e-mail (SMTP/Brevo/remetente) do NimbusAuth e de cada app satélite - lida e gravada remotamente no próprio app.",
+      "subtitle": "Config de e-mail (SMTP/Brevo/remetente) do NimbusCore e de cada app satélite - lida e gravada remotamente no próprio app.",
       "refreshButton": "Atualizar",
       "filtersTitle": "Filtrar",
       "fields": {
@@ -509,7 +509,7 @@
   "appsEmailLog": {
     "list": {
       "title": "Auditoria de E-mail",
-      "subtitle": "E-mails enviados pelo NimbusAuth e por cada app satélite do ecossistema Nimbus.",
+      "subtitle": "E-mails enviados pelo NimbusCore e por cada app satélite do ecossistema Nimbus.",
       "refreshButton": "Atualizar",
       "filtersTitle": "Filtrar",
       "fields": {

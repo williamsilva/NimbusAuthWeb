@@ -7,8 +7,8 @@ export type BulkUserActionMode = 'activate' | 'deactivate';
 
 /** Regra de "modo" pra seleção em massa (ativar/inativar) - versão simplificada do
  *  SecurityPermissionPolicy do CardSyncWeb, sem a camada de permissão granular por ação (o
- *  NimbusAuthWeb não tem PermissionService - o backend já protege via CheckSecurity, e esta tela
- *  é restrita ao grupo ADMINISTRADOR do nimbusauth). Mantém só a regra de negócio real: não dá
+ *  NimbusCoreWeb não tem PermissionService - o backend já protege via CheckSecurity, e esta tela
+ *  é restrita ao grupo ADMINISTRADOR do nimbuscore). Mantém só a regra de negócio real: não dá
  *  pra se auto-desativar, e só usuários Ativo/Inativo/Desabilitado entram em ação de lote. */
 @Injectable({ providedIn: 'root' })
 export class UsersSelectionPolicy {

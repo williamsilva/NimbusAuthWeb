@@ -9,7 +9,7 @@ export interface AppModel {
   allowedOrigin: string | null;
   scopes: string[];
   active: boolean;
-  /** Duration ISO-8601 (ex: "PT10M") ou null - null usa o default global do NimbusAuth. */
+  /** Duration ISO-8601 (ex: "PT10M") ou null - null usa o default global do NimbusCore. */
   accessTokenTtl: string | null;
   refreshTokenTtl: string | null;
   createdAt: string | null;

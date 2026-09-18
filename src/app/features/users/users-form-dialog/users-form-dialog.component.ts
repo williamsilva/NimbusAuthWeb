@@ -23,7 +23,7 @@ import { UserInput, UserModel } from '../users.models';
 import { cpfCnpjValidator } from '../cpf-cnpj.validator';
 
 /** Cria/edita um usuário. Como nb_users é global (compartilhado entre cardsync/nimbusflow/
- *  nimbusnovax/nimbusauth), o acesso é montado em 2 passos: primeiro escolhe QUAIS apps (seletor
+ *  nimbusnovax/nimbuscore), o acesso é montado em 2 passos: primeiro escolhe QUAIS apps (seletor
  *  "Apps com acesso" - `selectedAppKeys`), depois só os apps escolhidos ganham uma linha com o
  *  multiselect de grupos DAQUELE app_key (grupo é sempre escopado a 1 app só). Sem esse primeiro
  *  passo, a seção cresceria 1 linha por app cadastrado no ecossistema, sem limite. Catálogo

@@ -28,7 +28,7 @@ export interface EmailLogFiltersState {
 
 /** Espelha EmailLogFilter (domain/filter/EmailLogFilter.java) - enviado em `advanced`. status/
  *  eventType são listas de NOMES do enum (não códigos - Jackson desserializa List<EnumX> pelo
- *  nome). recipientAppKey de propósito fora daqui - o NimbusAuthWeb é o dono dos dados (só ele
+ *  nome). recipientAppKey de propósito fora daqui - o NimbusCoreWeb é o dono dos dados (só ele
  *  gera esses logs), sem sentido escopar por app como os outros consumidores via BFF fazem. */
 export interface EmailLogAdvancedFilters {
   subject?: string;

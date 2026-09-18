@@ -32,7 +32,7 @@ export interface ChangeMyPasswordRequest {
   confirmPassword: string;
 }
 
-/** Fala direto com o NimbusAuthServer (não é proxy - esse app É o servidor de identidade). Os 2
+/** Fala direto com o NimbusCoreServer (não é proxy - esse app É o servidor de identidade). Os 2
  *  endpoints de política ficam em /api/password (sem versionamento, público - ver
  *  PolicyPasswordController); o de troca de senha fica em /api/v1/me/password/change (exige JWT,
  *  resolve o usuário pelo próprio token - ver MePasswordChangeController). */

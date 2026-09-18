@@ -4,7 +4,7 @@ import { Injectable, effect, signal } from '@angular/core';
  *  padrão dos outros apps (CardSyncWeb/etc.), só com a chave de storage própria. */
 @Injectable({ providedIn: 'root' })
 export class LayoutStateService {
-  private static readonly STORAGE_KEY = 'nimbusauth.layout.sidebarVisible';
+  private static readonly STORAGE_KEY = 'nimbuscore.layout.sidebarVisible';
 
   readonly sidebarVisible = signal(true);
 

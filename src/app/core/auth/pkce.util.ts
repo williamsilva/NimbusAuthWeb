@@ -1,6 +1,6 @@
 /**
  * Authorization Code + PKCE (RFC 7636) - code_verifier aleatório e code_challenge = BASE64URL(
- * SHA-256(code_verifier)), método S256 (exigido pelo NimbusAuth via ClientSettings.requireProofKey,
+ * SHA-256(code_verifier)), método S256 (exigido pelo NimbusCore via ClientSettings.requireProofKey,
  * ver AppService/RegisteredClientBootstrap). Sem dependência externa - Web Crypto API já cobre tudo.
  */
 

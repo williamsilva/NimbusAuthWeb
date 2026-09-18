@@ -65,7 +65,7 @@ export class GroupManageDialogComponent {
       this.selectedUserIds.set((group.users ?? []).map((u) => u.id));
 
       // Catálogo de permissões é compartilhado entre apps - precisa ser do app DESTE grupo, não
-      // fixo em nimbusauth (painel central gerencia grupos de qualquer app).
+      // fixo em nimbuscore (painel central gerencia grupos de qualquer app).
       this.api.permissionOptions(group.appKey).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((opts) => this.permissionOptions.set(opts));
     });
   }

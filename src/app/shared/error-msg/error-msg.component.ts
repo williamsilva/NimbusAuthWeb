@@ -4,7 +4,7 @@ import { Component, Input } from '@angular/core';
 /** Label "inteligente": mostra o texto normal (com "*" na frente se obrigatório) e, quando o
  *  campo fica inválido (tocado ou sujo), troca pela mensagem de erro específica - mesmo padrão
  *  visual usado no CardSyncWeb/NimbusFlowWeb/NimbusDeskWeb (shared/error-msg), substituindo o
- *  `<label>` estático. Sem a camada de i18n/ErrorMapperService de lá (não usada aqui - NimbusAuthWeb
+ *  `<label>` estático. Sem a camada de i18n/ErrorMapperService de lá (não usada aqui - NimbusCoreWeb
  *  é só pt-BR e não faz mapeamento de erro de campo vindo da API) - mensagens só das chaves de
  *  validação padrão do Angular + dos validadores customizados deste app (cpfCnpjValidator,
  *  passwordMismatch). */

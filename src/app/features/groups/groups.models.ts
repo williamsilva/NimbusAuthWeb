@@ -39,7 +39,7 @@ export interface GroupModel {
   permissions: PermissionOption[];
 }
 
-/** appKey só é considerado na CRIAÇÃO, e só tem efeito vindo do client nimbusauth-web (painel
+/** appKey só é considerado na CRIAÇÃO, e só tem efeito vindo do client nimbuscore-web (painel
  *  central de administração) - qualquer outro client (cardsync-bff, ...) ignora este campo e cria
  *  sempre no próprio app (ver GroupsController#resolveAppKey). Imutável depois de criado - nunca
  *  enviado no update. */

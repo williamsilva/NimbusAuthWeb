@@ -8,7 +8,7 @@ import { PRIMENG_TRANSLATIONS } from './primeng-translations';
 
 export type NimbusLang = 'pt-BR' | 'en' | 'es';
 
-const STORAGE_KEY = 'nimbusauth.lang';
+const STORAGE_KEY = 'nimbuscore.lang';
 
 interface LangConfig {
   locale: string;
@@ -25,7 +25,7 @@ const LANG_CONFIG: Record<NimbusLang, LangConfig> = {
 /** Implementação de NimbusTopbarI18n (@williamsilva/nimbus-web-commons) com troca de idioma DE
  *  VERDADE (pt-BR/en/es) - antes disso, EN/ES no seletor do Topbar apontavam pro mesmo dicionário
  *  pt-BR (ver AssetsTranslateLoader, que agora busca `/i18n/{lang}.json` de verdade). Idioma
- *  escolhido persiste em localStorage (`nimbusauth.lang`) e é reaplicado no próximo carregamento
+ *  escolhido persiste em localStorage (`nimbuscore.lang`) e é reaplicado no próximo carregamento
  *  (ver readPersistedLang(), usado no provideAppInitializer de app.config.ts) - sem sincronização
  *  entre abas (BroadcastChannel) como o CardSyncWeb tem, não é necessário pra um app
  *  administrativo de uso tipicamente 1 aba por vez. */

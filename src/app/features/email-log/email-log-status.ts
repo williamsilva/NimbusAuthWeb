@@ -3,7 +3,7 @@
  *  vindo como STRING do nome do enum (Jackson serializa enum pelo nome, sem @JsonValue custom) e
  *  pelo p-columnFilter (whitelist enumAsIntegerCode - EmailLogAllowedFields). Só PASSWORD_RESET,
  *  FIRST_PASSWORD e BACKUP_NOTIFICATION fazem sentido aqui - CHARGEBACK_DETECTED é exclusivo do
- *  CardSync (nunca gerado pelo NimbusAuthServer), omitido das opções de filtro pra não confundir. */
+ *  CardSync (nunca gerado pelo NimbusCoreServer), omitido das opções de filtro pra não confundir. */
 export type EmailLogStatusName = 'NULL' | 'SENT' | 'FAILED';
 export type EmailLogEventTypeName =
   | 'NULL'
@@ -61,7 +61,7 @@ export function eventTypeLabel(code: number | null | undefined): string {
   return (code != null && EVENT_TYPE_LABELS[code]) || '—';
 }
 
-/** Só os eventos que o NimbusAuthServer de fato gera (convite de 1º acesso, reset de senha,
+/** Só os eventos que o NimbusCoreServer de fato gera (convite de 1º acesso, reset de senha,
  *  notificação de backup). */
 export const EMAIL_LOG_EVENT_TYPE_OPTIONS = [
   { label: 'Reset de senha', value: 1 },

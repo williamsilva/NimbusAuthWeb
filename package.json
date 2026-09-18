@@ -1,5 +1,5 @@
 {
-  "name": "nimbus-auth-web",
+  "name": "nimbus-core-web",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:pages": "ng build --configuration production",
-    "pages:preview": "npx wrangler pages dev dist/NimbusAuthWeb/browser",
+    "pages:preview": "npx wrangler pages dev dist/NimbusCoreWeb/browser",
     "lint": "ng lint"
   },
   "prettier": {

@@ -21,12 +21,12 @@ import { AppsApiService } from '../../apps/apps.api.service';
 import { AppModel, AppsAdvancedFilters, AppsFiltersState } from '../../apps/apps.models';
 import { AppsEmailSettingsDialogComponent } from '../apps-email-settings-dialog/apps-email-settings-dialog.component';
 
-/** Painel central de Config de E-mail de TODOS os apps do ecossistema (nimbusauth + cardsync/
+/** Painel central de Config de E-mail de TODOS os apps do ecossistema (nimbuscore + cardsync/
  *  nimbusflow/nimbusdesk/nimbusnovax) - mesmo padrão de lista avançada das outras telas
  *  (StatefulListPage + cs-filters-panel + p-columnFilter, ver core/list-base), reaproveitando o
  *  MESMO endpoint `/v1/apps/search` da tela Apps (não existe endpoint de lista próprio - só o de
- *  get/put de config de e-mail de 1 app por vez). Selecionar o próprio NimbusAuth (appKey
- *  "nimbusauth") no `edit()` abre o MESMO dialog, que troca de API client-side (ver
+ *  get/put de config de e-mail de 1 app por vez). Selecionar o próprio NimbusCore (appKey
+ *  "nimbuscore") no `edit()` abre o MESMO dialog, que troca de API client-side (ver
  *  AppsEmailSettingsDialogComponent) - nenhum filtro de exclusão aqui, diferente de antes da
  *  fusão das 2 telas (Config de E-mail própria + E-mail dos Apps) numa só. */
 @Component({

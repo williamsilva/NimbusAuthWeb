@@ -18,8 +18,8 @@ interface StoredToken {
   expiresAt: number;
 }
 
-/** Claims custom do access token (ver JwtClaimsCustomizer no NimbusAuthServer) - groups/
- *  permissions já vêm filtrados pelo appKey do client atual ("nimbusauth"), então decodificar
+/** Claims custom do access token (ver JwtClaimsCustomizer no NimbusCoreServer) - groups/
+ *  permissions já vêm filtrados pelo appKey do client atual ("nimbuscore"), então decodificar
  *  client-side aqui é seguro pra exibição (ex.: tela de Perfil) sem round-trip nenhum; nunca usado
  *  como fonte de verdade de autorização (o backend valida tudo de novo via CheckSecurity). */
 export interface TokenClaims {
@@ -30,17 +30,17 @@ export interface TokenClaims {
   permissions: string[];
 }
 
-const STORAGE_KEY = 'nimbusauth_web_token';
-const VERIFIER_KEY = 'nimbusauth_web_pkce_verifier';
-const STATE_KEY = 'nimbusauth_web_oauth_state';
-const RETURN_TO_KEY = 'nimbusauth_web_return_to';
+const STORAGE_KEY = 'nimbuscore_web_token';
+const VERIFIER_KEY = 'nimbuscore_web_pkce_verifier';
+const STATE_KEY = 'nimbuscore_web_oauth_state';
+const RETURN_TO_KEY = 'nimbuscore_web_return_to';
 
 /**
- * Authorization Code + PKCE direto contra o NimbusAuth (client público "nimbusauth-web", sem
+ * Authorization Code + PKCE direto contra o NimbusCore (client público "nimbuscore-web", sem
  * client-secret e sem grant de refresh_token - ver RegisteredClientBootstrap/AuthServerProperties.
  * Access token de vida curta (10min, mesmo TTL dos outros clients) guardado em sessionStorage;
  * quando expira, ensureAuthenticated() manda o usuário de volta pro /oauth2/authorize - como a
- * sessão de login do NimbusAuth (cookie, ver SecurityConfig#webChain) costuma continuar válida,
+ * sessão de login do NimbusCore (cookie, ver SecurityConfig#webChain) costuma continuar válida,
  * isso normalmente é transparente (sem pedir senha de novo), sem precisar de silent-renew via
  * iframe (mais simples e sem os problemas de cookie de terceiros de invisible iframe).
  */
@@ -91,7 +91,7 @@ export class AuthService {
    *  corrida por completo. */
   private loginRedirectInFlight = false;
 
-  /** Redireciona (navegação de página inteira, não XHR) pro /oauth2/authorize do NimbusAuth. */
+  /** Redireciona (navegação de página inteira, não XHR) pro /oauth2/authorize do NimbusCore. */
   async startLogin(returnTo: string): Promise<void> {
     if (this.loginRedirectInFlight) {
       return;
@@ -160,7 +160,7 @@ export class AuthService {
     return returnTo;
   }
 
-  /** RP-Initiated Logout (OIDC) - encerra a sessão/SSO do NimbusAuth, não só o token local. */
+  /** RP-Initiated Logout (OIDC) - encerra a sessão/SSO do NimbusCore, não só o token local. */
   logout(): void {
     const token = this.tokenState();
     this.clearToken();

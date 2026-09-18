@@ -32,9 +32,9 @@ import { AppsEmailLogApiService } from '../apps-email-log.api.service';
 import { AppEmailLogItem } from '../apps-email-log.models';
 
 /** Painel central de Auditoria de E-mail - fundiu as telas "Auditoria de E-mail" (só o próprio
- *  NimbusAuth) e "Auditoria dos Apps" (proxy pros 4 satélites) numa só, com "NimbusAuth" como mais
+ *  NimbusCore) e "Auditoria dos Apps" (proxy pros 4 satélites) numa só, com "NimbusCore" como mais
  *  uma opção no MESMO seletor de app (ver loadApps()). Selecionar um satélite chama o proxy
- *  (AppsEmailLogApiService, GET flat/query-string); selecionar "NimbusAuth" chama o endpoint
+ *  (AppsEmailLogApiService, GET flat/query-string); selecionar "NimbusCore" chama o endpoint
  *  próprio (EmailLogApiService, POST ListQueryDto) com um adaptador pequeno traduzindo request/
  *  response pro mesmo shape AppEmailLogItem (ver toAppEmailLogItem()) - os satélites têm eventType
  *  livre/divergente, por isso os filtros aqui continuam deliberadamente simples (texto livre +
@@ -73,9 +73,9 @@ export class AppsEmailLogListComponent implements OnInit {
    *  via PersistedFilters direto, mesma ideia (grava só ao clicar Buscar/Limpar). */
   private readonly persistedFilters = new PersistedFilters<AppsEmailLogFiltersState>(STATE_KEY.APPS_EMAIL_LOG.FILTERS.V1);
 
-  /** appKey sintético - não existe de verdade como "satélite" (é o próprio NimbusAuth), mas
+  /** appKey sintético - não existe de verdade como "satélite" (é o próprio NimbusCore), mas
    *  aparece como qualquer outro no seletor (ver loadApps()). */
-  private static readonly NIMBUS_AUTH_APP_KEY = 'nimbusauth';
+  private static readonly NIMBUS_CORE_APP_KEY = 'nimbuscore';
 
   readonly statusOptions = computed(() => {
     this.i18n.appliedLang();
@@ -229,8 +229,8 @@ export class AppsEmailLogListComponent implements OnInit {
 
     this.persistCurrentFilters();
 
-    if (appKey === AppsEmailLogListComponent.NIMBUS_AUTH_APP_KEY) {
-      this.searchNimbusAuth(page);
+    if (appKey === AppsEmailLogListComponent.NIMBUS_CORE_APP_KEY) {
+      this.searchNimbusCore(page);
       return;
     }
     this.searchSatellite(appKey, page);
@@ -268,9 +268,9 @@ export class AppsEmailLogListComponent implements OnInit {
       });
   }
 
-  /** NimbusAuth não é um satélite de verdade - usa o endpoint próprio (POST ListQueryDto, já
+  /** NimbusCore não é um satélite de verdade - usa o endpoint próprio (POST ListQueryDto, já
    *  usado antes pela tela /email-log removida), adaptado pro mesmo shape AppEmailLogItem. */
-  private searchNimbusAuth(page: number): void {
+  private searchNimbusCore(page: number): void {
     const sentAt = this.sentAtRange();
     const eventType = this.eventType().trim();
     const status = this.status();
@@ -357,10 +357,10 @@ export class AppsEmailLogListComponent implements OnInit {
     return option?.label ?? status ?? '-';
   }
 
-  /** Só o NimbusAuth tem um catálogo fixo de eventType (os satélites são texto livre/divergente,
+  /** Só o NimbusCore tem um catálogo fixo de eventType (os satélites são texto livre/divergente,
    *  sem dicionário - mostrado cru, como já era). */
   eventTypeLabel(row: AppEmailLogItem): string {
-    if (this.selectedAppKey() !== AppsEmailLogListComponent.NIMBUS_AUTH_APP_KEY || !row.eventType) {
+    if (this.selectedAppKey() !== AppsEmailLogListComponent.NIMBUS_CORE_APP_KEY || !row.eventType) {
       return row.eventType ?? '-';
     }
 
@@ -393,8 +393,8 @@ interface AppsEmailLogFiltersState {
   sentAtRange: [string, string] | null;
 }
 
-/** EmailLogModel (NimbusAuth, recipient singular) -> AppEmailLogItem (recipients plural) - mesmo
- *  shape usado pela tabela unificada, pro proxy dos satélites e pro NimbusAuth caírem na mesma
+/** EmailLogModel (NimbusCore, recipient singular) -> AppEmailLogItem (recipients plural) - mesmo
+ *  shape usado pela tabela unificada, pro proxy dos satélites e pro NimbusCore caírem na mesma
  *  renderização. */
 function toAppEmailLogItem(model: EmailLogModel): AppEmailLogItem {
   return {

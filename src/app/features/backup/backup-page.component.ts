@@ -310,7 +310,7 @@ export class BackupPageComponent implements OnInit {
       .subscribe({
         next: (result) => {
           const content = result._embedded?.content ?? [];
-          this.apps.set(content.filter((app) => app.appKey !== 'nimbusauth'));
+          this.apps.set(content.filter((app) => app.appKey !== 'nimbuscore'));
           this.loadingApps.set(false);
         },
         error: () => this.loadingApps.set(false),

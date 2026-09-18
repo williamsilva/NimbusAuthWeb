@@ -19,8 +19,8 @@ import { GroupInput, GroupModel } from '../groups.models';
 
 /** Cria/edita nome+descrição+app de um grupo. Permissões e usuários são geridos à parte (ver
  *  group-manage-dialog). appKey só é editável na criação - imutável depois (mesmo padrão de
- *  appKey/clientId em Apps). Painel central: lista todos os apps cadastrados, não só nimbusauth
- *  (GroupsController#resolveAppKey só aceita esse override vindo do client nimbusauth-web). */
+ *  appKey/clientId em Apps). Painel central: lista todos os apps cadastrados, não só nimbuscore
+ *  (GroupsController#resolveAppKey só aceita esse override vindo do client nimbuscore-web). */
 @Component({
   standalone: true,
   selector: 'app-groups-form-dialog',

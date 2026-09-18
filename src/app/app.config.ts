@@ -27,7 +27,7 @@ function reloadOnChunkLoadError(error: unknown): void {
   const isChunkLoadError = /Failed to fetch dynamically imported module|Loading chunk|dynamically imported module/i.test(message);
   if (!isChunkLoadError) return;
 
-  const flag = 'nimbusauth_web_chunk_reload';
+  const flag = 'nimbuscore_web_chunk_reload';
   if (sessionStorage.getItem(flag)) return;
 
   sessionStorage.setItem(flag, '1');
@@ -38,9 +38,9 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
 
-    // appId igual à chave de storage já usada pelo ThemeService local antigo ("nimbusauth.theme")
+    // appId igual à chave de storage já usada pelo ThemeService local antigo ("nimbuscore.theme")
     // - preserva a preferência de tema já salva no navegador de quem já usa o app.
-    { provide: NIMBUS_THEME_CONFIG, useValue: { appId: 'nimbusauth' } },
+    { provide: NIMBUS_THEME_CONFIG, useValue: { appId: 'nimbuscore' } },
 
     // NIMBUS_SIDEBAR_HOST/NIMBUS_TOPBAR_HOST (SidebarComponent/TopbarComponent compartilhados) -
     // ver core/layout/layout-providers.ts.

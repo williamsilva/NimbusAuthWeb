@@ -1,6 +1,6 @@
 import { AppMenuItem } from './menu.model';
 
-/** Espelha as rotas de app.routes.ts. Sem `permissions` em nenhum item - o NimbusAuthWeb não tem
+/** Espelha as rotas de app.routes.ts. Sem `permissions` em nenhum item - o NimbusCoreWeb não tem
  *  controle de permissão client-side hoje (a proteção real é 100% server-side, via JWT/
  *  CheckSecurity de cada endpoint); manter esse comportamento aqui, não introduzir um gate novo. */
 export const APP_MENU: AppMenuItem[] = [
@@ -35,8 +35,8 @@ export const APP_MENU: AppMenuItem[] = [
     ],
   },
   {
-    // Fundiu "Configurações de E-mail" (só NimbusAuth) + "E-mail dos Apps" (proxy satélites) numa
-    // tela só (apps-email-settings-list) - a lista agora inclui "NimbusAuth" também, ver
+    // Fundiu "Configurações de E-mail" (só NimbusCore) + "E-mail dos Apps" (proxy satélites) numa
+    // tela só (apps-email-settings-list) - a lista agora inclui "NimbusCore" também, ver
     // AppsEmailSettingsListComponent/AppsEmailSettingsDialogComponent. Volta a ser 1 item flat
     // (sem submenu), mesmo padrão de menu.apps/menu.audit.email/menu.backup.
     labelKey: 'menu.email.settings',
@@ -45,8 +45,8 @@ export const APP_MENU: AppMenuItem[] = [
     exact: false,
   },
   {
-    // Fundiu "Auditoria de E-mail" (só NimbusAuth) + "Auditoria dos Apps" (proxy satélites) numa
-    // tela só (apps-email-log-list) - o seletor de app dela agora inclui "NimbusAuth" também, ver
+    // Fundiu "Auditoria de E-mail" (só NimbusCore) + "Auditoria dos Apps" (proxy satélites) numa
+    // tela só (apps-email-log-list) - o seletor de app dela agora inclui "NimbusCore" também, ver
     // AppsEmailLogListComponent. Volta a ser 1 item flat (sem submenu), mesmo padrão de
     // menu.apps/menu.backup.
     labelKey: 'menu.audit.email',

@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "NimbusAuthWeb": {
+    "NimbusCoreWeb": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -70,10 +70,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "NimbusAuthWeb:build:production"
+              "buildTarget": "NimbusCoreWeb:build:production"
             },
             "development": {
-              "buildTarget": "NimbusAuthWeb:build:development"
+              "buildTarget": "NimbusCoreWeb:build:development"
             }
           },
           "defaultConfiguration": "development"

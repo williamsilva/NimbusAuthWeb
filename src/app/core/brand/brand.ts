@@ -1,5 +1,5 @@
 export const BRAND = {
-  appName: 'NimbusAuth',
-  logoUrl: 'brand/nimbusauth-mark.svg',
-  markUrl: 'brand/nimbusauth-mark.svg',
+  appName: 'NimbusCore',
+  logoUrl: 'brand/nimbuscore-mark.svg',
+  markUrl: 'brand/nimbuscore-mark.svg',
 };

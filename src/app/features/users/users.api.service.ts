@@ -21,7 +21,7 @@ export class UsersApiService {
 
   /** GET /api/v1/me/profile - dados completos do PRÓPRIO usuário logado (mesmo UserModel de
    *  getById, mas sem exigir a permissão administrativa USERS_CONSULT - ver MeProfileController
-   *  no NimbusAuthServer). Usado só pela tela de Perfil. */
+   *  no NimbusCoreServer). Usado só pela tela de Perfil. */
   getMyProfile(): Observable<UserModel> {
     return this.http.get<UserModel>(`${API.base}/v1/me/profile`);
   }

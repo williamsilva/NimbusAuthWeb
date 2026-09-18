@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "NimbusAuth"
+    "name": "NimbusCore"
   },
   "sidebar": {
     "userFallback": "Admin",
@@ -32,7 +32,7 @@
     }
   },
   "footer": {
-    "copyright": "NimbusAuth",
+    "copyright": "NimbusCore",
     "madeWith": "Identity & Access"
   },
   "topbar": {
@@ -329,7 +329,7 @@
       "permissionsPlaceholder": "Select permissions",
       "savePermissionsButton": "Save permissions",
       "usersPlaceholder": "Select users",
-      "usersRemoveHint": "Removing a user here is only allowed if they remain in another nimbusauth group.",
+      "usersRemoveHint": "Removing a user here is only allowed if they remain in another nimbuscore group.",
       "saveUsersButton": "Save users",
       "close": "Close",
       "toastPermissionsUpdated": {
@@ -470,7 +470,7 @@
   "appsEmailSettings": {
     "list": {
       "title": "Email Settings",
-      "subtitle": "Email config (SMTP/Brevo/sender) of NimbusAuth and each satellite app - read and written remotely on the app itself.",
+      "subtitle": "Email config (SMTP/Brevo/sender) of NimbusCore and each satellite app - read and written remotely on the app itself.",
       "refreshButton": "Refresh",
       "filtersTitle": "Filter",
       "fields": {
@@ -509,7 +509,7 @@
   "appsEmailLog": {
     "list": {
       "title": "Email Audit",
-      "subtitle": "Emails sent by NimbusAuth and by each satellite app in the Nimbus ecosystem.",
+      "subtitle": "Emails sent by NimbusCore and by each satellite app in the Nimbus ecosystem.",
       "refreshButton": "Refresh",
       "filtersTitle": "Filter",
       "fields": {

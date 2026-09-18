@@ -18,9 +18,9 @@ import { UserModel } from '../../users/users.models';
 import { statusSeverity } from '../../users/user-status';
 
 /** Chave de tradução (profile.permissions.<CODE>) + fallback pt-BR do catálogo de permissões do
- *  app_key "nimbusauth" (ver migrations V20260828_01__nimbusauth_users_groups_permissions_seed /
+ *  app_key "nimbuscore" (ver migrations V20260828_01__nimbuscore_users_groups_permissions_seed /
  *  V20260825_02.../V20260825_04.../V20260826_03.../V20260910_01.../V20260915_01.../V20260916_01...
- *  no NimbusAuthServer) - o access_token só carrega o CÓDIGO da permissão, não a descrição, então
+ *  no NimbusCoreServer) - o access_token só carrega o CÓDIGO da permissão, não a descrição, então
  *  replicamos aqui pra tela não mostrar só o nome bruto. Código sem entrada cai no fallback
  *  humanizado (humanizeEnum). */
 const PERMISSION_FALLBACKS: Record<string, string> = {
@@ -67,7 +67,7 @@ type PermissionTone =
  *  GET /api/v1/me/profile (UsersApiService.getMyProfile()). Visual (cards numerados com cor por
  *  categoria) espelha o mesmo padrão já usado no CardSyncWeb/NimbusFlowWeb/NimbusDeskWeb/
  *  NimbusNovaxWeb (profile.component.scss), adaptado ao catálogo de permissões do próprio
- *  NimbusAuth. */
+ *  NimbusCore. */
 @Component({
   standalone: true,
   selector: 'app-account-profile-page',

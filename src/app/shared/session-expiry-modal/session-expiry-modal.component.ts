@@ -8,10 +8,10 @@ import { AuthService } from '../../core/auth/auth.service';
 import { SessionService } from '../../core/auth/session.service';
 
 /** Mesmo padrão visual de CardSyncWeb/NimbusFlowWeb (shared/session-expiry-modal), adaptado pro
- *  client público "nimbusauth-web" (sem grant de refresh_token, ver AuthService): não existe
+ *  client público "nimbuscore-web" (sem grant de refresh_token, ver AuthService): não existe
  *  renovação silenciosa via XHR aqui - "Renovar sessão" e "Fazer login novamente" são a MESMA
  *  ação (startLogin(), redirect de página inteira pro /oauth2/authorize), já que a sessão de
- *  login do NimbusAuth (cookie) normalmente ainda está válida e o redirect completa sem pedir
+ *  login do NimbusCore (cookie) normalmente ainda está válida e o redirect completa sem pedir
  *  senha de novo. */
 @Component({
   standalone: true,

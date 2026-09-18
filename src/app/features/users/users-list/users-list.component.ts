@@ -43,7 +43,7 @@ import { UserModel, UserOption, UsersAdvancedFilters, UsersFiltersState } from '
 import { UsersFormDialogComponent } from '../users-form-dialog/users-form-dialog.component';
 
 /** Tela de gestão de Usuários (globais - compartilhados entre cardsync/nimbusflow/nimbusnovax/
- *  nimbusauth), no mesmo padrão de lista avançada do CardSyncWeb (StatefulListPage +
+ *  nimbuscore), no mesmo padrão de lista avançada do CardSyncWeb (StatefulListPage +
  *  cs-filters-panel + p-columnFilter por coluna, ver core/list-base). Painel central: lista TODOS
  *  os usuários por padrão (groupAppKey só entra no filtro se o usuário escolher um app específico
  *  no painel avançado - mesmo tratamento já dado à tela de Grupos). Sem exclusão - não existe

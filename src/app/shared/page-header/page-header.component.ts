@@ -10,7 +10,7 @@ export interface PageBreadcrumbItem {
 /** Cabeçalho padrão de página (título/subtítulo/breadcrumb + ações via ng-content) - mesmo
  *  componente usado em CardSyncWeb/NimbusFlowWeb/NimbusDeskWeb/NimbusNovaxWeb
  *  (shared/features/page-header), portado aqui pra padronizar visualmente as telas do
- *  NimbusAuthWeb que ainda usavam um <h2> solto. */
+ *  NimbusCoreWeb que ainda usavam um <h2> solto. */
 @Component({
   standalone: true,
   selector: 'app-page-header',

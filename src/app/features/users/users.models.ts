@@ -5,7 +5,7 @@ export interface UserMinimal {
 }
 
 /** Grupo do usuário, já com o appKey a que pertence - nb_groups é escopado por app_key mas
- *  nb_users é global (compartilhado entre cardsync/nimbusflow/nimbusnovax/nimbusauth), então um
+ *  nb_users é global (compartilhado entre cardsync/nimbusflow/nimbusnovax/nimbuscore), então um
  *  mesmo usuário pode ter grupos de vários apps ao mesmo tempo. Ver users-form-dialog. */
 export interface UserGroup {
   id: string;

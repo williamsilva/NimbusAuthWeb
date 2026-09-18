@@ -5,7 +5,7 @@ import { catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 
-/** Anexa "Authorization: Bearer <token>" nas chamadas pra API do NimbusAuth. Em 401 (token
+/** Anexa "Authorization: Bearer <token>" nas chamadas pra API do NimbusCore. Em 401 (token
  *  expirado - sem refresh_token de propósito, ver AuthService), manda pro login de novo em vez
  *  de só propagar o erro. */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {

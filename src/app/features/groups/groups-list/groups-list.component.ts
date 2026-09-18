@@ -35,7 +35,7 @@ import { GroupsFormDialogComponent } from '../groups-form-dialog/groups-form-dia
 import { GroupManageDialogComponent } from '../group-manage-dialog/group-manage-dialog.component';
 
 /** Tela de gestão de Grupos - painel central, lista/gerencia grupos de TODOS os apps cadastrados
- *  (cardsync/nimbusflow/nimbusnovax/nimbusauth), no mesmo padrão de lista avançada do CardSyncWeb
+ *  (cardsync/nimbusflow/nimbusnovax/nimbuscore), no mesmo padrão de lista avançada do CardSyncWeb
  *  (StatefulListPage + cs-filters-panel + p-columnFilter por coluna, ver core/list-base). Criar/
  *  editar só nome+descrição+app (dialog simples, app imutável depois); permissões e usuários do
  *  grupo são geridos num dialog à parte (group-manage-dialog). */

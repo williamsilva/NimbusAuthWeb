@@ -6,9 +6,9 @@ import { API } from '../../core/api/api.config';
 import { EmailSettings, EmailSettingsUpdate } from '../email-settings/email-settings.models';
 
 /** Config de e-mail de CADA app satélite (cardsync/nimbusflow/nimbusdesk/nimbusnovax) - o
- *  NimbusAuthServer repassa (proxy) pro /internal/email-settings daquele app via
+ *  NimbusCoreServer repassa (proxy) pro /internal/email-settings daquele app via
  *  AppEmailSettingsClient, mesmo formato de EmailSettings/EmailSettingsUpdate já usado pela config
- *  de e-mail do PRÓPRIO NimbusAuth (ver features/email-settings). */
+ *  de e-mail do PRÓPRIO NimbusCore (ver features/email-settings). */
 @Injectable({ providedIn: 'root' })
 export class AppsEmailSettingsApiService {
   private readonly http = inject(HttpClient);

@@ -33,13 +33,13 @@
   },
   "footer": {
     "copyright": "NimbusCore",
-    "madeWith": "Identidade & Acesso"
+    "madeWith": "Todos os direitos reservados."
   },
   "topbar": {
     "sidebarHideTooltip": "Ocultar menu",
     "sidebarShowTooltip": "Mostrar menu",
     "sidebarToggleAria": "Alternar menu lateral",
-    "brandName": "Auth",
+    "brandName": "NimbusCore",
     "brandSub": "Identidade & Acesso",
     "sessionExpired": "Sessão expirada",
     "online": "Online",

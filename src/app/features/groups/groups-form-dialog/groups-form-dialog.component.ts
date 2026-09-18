@@ -57,6 +57,13 @@ export class GroupsFormDialogComponent {
   readonly appOptions = signal<{ appKey: string; name: string }[]>([]);
 
   private lastLoadedId: string | null = null;
+  /** Evita resetar o form de novo em modo criação a cada re-execução do effect() (ver
+   *  constructor) - true assim que o form já foi inicializado pra este "open" do diálogo. Sem
+   *  isto, qualquer re-execução espúria do effect() (ex.: change detection disparada pelo
+   *  fechamento do painel de um p-select após selecionar uma opção) chamaria resetFormForCreate()
+   *  de novo e apagaria o que o usuário já tinha preenchido - mesmo bug já corrigido nos dialogs
+   *  de criação/edição do NimbusFlowWeb (ActionPlans/Works/Tasks/Projects). */
+  private createFormInitialized = false;
 
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120)]],
@@ -71,17 +78,23 @@ export class GroupsFormDialogComponent {
 
     effect(() => {
       if (!this.visible()) {
+        this.createFormInitialized = false;
         return;
       }
 
       const group = this.group();
 
       if (!group) {
+        if (this.createFormInitialized) {
+          return;
+        }
+        this.createFormInitialized = true;
         this.lastLoadedId = null;
         this.resetFormForCreate();
         return;
       }
 
+      this.createFormInitialized = false;
       if (this.lastLoadedId === group.id) {
         return;
       }
@@ -100,6 +113,7 @@ export class GroupsFormDialogComponent {
     this.submitted.set(false);
     this.saving.set(false);
     this.lastLoadedId = null;
+    this.createFormInitialized = false;
     this.resetFormForCreate();
     this.visibleChange.emit(false);
   }
